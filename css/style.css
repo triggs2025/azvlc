@@ -105,7 +105,7 @@ body {
 /* ── Hero ── */
 .hero {
   background: linear-gradient(rgba(26, 58, 82, 0.85), rgba(44, 90, 160, 0.85)),
-    url('assets/hero.jpg') center/cover no-repeat;
+    url('../assets/hero.jpg') center/cover no-repeat;
   color: var(--white);
   text-align: center;
   padding: 80px 20px;
