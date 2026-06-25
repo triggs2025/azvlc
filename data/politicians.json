@@ -35,7 +35,7 @@
     "id": 3,
     "name": "Tony Riggs",
     "position": "Representative",
-    "party": "Nothing",
+    "party": "",
     "district": "4",
     "veteran": true,
     "photo": "",
