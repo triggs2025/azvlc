@@ -77,6 +77,10 @@
     <section id="section-policies" class="page-section">
       <h2 class="section-header">Veteran Benefit Policies</h2>
 
+      <div style="margin-bottom:16px">
+        <input type="text" id="policySearch" placeholder="Search policies by name, sponsor, or description..." oninput="AZVLC.searchPolicies(this.value)" style="width:100%;max-width:500px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em">
+      </div>
+
       <div class="filter-bar">
         <button class="filter-btn active" onclick="AZVLC.filterPolicies('all', this)">All</button>
         <button class="filter-btn" onclick="AZVLC.filterPolicies('healthcare', this)">Healthcare</button>

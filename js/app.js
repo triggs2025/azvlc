@@ -17,6 +17,7 @@
   var policies = [];
   var politicians = [];
   var currentFilter = 'all';
+  var currentPolicySearch = '';
   var currentPoliticianFilter = 'all';
   var currentPoliticianSort = 'name';
   var currentPoliticianSearch = '';
@@ -228,11 +229,25 @@
   }
 
   // ── Policies ──
+  function searchPolicies(query) {
+    currentPolicySearch = query.toLowerCase().trim();
+    renderPolicies();
+  }
+
   function renderPolicies(filter) {
     if (filter !== undefined) currentFilter = filter;
     var list = currentFilter === 'all'
       ? policies
       : policies.filter(function (p) { return p.category === currentFilter; });
+
+    if (currentPolicySearch) {
+      list = list.filter(function (p) {
+        var q = currentPolicySearch;
+        return p.name.toLowerCase().indexOf(q) !== -1 ||
+          p.sponsor.toLowerCase().indexOf(q) !== -1 ||
+          p.description.toLowerCase().indexOf(q) !== -1;
+      });
+    }
 
     var el = document.getElementById('policiesList');
     if (!el) return;
@@ -685,6 +700,7 @@
   window.AZVLC = {
     giveKudos: giveKudos,
     filterPolicies: filterPolicies,
+    searchPolicies: searchPolicies,
     filterPoliticians: filterPoliticians,
     sortPoliticians: sortPoliticians,
     searchPoliticians: searchPoliticians,
