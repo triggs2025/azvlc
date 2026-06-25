@@ -518,6 +518,8 @@
               (p.approved
                 ? '<span class="badge badge-passed">Approved</span>'
                 : '<span class="badge badge-failed">Hidden</span>') +
+              ' <span style="color:var(--text-muted);font-size:0.85em;margin-left:4px">' + (p.kudos || 0) + ' kudos</span> ' +
+              '<button class="btn btn-sm" style="background:#eee;font-size:0.75em;padding:2px 8px;margin-left:4px" onclick="adjustKudos(\'policy\',' + p.id + ')">Adjust</button>' +
             '</div>' +
           '</div>' +
           '<div class="admin-item-actions">' +
@@ -631,7 +633,8 @@
             '</p>' +
             '<div style="margin-top:8px">' +
               '<span class="grade grade-' + avg.toLowerCase() + '" style="font-size:1.2em">' + avg + '</span>' +
-              '<span style="color:var(--text-muted);font-size:0.85em;margin-left:8px">' + (p.kudos || 0) + ' kudos</span>' +
+              '<span style="color:var(--text-muted);font-size:0.85em;margin-left:8px">' + (p.kudos || 0) + ' kudos</span> ' +
+              '<button class="btn btn-sm" style="background:#eee;font-size:0.75em;padding:2px 8px;margin-left:4px" onclick="adjustKudos(\'politician\',' + p.id + ')">Adjust</button>' +
             '</div>' +
           '</div>' +
           '<div class="admin-item-actions">' +
@@ -725,6 +728,37 @@
             showStatus('Error deleting: ' + err.message, 'error');
           });
       };
+    }
+
+    // ── Kudos adjustment ──
+    function adjustKudos(type, id) {
+      var item;
+      if (type === 'politician') {
+        item = politicians.find(function(p) { return p.id === id; });
+      } else {
+        item = policies.find(function(p) { return p.id === id; });
+      }
+      if (!item) return;
+
+      var newVal = prompt('Adjust kudos for "' + item.name + '"\nCurrent value: ' + (item.kudos || 0) + '\n\nEnter new kudos count:', item.kudos || 0);
+      if (newVal === null) return;
+      newVal = parseInt(newVal);
+      if (isNaN(newVal) || newVal < 0) { alert('Please enter a valid number (0 or higher).'); return; }
+
+      item.kudos = newVal;
+      showStatus('Saving kudos update...', '');
+
+      var file = type === 'politician' ? 'politicians' : 'policies';
+      var data = type === 'politician' ? politicians : policies;
+      var sha = type === 'politician' ? politiciansSha : policiesSha;
+
+      saveFileToGitHub('data/' + file + '.json', data, sha)
+        .then(function(result) {
+          if (type === 'politician') { politiciansSha = result.content.sha; renderAdminPoliticians(); }
+          else { policiesSha = result.content.sha; renderAdminPolicies(); }
+          showStatus('Kudos updated.', 'success');
+        })
+        .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
     }
 
     // ── Helpers ──
