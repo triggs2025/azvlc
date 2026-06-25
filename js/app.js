@@ -10,7 +10,7 @@
     repoOwner: 'triggs2025',
     repoName: 'azvlc',
     branch: 'master',
-    ghToken: ''  // paste a fine-grained GitHub token here with contents:write scope for this repo only
+    ghToken: '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'
   };
 
   // ── State ──
