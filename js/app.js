@@ -178,10 +178,13 @@
     politicians.forEach(function (p) { totalKudos += p.kudos || 0; });
     setText('statKudos', totalKudos);
 
-    // top politicians
-    var sorted = politicians.slice().sort(function (a, b) {
+    // top politicians — only those with ratings, sorted by average grade then kudos
+    var rated = politicians.filter(function (p) { return gradeTotal(p.grades) > 0; });
+    var sorted = rated.sort(function (a, b) {
+      var diff = gradeValue(b.grades) - gradeValue(a.grades);
+      if (diff !== 0) return diff;
       return (b.kudos || 0) - (a.kudos || 0);
-    }).slice(0, 3);
+    }).slice(0, 5);
 
     var topEl = document.getElementById('topPoliticians');
     if (!topEl) return;
@@ -193,10 +196,15 @@
 
     topEl.innerHTML = sorted.map(function (p) {
       var avg = calcGrade(p.grades);
+      var total = gradeTotal(p.grades);
       return '<div class="card">' +
         '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
-        '<p>' + esc(p.position) + '</p>' +
+        '<p>' + esc(p.position) +
+          (p.party ? ' &middot; ' + esc(p.party) : '') +
+          (p.district ? ' &middot; ' + esc(p.district) : '') +
+        '</p>' +
         '<div class="grade grade-' + avg.toLowerCase() + '">' + avg + '</div>' +
+        '<p style="font-size:0.85em;color:var(--text-muted)">' + total + ' rating' + (total !== 1 ? 's' : '') + ' &middot; ' + (p.kudos || 0) + ' kudos</p>' +
         '</div>';
     }).join('');
 
