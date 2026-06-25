@@ -92,6 +92,27 @@
     <!-- ══ POLITICIANS ══ -->
     <section id="section-politicians" class="page-section">
       <h2 class="section-header">Politicians &amp; Advocates Scorecard</h2>
+
+      <div class="filter-bar">
+        <span style="font-weight:600;color:var(--text-muted);padding:8px 0;margin-right:8px">Filter:</span>
+        <button class="filter-btn active" onclick="AZVLC.filterPoliticians('all', this)">All</button>
+        <button class="filter-btn" onclick="AZVLC.filterPoliticians('house', this)">House</button>
+        <button class="filter-btn" onclick="AZVLC.filterPoliticians('senate', this)">Senate</button>
+        <button class="filter-btn" onclick="AZVLC.filterPoliticians('republican', this)">Republican</button>
+        <button class="filter-btn" onclick="AZVLC.filterPoliticians('democrat', this)">Democrat</button>
+        <button class="filter-btn" onclick="AZVLC.filterPoliticians('veteran', this)">Veterans</button>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <span style="font-weight:600;color:var(--text-muted);margin-right:8px">Sort:</span>
+        <select id="politicianSort" onchange="AZVLC.sortPoliticians(this.value)" style="padding:6px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.9em">
+          <option value="name">Name (A-Z)</option>
+          <option value="district">District</option>
+          <option value="grade">Grade (Best First)</option>
+          <option value="kudos">Most Kudos</option>
+        </select>
+      </div>
+
       <div class="card-grid" id="politiciansList"></div>
     </section>
 

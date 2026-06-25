@@ -12,6 +12,8 @@
   var policies = [];
   var politicians = [];
   var currentFilter = 'all';
+  var currentPoliticianFilter = 'all';
+  var currentPoliticianSort = 'name';
 
   // ── Init ──
   document.addEventListener('DOMContentLoaded', function () {
@@ -193,16 +195,78 @@
   }
 
   // ── Politicians ──
+  function filterPoliticians(filter, btn) {
+    currentPoliticianFilter = filter;
+    if (btn) {
+      document.querySelectorAll('#section-politicians .filter-btn').forEach(function (b) {
+        b.classList.remove('active');
+      });
+      btn.classList.add('active');
+    }
+    renderPoliticians();
+  }
+
+  function sortPoliticians(sortBy) {
+    currentPoliticianSort = sortBy;
+    renderPoliticians();
+  }
+
+  function getFilteredPoliticians() {
+    var list = politicians;
+
+    if (currentPoliticianFilter !== 'all') {
+      list = list.filter(function (p) {
+        switch (currentPoliticianFilter) {
+          case 'house': return p.position.toLowerCase().indexOf('representative') !== -1;
+          case 'senate': return p.position.toLowerCase().indexOf('senator') !== -1;
+          case 'republican': return (p.party || '').toLowerCase() === 'republican';
+          case 'democrat': return (p.party || '').toLowerCase() === 'democrat';
+          case 'veteran': return !!p.veteran;
+          default: return true;
+        }
+      });
+    }
+
+    list = list.slice().sort(function (a, b) {
+      switch (currentPoliticianSort) {
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'district':
+          var da = parseInt((a.district || '').replace(/\D/g, '')) || 999;
+          var db = parseInt((b.district || '').replace(/\D/g, '')) || 999;
+          return da - db;
+        case 'grade':
+          return gradeValue(b.grades) - gradeValue(a.grades);
+        case 'kudos':
+          return (b.kudos || 0) - (a.kudos || 0);
+        default:
+          return 0;
+      }
+    });
+
+    return list;
+  }
+
+  function gradeValue(grades) {
+    if (!grades) return -1;
+    var vals = { A: 4, B: 3, C: 2, D: 1, F: 0 };
+    var total = 0, count = 0;
+    for (var g in vals) { total += vals[g] * (grades[g] || 0); count += (grades[g] || 0); }
+    return count === 0 ? -1 : total / count;
+  }
+
   function renderPoliticians() {
     var el = document.getElementById('politiciansList');
     if (!el) return;
 
-    if (politicians.length === 0) {
-      el.innerHTML = emptyState('No politicians rated yet');
+    var filtered = getFilteredPoliticians();
+
+    if (filtered.length === 0) {
+      el.innerHTML = emptyState('No politicians match this filter');
       return;
     }
 
-    el.innerHTML = politicians.map(function (p) {
+    el.innerHTML = filtered.map(function (p) {
       var avg = calcGrade(p.grades);
       var total = gradeTotal(p.grades);
       var voted = hasVotedKudo('politician', p.id);
@@ -393,6 +457,8 @@
   // expose for inline onclick handlers
   window.AZVLC = {
     giveKudos: giveKudos,
-    filterPolicies: filterPolicies
+    filterPolicies: filterPolicies,
+    filterPoliticians: filterPoliticians,
+    sortPoliticians: sortPoliticians
   };
 })();
