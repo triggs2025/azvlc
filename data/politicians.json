@@ -6,7 +6,13 @@
     "party": "",
     "district": "",
     "photo": "",
-    "grades": { "A": 8, "B": 5, "C": 2, "D": 1, "F": 0 },
+    "grades": {
+      "A": 8,
+      "B": 5,
+      "C": 2,
+      "D": 1,
+      "F": 0
+    },
     "kudos": 47
   },
   {
@@ -16,7 +22,30 @@
     "party": "",
     "district": "",
     "photo": "",
-    "grades": { "A": 12, "B": 8, "C": 1, "D": 0, "F": 0 },
+    "grades": {
+      "A": 12,
+      "B": 8,
+      "C": 1,
+      "D": 0,
+      "F": 0
+    },
     "kudos": 62
+  },
+  {
+    "id": 3,
+    "name": "Tony Riggs",
+    "position": "Representative",
+    "party": "Nothing",
+    "district": "4",
+    "veteran": true,
+    "photo": "",
+    "grades": {
+      "A": 0,
+      "B": 0,
+      "C": 0,
+      "D": 0,
+      "F": 0
+    },
+    "kudos": 0
   }
 ]
