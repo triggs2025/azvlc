@@ -130,7 +130,7 @@
     topEl.innerHTML = sorted.map(function (p) {
       var avg = calcGrade(p.grades);
       return '<div class="card">' +
-        '<h3>' + esc(p.name) + '</h3>' +
+        '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<p>' + esc(p.position) + '</p>' +
         '<div class="grade grade-' + avg.toLowerCase() + '">' + avg + '</div>' +
         '</div>';
@@ -148,7 +148,7 @@
 
     passedEl.innerHTML = passed.map(function (p) {
       return '<div class="card">' +
-        '<h3>' + esc(p.name) + '</h3>' +
+        '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<p>' + esc(p.description) + '</p>' +
         '<span class="badge badge-passed">Passed</span>' +
         '</div>';
@@ -173,7 +173,7 @@
     el.innerHTML = list.map(function (p) {
       var voted = hasVotedKudo('policy', p.id);
       return '<div class="card">' +
-        '<h3>' + esc(p.name) + '</h3>' +
+        '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<div class="card-meta">' +
           '<span class="badge badge-category">' + capitalize(p.category) + '</span>' +
           '<span class="badge badge-' + p.status + '">' + formatStatus(p.status) + '</span>' +
@@ -208,7 +208,7 @@
       var voted = hasVotedKudo('politician', p.id);
 
       return '<div class="card">' +
-        '<h3>' + esc(p.name) + '</h3>' +
+        '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<p style="color:var(--text-muted);margin-bottom:4px">' + esc(p.position) +
           (p.party ? ' &middot; ' + esc(p.party) : '') +
           (p.district ? ' &middot; ' + esc(p.district) : '') +

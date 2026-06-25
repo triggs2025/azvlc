@@ -317,6 +317,10 @@
           <label for="appDistrict">District (optional)</label>
           <input type="text" id="appDistrict" placeholder="e.g., District 4">
         </div>
+        <div class="form-group checkbox-row">
+          <input type="checkbox" id="appVeteran">
+          <label for="appVeteran">This person is a Veteran</label>
+        </div>
         <div style="display:flex;gap:8px">
           <button type="submit" class="form-submit" style="flex:1">Save Politician</button>
           <button type="button" class="btn" style="background:#eee;color:var(--text)" onclick="closeModal('politicianModal')">Cancel</button>
@@ -620,7 +624,7 @@
         var avg = calcGrade(p.grades);
         return '<div class="admin-item">' +
           '<div class="admin-item-info">' +
-            '<h4>' + esc(p.name) + '</h4>' +
+            '<h4>' + esc(p.name) + (p.veteran ? ' <span style="background:#2e7d32;color:#fff;font-size:0.6em;padding:2px 6px;border-radius:3px;margin-left:6px;vertical-align:middle">VET</span>' : '') + '</h4>' +
             '<p>' + esc(p.position) +
               (p.party ? ' &middot; ' + esc(p.party) : '') +
               (p.district ? ' &middot; ' + esc(p.district) : '') +
@@ -647,6 +651,7 @@
         document.getElementById('appPosition').value = politician.position;
         document.getElementById('appParty').value = politician.party || '';
         document.getElementById('appDistrict').value = politician.district || '';
+        document.getElementById('appVeteran').checked = !!politician.veteran;
       } else {
         document.getElementById('politicianModalTitle').textContent = 'Add New Politician';
         document.getElementById('editPoliticianId').value = '';
@@ -670,6 +675,7 @@
         position: document.getElementById('appPosition').value,
         party: document.getElementById('appParty').value,
         district: document.getElementById('appDistrict').value,
+        veteran: document.getElementById('appVeteran').checked,
         photo: '',
         grades: { A: 0, B: 0, C: 0, D: 0, F: 0 },
         kudos: 0
@@ -681,6 +687,7 @@
           data.grades = politicians[idx].grades || data.grades;
           data.kudos = politicians[idx].kudos || 0;
           data.photo = politicians[idx].photo || '';
+          data.veteran = document.getElementById('appVeteran').checked;
           politicians[idx] = data;
         }
       } else {
