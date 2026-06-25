@@ -14,6 +14,7 @@
   var currentFilter = 'all';
   var currentPoliticianFilter = 'all';
   var currentPoliticianSort = 'name';
+  var currentPoliticianSearch = '';
 
   // ── Init ──
   document.addEventListener('DOMContentLoaded', function () {
@@ -211,8 +212,19 @@
     renderPoliticians();
   }
 
+  function searchPoliticians(query) {
+    currentPoliticianSearch = query.toLowerCase().trim();
+    renderPoliticians();
+  }
+
   function getFilteredPoliticians() {
     var list = politicians;
+
+    if (currentPoliticianSearch) {
+      list = list.filter(function (p) {
+        return p.name.toLowerCase().indexOf(currentPoliticianSearch) !== -1;
+      });
+    }
 
     if (currentPoliticianFilter !== 'all') {
       list = list.filter(function (p) {
@@ -278,17 +290,20 @@
           (p.district ? ' &middot; ' + esc(p.district) : '') +
         '</p>' +
         (p.website ? '<p style="margin-bottom:8px"><a href="' + esc(p.website) + '" target="_blank" rel="noopener">Legislative Profile &rarr;</a></p>' : '') +
-        '<div class="grade grade-' + avg.toLowerCase() + '">' + avg + '</div>' +
-        '<p style="font-size:0.85em;color:var(--text-muted);margin-bottom:12px">' +
-          'Based on ' + total + ' Veteran rating' + (total !== 1 ? 's' : '') +
-        '</p>' +
-        '<div class="grade-breakdown">' +
-          gradeBox('A', p.grades.A) +
-          gradeBox('B', p.grades.B) +
-          gradeBox('C', p.grades.C) +
-          gradeBox('D', p.grades.D) +
-          gradeBox('F', p.grades.F) +
-        '</div>' +
+        (total > 0
+          ? '<div class="grade grade-' + avg.toLowerCase() + '">' + avg + '</div>' +
+            '<p style="font-size:0.85em;color:var(--text-muted);margin-bottom:12px">' +
+              'Based on ' + total + ' Veteran rating' + (total !== 1 ? 's' : '') +
+            '</p>' +
+            '<div class="grade-breakdown">' +
+              gradeBox('A', p.grades.A) +
+              gradeBox('B', p.grades.B) +
+              gradeBox('C', p.grades.C) +
+              gradeBox('D', p.grades.D) +
+              gradeBox('F', p.grades.F) +
+            '</div>'
+          : '<p style="font-size:0.85em;color:var(--text-muted);margin-bottom:4px;font-style:italic">No Veteran ratings yet</p>'
+        ) +
         '<div class="kudos-bar">' +
           '<button class="kudos-btn' + (voted ? ' voted' : '') + '" onclick="AZVLC.giveKudos(' + p.id + ',\'politician\')" ' + (voted ? 'disabled' : '') + '>' +
             '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>' +
@@ -459,6 +474,7 @@
     giveKudos: giveKudos,
     filterPolicies: filterPolicies,
     filterPoliticians: filterPoliticians,
-    sortPoliticians: sortPoliticians
+    sortPoliticians: sortPoliticians,
+    searchPoliticians: searchPoliticians
   };
 })();

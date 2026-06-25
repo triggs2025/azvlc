@@ -93,6 +93,10 @@
     <section id="section-politicians" class="page-section">
       <h2 class="section-header">Politicians &amp; Advocates Scorecard</h2>
 
+      <div style="margin-bottom:16px">
+        <input type="text" id="politicianSearch" placeholder="Search by name..." oninput="AZVLC.searchPoliticians(this.value)" style="width:100%;max-width:400px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em">
+      </div>
+
       <div class="filter-bar">
         <span style="font-weight:600;color:var(--text-muted);padding:8px 0;margin-right:8px">Filter:</span>
         <button class="filter-btn active" onclick="AZVLC.filterPoliticians('all', this)">All</button>
