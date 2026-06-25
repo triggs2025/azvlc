@@ -213,6 +213,7 @@
           (p.party ? ' &middot; ' + esc(p.party) : '') +
           (p.district ? ' &middot; ' + esc(p.district) : '') +
         '</p>' +
+        (p.website ? '<p style="margin-bottom:8px"><a href="' + esc(p.website) + '" target="_blank" rel="noopener">Legislative Profile &rarr;</a></p>' : '') +
         '<div class="grade grade-' + avg.toLowerCase() + '">' + avg + '</div>' +
         '<p style="font-size:0.85em;color:var(--text-muted);margin-bottom:12px">' +
           'Based on ' + total + ' Veteran rating' + (total !== 1 ? 's' : '') +
