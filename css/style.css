@@ -113,7 +113,7 @@ body {
 
 /* ── Hero ── */
 .hero {
-  background: linear-gradient(rgba(26, 58, 82, 0.85), rgba(44, 90, 160, 0.85)),
+  background: linear-gradient(rgba(26, 58, 82, 0.75), rgba(44, 90, 160, 0.75)),
     url('../assets/hero.jpg') center/cover no-repeat;
   color: var(--white);
   text-align: center;
