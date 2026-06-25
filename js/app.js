@@ -215,7 +215,7 @@
         '</p>' +
         '<div class="grade grade-' + avg.toLowerCase() + '">' + avg + '</div>' +
         '<p style="font-size:0.85em;color:var(--text-muted);margin-bottom:12px">' +
-          'Based on ' + total + ' veteran rating' + (total !== 1 ? 's' : '') +
+          'Based on ' + total + ' Veteran rating' + (total !== 1 ? 's' : '') +
         '</p>' +
         '<div class="grade-breakdown">' +
           gradeBox('A', p.grades.A) +
