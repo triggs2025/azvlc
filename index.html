@@ -91,7 +91,7 @@
 
     <!-- ══ POLITICIANS ══ -->
     <section id="section-politicians" class="page-section">
-      <h2 class="section-header">Politicians &amp; Advocates Scorecard</h2>
+      <h2 class="section-header">Politicians Scorecard</h2>
 
       <div style="margin-bottom:16px">
         <input type="text" id="politicianSearch" placeholder="Search by name..." oninput="AZVLC.searchPoliticians(this.value)" style="width:100%;max-width:400px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em">
@@ -139,7 +139,7 @@
             <input type="text" id="policyName" name="policyName" required placeholder="e.g., SB 1234 - Veteran Education Benefits">
           </div>
           <div class="form-group">
-            <label for="policySponsor">Current Sponsor / Advocate *</label>
+            <label for="policySponsor">Current Sponsor *</label>
             <input type="text" id="policySponsor" name="policySponsor" required placeholder="Representative or organization name">
           </div>
           <div class="form-group">
@@ -204,7 +204,7 @@
 
         <form id="ratingForm">
           <div class="form-group" style="position:relative">
-            <label for="politicianSearch2">Politician / Advocate Name *</label>
+            <label for="politicianSearch2">Politician Name *</label>
             <input type="text" id="politicianSearch2" autocomplete="off" required placeholder="Start typing a name..." oninput="AZVLC.onRateSearch(this.value)" onfocus="AZVLC.onRateSearch(this.value)">
             <input type="hidden" id="politicianName" name="politicianName">
             <div id="rateDropdown" style="display:none;position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 6px 6px;max-height:200px;overflow-y:auto;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,0.1)"></div>
@@ -217,7 +217,7 @@
             <label for="politicianGrade">Grade (A-F) *</label>
             <select id="politicianGrade" name="politicianGrade" required>
               <option value="">Select a grade</option>
-              <option value="A">A - Excellent (Strong advocate for Veterans)</option>
+              <option value="A">A - Excellent (Strong supporter of Veterans)</option>
               <option value="B">B - Good (Supports most Veteran initiatives)</option>
               <option value="C">C - Acceptable (Mixed record on Veteran issues)</option>
               <option value="D">D - Poor (Rarely supports Veteran policies)</option>
@@ -258,7 +258,7 @@
         <a href="#rate" data-nav="rate">Rate Leader</a>
       </div>
       <p><a href="admin.html" style="color:inherit;text-decoration:none">&copy;</a> 2025 Arizona Veteran Leadership Council. All rights reserved.</p>
-      <p style="margin-top:8px;font-size:0.85em">A 501(c)(4) organization advocating for Arizona Veterans.</p>
+      <p style="margin-top:8px;font-size:0.85em">A 501(c)(4) organization fighting for Arizona Veterans.</p>
     </div>
   </footer>
 
