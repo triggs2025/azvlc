@@ -37,6 +37,7 @@
         renderDashboard();
         renderPolicies();
         renderPoliticians();
+        populatePoliticianSelect();
       })
       .catch(function (err) {
         console.error('Failed to load data:', err);
@@ -355,6 +356,30 @@
     renderPolicies(category);
   };
 
+  // ── Politician select dropdown ──
+  function populatePoliticianSelect() {
+    var select = document.getElementById('politicianSelect');
+    if (!select) return;
+
+    var sorted = politicians.slice().sort(function (a, b) {
+      return a.name.localeCompare(b.name);
+    });
+
+    var options = '<option value="">-- Choose a leader --</option>';
+    sorted.forEach(function (p) {
+      options += '<option value="' + p.id + '">' + esc(p.name) + ' — ' + esc(p.position) +
+        (p.district ? ' (' + esc(p.district) + ')' : '') + '</option>';
+    });
+    select.innerHTML = options;
+  }
+
+  function onPoliticianSelect(select) {
+    var id = parseInt(select.value);
+    var p = politicians.find(function (x) { return x.id === id; });
+    document.getElementById('politicianName').value = p ? p.name : '';
+    document.getElementById('politicianPosition').value = p ? p.position : '';
+  }
+
   // ── Forms ──
   function bindForms() {
     var policyForm = document.getElementById('policyForm');
@@ -475,6 +500,7 @@
     filterPolicies: filterPolicies,
     filterPoliticians: filterPoliticians,
     sortPoliticians: sortPoliticians,
-    searchPoliticians: searchPoliticians
+    searchPoliticians: searchPoliticians,
+    onPoliticianSelect: onPoliticianSelect
   };
 })();
