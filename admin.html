@@ -199,10 +199,11 @@
 
       <!-- POLITICIANS PANEL -->
       <div id="panel-politicians" class="admin-panel">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:12px">
           <h3 style="color:var(--navy)">Manage Politicians</h3>
           <button class="btn btn-blue btn-sm" onclick="openPoliticianForm()">+ Add New Politician</button>
         </div>
+        <input type="text" id="adminPoliticianSearch" placeholder="Search by name..." oninput="filterAdminPoliticians(this.value)" style="width:100%;max-width:400px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em;margin-bottom:20px">
         <div id="adminPoliticiansList"></div>
       </div>
 
@@ -656,13 +657,30 @@
     }
 
     // ── POLITICIANS ──
+    var adminPoliticianQuery = '';
+
+    function filterAdminPoliticians(query) {
+      adminPoliticianQuery = query.toLowerCase().trim();
+      renderAdminPoliticians();
+    }
+
     function renderAdminPoliticians() {
       var el = document.getElementById('adminPoliticiansList');
       if (politicians.length === 0) {
         el.innerHTML = '<div class="admin-empty"><p>No politicians yet. Click "+ Add New Politician" to get started.</p></div>';
         return;
       }
-      el.innerHTML = politicians.map(function(p) {
+      var filtered = politicians;
+      if (adminPoliticianQuery) {
+        filtered = politicians.filter(function(p) {
+          return p.name.toLowerCase().indexOf(adminPoliticianQuery) !== -1;
+        });
+      }
+      if (filtered.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No politicians match your search.</p></div>';
+        return;
+      }
+      el.innerHTML = filtered.map(function(p) {
         var avg = calcGrade(p.grades);
         return '<div class="admin-item">' +
           '<div class="admin-item-info">' +
