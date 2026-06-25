@@ -333,6 +333,42 @@
     </div>
   </div>
 
+  <!-- GRADES EDIT MODAL -->
+  <div class="modal-overlay" id="gradesModal">
+    <div class="modal" style="max-width:450px">
+      <button class="modal-close" onclick="closeModal('gradesModal')">&times;</button>
+      <h3 id="gradesModalTitle">Edit Grades</h3>
+      <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">Adjust the number of each rating this politician has received.</p>
+      <input type="hidden" id="editGradesId">
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px">
+        <div style="text-align:center">
+          <label style="font-weight:700;color:#27ae60;font-size:1.2em">A</label>
+          <input type="number" id="gradeA" min="0" style="width:100%;padding:8px;text-align:center;border:1px solid var(--border);border-radius:6px">
+        </div>
+        <div style="text-align:center">
+          <label style="font-weight:700;color:#3498db;font-size:1.2em">B</label>
+          <input type="number" id="gradeB" min="0" style="width:100%;padding:8px;text-align:center;border:1px solid var(--border);border-radius:6px">
+        </div>
+        <div style="text-align:center">
+          <label style="font-weight:700;color:#f39c12;font-size:1.2em">C</label>
+          <input type="number" id="gradeC" min="0" style="width:100%;padding:8px;text-align:center;border:1px solid var(--border);border-radius:6px">
+        </div>
+        <div style="text-align:center">
+          <label style="font-weight:700;color:#e67e22;font-size:1.2em">D</label>
+          <input type="number" id="gradeD" min="0" style="width:100%;padding:8px;text-align:center;border:1px solid var(--border);border-radius:6px">
+        </div>
+        <div style="text-align:center">
+          <label style="font-weight:700;color:#e74c3c;font-size:1.2em">F</label>
+          <input type="number" id="gradeF" min="0" style="width:100%;padding:8px;text-align:center;border:1px solid var(--border);border-radius:6px">
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="form-submit" style="flex:1" onclick="saveGrades()">Save Grades</button>
+        <button class="btn" style="background:#eee;color:var(--text)" onclick="closeModal('gradesModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- DELETE CONFIRM MODAL -->
   <div class="modal-overlay" id="deleteModal">
     <div class="modal" style="max-width:400px;text-align:center">
@@ -642,6 +678,7 @@
             '</div>' +
           '</div>' +
           '<div class="admin-item-actions">' +
+            '<button class="btn btn-sm btn-success" onclick="editGrades(' + p.id + ')">Grades</button>' +
             '<button class="btn btn-sm btn-blue" onclick="editPolitician(' + p.id + ')">Edit</button>' +
             '<button class="btn btn-sm btn-danger" onclick="deletePolitician(' + p.id + ')">Delete</button>' +
           '</div>' +
@@ -734,6 +771,45 @@
             showStatus('Error deleting: ' + err.message, 'error');
           });
       };
+    }
+
+    // ── Grades editing ──
+    function editGrades(id) {
+      var p = politicians.find(function(x) { return x.id === id; });
+      if (!p) return;
+      document.getElementById('gradesModalTitle').textContent = 'Edit Grades — ' + p.name;
+      document.getElementById('editGradesId').value = id;
+      document.getElementById('gradeA').value = (p.grades && p.grades.A) || 0;
+      document.getElementById('gradeB').value = (p.grades && p.grades.B) || 0;
+      document.getElementById('gradeC').value = (p.grades && p.grades.C) || 0;
+      document.getElementById('gradeD').value = (p.grades && p.grades.D) || 0;
+      document.getElementById('gradeF').value = (p.grades && p.grades.F) || 0;
+      openModal('gradesModal');
+    }
+
+    function saveGrades() {
+      var id = parseInt(document.getElementById('editGradesId').value);
+      var p = politicians.find(function(x) { return x.id === id; });
+      if (!p) return;
+
+      p.grades = {
+        A: parseInt(document.getElementById('gradeA').value) || 0,
+        B: parseInt(document.getElementById('gradeB').value) || 0,
+        C: parseInt(document.getElementById('gradeC').value) || 0,
+        D: parseInt(document.getElementById('gradeD').value) || 0,
+        F: parseInt(document.getElementById('gradeF').value) || 0
+      };
+
+      closeModal('gradesModal');
+      showStatus('Saving grades...', '');
+
+      saveFileToGitHub('data/politicians.json', politicians, politiciansSha)
+        .then(function(result) {
+          politiciansSha = result.content.sha;
+          renderAdminPoliticians();
+          showStatus('Grades updated.', 'success');
+        })
+        .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
     }
 
     // ── Kudos adjustment ──
