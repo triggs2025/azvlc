@@ -373,12 +373,48 @@
     select.innerHTML = options;
   }
 
-  function onPoliticianSelect(select) {
-    var id = parseInt(select.value);
-    var p = politicians.find(function (x) { return x.id === id; });
-    document.getElementById('politicianName').value = p ? p.name : '';
-    document.getElementById('politicianPosition').value = p ? p.position : '';
+  function onRateSearch(query) {
+    var dropdown = document.getElementById('rateDropdown');
+    if (!query || query.length < 1) { dropdown.style.display = 'none'; return; }
+
+    var q = query.toLowerCase();
+    var matches = politicians.filter(function (p) {
+      return p.name.toLowerCase().indexOf(q) !== -1;
+    }).slice(0, 10);
+
+    if (matches.length === 0) {
+      dropdown.style.display = 'none';
+      return;
+    }
+
+    dropdown.innerHTML = matches.map(function (p) {
+      return '<div style="padding:10px 14px;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:0.95em" ' +
+        'onmousedown="AZVLC.selectRatePolitician(' + p.id + ')" ' +
+        'onmouseover="this.style.background=\'#f0f7ff\'" onmouseout="this.style.background=\'#fff\'">' +
+        '<strong>' + esc(p.name) + '</strong>' +
+        (p.veteran ? ' <span style="background:#2e7d32;color:#fff;font-size:0.7em;padding:1px 5px;border-radius:3px">VET</span>' : '') +
+        '<br><span style="color:var(--text-muted);font-size:0.85em">' + esc(p.position) +
+        (p.district ? ' &middot; ' + esc(p.district) : '') +
+        (p.party ? ' &middot; ' + esc(p.party) : '') + '</span></div>';
+    }).join('');
+    dropdown.style.display = 'block';
   }
+
+  function selectRatePolitician(id) {
+    var p = politicians.find(function (x) { return x.id === id; });
+    if (!p) return;
+    document.getElementById('politicianSearch2').value = p.name;
+    document.getElementById('politicianName').value = p.name;
+    document.getElementById('politicianPosition').value = p.position;
+    document.getElementById('rateDropdown').style.display = 'none';
+  }
+
+  document.addEventListener('click', function (e) {
+    var dropdown = document.getElementById('rateDropdown');
+    if (dropdown && !e.target.closest('#politicianSearch2') && !e.target.closest('#rateDropdown')) {
+      dropdown.style.display = 'none';
+    }
+  });
 
   // ── Forms ──
   function bindForms() {
@@ -501,6 +537,7 @@
     filterPoliticians: filterPoliticians,
     sortPoliticians: sortPoliticians,
     searchPoliticians: searchPoliticians,
-    onPoliticianSelect: onPoliticianSelect
+    onRateSearch: onRateSearch,
+    selectRatePolitician: selectRatePolitician
   };
 })();
