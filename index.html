@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AZVLC - Arizona Veteran Policy Tracker</title>
+  <meta name="description" content="Track veteran-focused policies and hold Arizona's leaders accountable. Rate politicians, suggest policies, and give kudos.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ── Navbar ── -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="#dashboard" class="navbar-brand" data-nav="dashboard">
+        <img src="assets/logo.png" alt="AZVLC Logo">
+        <div class="navbar-brand-text">
+          <h1>AZVLC</h1>
+          <span>The Voice of Arizona Veterans</span>
+        </div>
+      </a>
+      <button class="navbar-toggle" id="menuToggle" aria-label="Menu">&#9776;</button>
+      <div class="navbar-links">
+        <a href="#dashboard" data-nav="dashboard" class="active">Dashboard</a>
+        <a href="#policies" data-nav="policies">Policies</a>
+        <a href="#politicians" data-nav="politicians">Politicians</a>
+        <a href="#suggest" data-nav="suggest">Suggest Policy</a>
+        <a href="#rate" data-nav="rate">Rate Leader</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <h2>Arizona Veteran Policy Tracker</h2>
+    <p>Holding Arizona's leaders accountable on the issues that matter to veterans.</p>
+    <div class="hero-actions">
+      <a href="#suggest" class="btn btn-primary" data-nav="suggest">Suggest a Policy</a>
+      <a href="#rate" class="btn btn-outline" data-nav="rate">Rate a Leader</a>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <!-- ══ DASHBOARD ══ -->
+    <section id="section-dashboard" class="page-section active">
+      <h2 class="section-header">Dashboard</h2>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Active Policies</h3>
+          <div class="number" id="statPolicies">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Politicians Tracked</h3>
+          <div class="number" id="statPoliticians">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Total Kudos</h3>
+          <div class="number" id="statKudos">0</div>
+        </div>
+      </div>
+
+      <h3 style="color:var(--navy);margin-bottom:20px">Top Performing Leaders</h3>
+      <div class="card-grid" id="topPoliticians">
+        <div class="empty-state"><p>No ratings yet</p></div>
+      </div>
+
+      <h3 style="color:var(--navy);margin:30px 0 20px">Recently Passed Policies</h3>
+      <div class="card-grid" id="passedPolicies">
+        <div class="empty-state"><p>No passed policies yet</p></div>
+      </div>
+    </section>
+
+    <!-- ══ POLICIES ══ -->
+    <section id="section-policies" class="page-section">
+      <h2 class="section-header">Veteran Benefit Policies</h2>
+
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="AZVLC.filterPolicies('all', this)">All</button>
+        <button class="filter-btn" onclick="AZVLC.filterPolicies('healthcare', this)">Healthcare</button>
+        <button class="filter-btn" onclick="AZVLC.filterPolicies('education', this)">Education</button>
+        <button class="filter-btn" onclick="AZVLC.filterPolicies('benefits', this)">Benefits</button>
+        <button class="filter-btn" onclick="AZVLC.filterPolicies('employment', this)">Employment</button>
+        <button class="filter-btn" onclick="AZVLC.filterPolicies('housing', this)">Housing</button>
+      </div>
+
+      <div class="card-grid" id="policiesList"></div>
+    </section>
+
+    <!-- ══ POLITICIANS ══ -->
+    <section id="section-politicians" class="page-section">
+      <h2 class="section-header">Politicians &amp; Advocates Scorecard</h2>
+      <div class="card-grid" id="politiciansList"></div>
+    </section>
+
+    <!-- ══ SUGGEST POLICY ══ -->
+    <section id="section-suggest" class="page-section">
+      <h2 class="section-header">Suggest a Policy</h2>
+
+      <div class="form-container">
+        <div class="alert alert-info show" style="display:block">
+          Help us identify important veteran-focused policies for Arizona. Submissions are reviewed before publishing.
+        </div>
+
+        <div class="alert alert-success" id="policySuccess">
+          Thank you! Your policy suggestion has been submitted and will be reviewed by our team.
+        </div>
+
+        <form id="policyForm">
+          <div class="form-group">
+            <label for="policyName">Policy / Bill Name *</label>
+            <input type="text" id="policyName" name="policyName" required placeholder="e.g., SB 1234 - Veteran Education Benefits">
+          </div>
+          <div class="form-group">
+            <label for="policySponsor">Current Sponsor / Advocate *</label>
+            <input type="text" id="policySponsor" name="policySponsor" required placeholder="Representative or organization name">
+          </div>
+          <div class="form-group">
+            <label for="policyCategory">Category *</label>
+            <select id="policyCategory" name="policyCategory" required>
+              <option value="">Select a category</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="education">Education</option>
+              <option value="benefits">Benefits</option>
+              <option value="employment">Employment</option>
+              <option value="housing">Housing</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="policyDescription">Description *</label>
+            <textarea id="policyDescription" name="policyDescription" required placeholder="What does this policy do and how will it benefit veterans?"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="policyLink">Bill Link (optional)</label>
+            <input type="url" id="policyLink" name="policyLink" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label for="policyStatus">Status *</label>
+            <select id="policyStatus" name="policyStatus" required>
+              <option value="">Select status</option>
+              <option value="proposed">Proposed</option>
+              <option value="in-progress">In Progress</option>
+              <option value="passed">Passed</option>
+              <option value="failed">Failed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="submitterEmail">Your Email *</label>
+            <input type="email" id="submitterEmail" name="submitterEmail" required placeholder="your@email.com">
+          </div>
+          <div class="form-group">
+            <label for="submitterName">Your Name (optional)</label>
+            <input type="text" id="submitterName" name="submitterName" placeholder="Leave blank for anonymous">
+          </div>
+          <div class="form-group checkbox-row">
+            <input type="checkbox" id="submitterAnonymous" name="submitterAnonymous">
+            <label for="submitterAnonymous">Submit anonymously</label>
+          </div>
+          <button type="submit" class="form-submit">Submit Policy Suggestion</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ══ RATE POLITICIAN ══ -->
+    <section id="section-rate" class="page-section">
+      <h2 class="section-header">Rate a Leader</h2>
+
+      <div class="form-container">
+        <div class="alert alert-info show" style="display:block">
+          Share your feedback on how Arizona leaders are supporting veterans. All ratings are reviewed.
+        </div>
+
+        <div class="alert alert-success" id="ratingSuccess">
+          Thank you! Your rating has been submitted. Your feedback helps hold leaders accountable.
+        </div>
+
+        <form id="ratingForm">
+          <div class="form-group">
+            <label for="politicianName">Politician / Advocate Name *</label>
+            <input type="text" id="politicianName" name="politicianName" required placeholder="Name">
+          </div>
+          <div class="form-group">
+            <label for="politicianPosition">Position / Title *</label>
+            <input type="text" id="politicianPosition" name="politicianPosition" required placeholder="e.g., State Senator, State Representative">
+          </div>
+          <div class="form-group">
+            <label for="politicianGrade">Grade (A-F) *</label>
+            <select id="politicianGrade" name="politicianGrade" required>
+              <option value="">Select a grade</option>
+              <option value="A">A - Excellent (Strong advocate for veterans)</option>
+              <option value="B">B - Good (Supports most veteran initiatives)</option>
+              <option value="C">C - Acceptable (Mixed record on veteran issues)</option>
+              <option value="D">D - Poor (Rarely supports veteran policies)</option>
+              <option value="F">F - Failing (Opposes veteran policies)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="ratingReason">Why this grade? *</label>
+            <textarea id="ratingReason" name="ratingReason" required placeholder="Which policies did they support or oppose?"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="raterEmail">Your Email *</label>
+            <input type="email" id="raterEmail" name="raterEmail" required placeholder="your@email.com">
+          </div>
+          <div class="form-group">
+            <label for="raterName">Your Name (optional)</label>
+            <input type="text" id="raterName" name="raterName" placeholder="Leave blank for anonymous">
+          </div>
+          <div class="form-group checkbox-row">
+            <input type="checkbox" id="raterAnonymous" name="raterAnonymous">
+            <label for="raterAnonymous">Submit anonymously</label>
+          </div>
+          <button type="submit" class="form-submit">Submit Rating</button>
+        </form>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-links">
+        <a href="#dashboard" data-nav="dashboard">Dashboard</a>
+        <a href="#policies" data-nav="policies">Policies</a>
+        <a href="#politicians" data-nav="politicians">Politicians</a>
+        <a href="#suggest" data-nav="suggest">Suggest Policy</a>
+        <a href="#rate" data-nav="rate">Rate Leader</a>
+      </div>
+      <p>&copy; 2025 Arizona Veteran Leadership Council. All rights reserved.</p>
+      <p style="margin-top:8px;font-size:0.85em">A 501(c)(4) organization advocating for Arizona veterans.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

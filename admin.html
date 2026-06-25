@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AZVLC Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-login {
+      max-width: 440px;
+      margin: 80px auto;
+      background: var(--white);
+      padding: 40px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .admin-login h2 { color: var(--navy); margin-bottom: 24px; }
+    .admin-login input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 1em;
+      margin-bottom: 12px;
+    }
+    .admin-bar {
+      background: var(--navy);
+      color: var(--white);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .admin-bar h2 { font-size: 1.1em; }
+    .admin-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #eee;
+    }
+    .admin-tab {
+      padding: 10px 20px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+    .admin-tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+    .admin-panel { display: none; }
+    .admin-panel.active { display: block; }
+    .admin-item {
+      background: var(--white);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      border-left: 4px solid var(--blue);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .admin-item.pending { border-left-color: var(--gold); }
+    .admin-item h4 { color: var(--navy); margin-bottom: 4px; }
+    .admin-item p { color: var(--text-muted); font-size: 0.85em; margin: 0; }
+    .admin-item-info { flex: 1; }
+    .admin-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .admin-item .badge { margin-right: 6px; }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+      overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 600px;
+      padding: 32px;
+    }
+    .modal h3 { color: var(--navy); margin-bottom: 20px; }
+    .modal-close {
+      float: right;
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+      color: var(--text-muted);
+      line-height: 1;
+    }
+    .saving-indicator {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: #e3f2fd;
+      color: #1565c0;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+    .saving-indicator.show { display: flex; }
+    .saving-indicator.success { background: #e8f5e9; color: #2e7d32; }
+    .saving-indicator.error { background: #ffebee; color: #c62828; }
+    .admin-empty {
+      text-align: center;
+      padding: 40px;
+      color: #aaa;
+    }
+    .setup-box {
+      background: #fffbe6;
+      border: 1px solid #ffe58f;
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+      color: #614700;
+    }
+    .setup-box code {
+      background: #fff;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login screen -->
+  <div id="loginScreen" class="admin-login">
+    <h2>AZVLC Admin</h2>
+    <p style="color:var(--text-muted);margin-bottom:20px">Enter your GitHub Personal Access Token to manage the site.</p>
+    <input type="password" id="ghToken" placeholder="GitHub Token (ghp_...)" autofocus>
+    <button class="btn btn-blue" style="width:100%" onclick="tryLogin()">Log In</button>
+    <p id="loginError" style="color:var(--red);margin-top:12px;display:none"></p>
+    <div style="margin-top:20px;text-align:left" class="setup-box">
+      <strong>First time?</strong> You need a GitHub Personal Access Token:<br>
+      1. Go to <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a><br>
+      2. Name it "AZVLC Admin"<br>
+      3. Set expiration (90 days or no expiration)<br>
+      4. Check the <code>repo</code> scope (Full control of private repositories)<br>
+      5. Click "Generate token" and paste it above
+    </div>
+    <a href="index.html" class="btn btn-sm" style="width:100%;margin-top:12px;background:#eee;color:var(--navy);text-align:center">&larr; Go to Website</a>
+  </div>
+
+  <!-- Admin dashboard -->
+  <div id="adminDashboard" style="display:none">
+    <div class="admin-bar">
+      <h2>AZVLC Admin Panel</h2>
+      <div style="display:flex;gap:8px;align-items:center">
+        <a href="index.html" class="btn btn-sm btn-primary">View Site</a>
+        <button class="btn btn-sm btn-outline" onclick="logout()">Log Out</button>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top:30px">
+      <div id="saveStatus" class="saving-indicator"></div>
+
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="showTab('policies', this)">Policies</button>
+        <button class="admin-tab" onclick="showTab('politicians', this)">Politicians</button>
+        <button class="admin-tab" onclick="showTab('help', this)">How-To Guide</button>
+      </div>
+
+      <!-- POLICIES PANEL -->
+      <div id="panel-policies" class="admin-panel active">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+          <h3 style="color:var(--navy)">Manage Policies</h3>
+          <button class="btn btn-blue btn-sm" onclick="openPolicyForm()">+ Add New Policy</button>
+        </div>
+        <div id="adminPoliciesList"></div>
+      </div>
+
+      <!-- POLITICIANS PANEL -->
+      <div id="panel-politicians" class="admin-panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+          <h3 style="color:var(--navy)">Manage Politicians</h3>
+          <button class="btn btn-blue btn-sm" onclick="openPoliticianForm()">+ Add New Politician</button>
+        </div>
+        <div id="adminPoliticiansList"></div>
+      </div>
+
+      <!-- HELP PANEL -->
+      <div id="panel-help" class="admin-panel">
+        <div class="form-container" style="max-width:800px">
+          <h3 style="color:var(--navy);margin-bottom:20px">Managing Your AZVLC Site</h3>
+
+          <h4 style="margin:20px 0 8px;color:var(--blue)">Adding / Editing Policies</h4>
+          <p style="color:var(--text-muted);line-height:1.8">Click "+ Add New Policy" on the Policies tab. Fill out the form and hit Save. It saves directly to GitHub and the site updates automatically within a minute. Set "Approved" to Yes when you're ready for it to appear publicly.</p>
+
+          <h4 style="margin:20px 0 8px;color:var(--blue)">Adding / Editing Politicians</h4>
+          <p style="color:var(--text-muted);line-height:1.8">Click "+ Add New Politician" on the Politicians tab. Fill out the form and hit Save. Grades represent the count of each rating received from veterans.</p>
+
+          <h4 style="margin:20px 0 8px;color:var(--blue)">Connecting GHL Webhooks</h4>
+          <ol style="margin-left:20px;color:var(--text-muted);line-height:2">
+            <li>In Go High Level, create a webhook under Automation &rarr; Workflows</li>
+            <li>Go to your GitHub repo and edit <code>js/app.js</code></li>
+            <li>Find <code>ghlWebhookPolicy</code> and <code>ghlWebhookRating</code> near the top</li>
+            <li>Paste your webhook URLs between the quotes and commit</li>
+          </ol>
+
+          <h4 style="margin:20px 0 8px;color:var(--blue)">Updating the Logo &amp; Hero Image</h4>
+          <p style="color:var(--text-muted);line-height:1.8">Go to your GitHub repo, navigate to the <code>assets/</code> folder, and upload <code>logo.png</code> and <code>hero.jpg</code>. The site updates automatically.</p>
+
+          <h4 style="margin:20px 0 8px;color:var(--blue)">Your GitHub Token</h4>
+          <p style="color:var(--text-muted);line-height:1.8">The token is only stored in your browser's session. When you log out or close the tab, it's gone. You'll need to paste it again next time (or save it in a password manager).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POLICY FORM MODAL -->
+  <div class="modal-overlay" id="policyModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('policyModal')">&times;</button>
+      <h3 id="policyModalTitle">Add New Policy</h3>
+      <form id="adminPolicyForm" onsubmit="savePolicy(event)">
+        <input type="hidden" id="editPolicyId" value="">
+        <div class="form-group">
+          <label for="apName">Policy / Bill Name *</label>
+          <input type="text" id="apName" required placeholder="e.g., SB 1234 - Veteran Education Benefits">
+        </div>
+        <div class="form-group">
+          <label for="apSponsor">Sponsor / Advocate *</label>
+          <input type="text" id="apSponsor" required placeholder="Representative or organization name">
+        </div>
+        <div class="form-group">
+          <label for="apCategory">Category *</label>
+          <select id="apCategory" required>
+            <option value="">Select a category</option>
+            <option value="healthcare">Healthcare</option>
+            <option value="education">Education</option>
+            <option value="benefits">Benefits</option>
+            <option value="employment">Employment</option>
+            <option value="housing">Housing</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="apDescription">Description *</label>
+          <textarea id="apDescription" required placeholder="What does this policy do and how will it benefit veterans?"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="apLink">Bill Link (optional)</label>
+          <input type="url" id="apLink" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label for="apStatus">Status *</label>
+          <select id="apStatus" required>
+            <option value="proposed">Proposed</option>
+            <option value="in-progress">In Progress</option>
+            <option value="passed">Passed</option>
+            <option value="failed">Failed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="apApproved">Approved (visible on public site)? *</label>
+          <select id="apApproved">
+            <option value="true">Yes - Show on site</option>
+            <option value="false">No - Keep hidden</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="submit" class="form-submit" style="flex:1">Save Policy</button>
+          <button type="button" class="btn" style="background:#eee;color:var(--text)" onclick="closeModal('policyModal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- POLITICIAN FORM MODAL -->
+  <div class="modal-overlay" id="politicianModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('politicianModal')">&times;</button>
+      <h3 id="politicianModalTitle">Add New Politician</h3>
+      <form id="adminPoliticianForm" onsubmit="savePolitician(event)">
+        <input type="hidden" id="editPoliticianId" value="">
+        <div class="form-group">
+          <label for="appName">Name *</label>
+          <input type="text" id="appName" required placeholder="Full name">
+        </div>
+        <div class="form-group">
+          <label for="appPosition">Position / Title *</label>
+          <input type="text" id="appPosition" required placeholder="e.g., State Senator, State Representative">
+        </div>
+        <div class="form-group">
+          <label for="appParty">Party (optional)</label>
+          <input type="text" id="appParty" placeholder="e.g., Republican, Democrat, Independent">
+        </div>
+        <div class="form-group">
+          <label for="appDistrict">District (optional)</label>
+          <input type="text" id="appDistrict" placeholder="e.g., District 4">
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="submit" class="form-submit" style="flex:1">Save Politician</button>
+          <button type="button" class="btn" style="background:#eee;color:var(--text)" onclick="closeModal('politicianModal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRM MODAL -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal" style="max-width:400px;text-align:center">
+      <h3 style="color:var(--red)">Delete this item?</h3>
+      <p style="color:var(--text-muted);margin-bottom:20px">This cannot be undone.</p>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        <button class="btn" style="background:#eee;color:var(--text)" onclick="closeModal('deleteModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var REPO_OWNER = 'triggs2025';
+    var REPO_NAME = 'azvlc';
+    var BRANCH = 'main';
+
+    var ghToken = '';
+    var policies = [];
+    var politicians = [];
+    var policiesSha = '';
+    var politiciansSha = '';
+
+    // ── Auth ──
+    function tryLogin() {
+      var token = document.getElementById('ghToken').value.trim();
+      if (!token) return;
+
+      showLoginError('');
+      ghToken = token;
+
+      ghAPI('GET', '/repos/' + REPO_OWNER + '/' + REPO_NAME)
+        .then(function() {
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('adminDashboard').style.display = 'block';
+          loadAllData();
+        })
+        .catch(function(err) {
+          ghToken = '';
+          showLoginError('Could not access repo. Check your token and try again.');
+        });
+    }
+
+    function showLoginError(msg) {
+      var el = document.getElementById('loginError');
+      el.textContent = msg;
+      el.style.display = msg ? 'block' : 'none';
+    }
+
+    document.getElementById('ghToken').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') tryLogin();
+    });
+
+    function logout() {
+      ghToken = '';
+      document.getElementById('adminDashboard').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'block';
+      document.getElementById('ghToken').value = '';
+    }
+
+    // ── GitHub API ──
+    function ghAPI(method, path, body) {
+      var opts = {
+        method: method,
+        headers: {
+          'Authorization': 'token ' + ghToken,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      };
+      if (body) {
+        opts.headers['Content-Type'] = 'application/json';
+        opts.body = JSON.stringify(body);
+      }
+      return fetch('https://api.github.com' + path, opts).then(function(r) {
+        if (!r.ok) return r.json().then(function(err) { throw new Error(err.message || r.statusText); });
+        return r.json();
+      });
+    }
+
+    function saveFileToGitHub(filePath, data, sha) {
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2) + '\n')));
+      var body = {
+        message: 'Update ' + filePath + ' via admin panel',
+        content: content,
+        branch: BRANCH
+      };
+      if (sha) body.sha = sha;
+
+      return ghAPI('PUT', '/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + filePath, body);
+    }
+
+    function loadFileFromGitHub(filePath) {
+      return ghAPI('GET', '/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + filePath + '?ref=' + BRANCH)
+        .then(function(result) {
+          var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
+          return { data: JSON.parse(decoded), sha: result.sha };
+        });
+    }
+
+    // ── Status messages ──
+    function showStatus(msg, type) {
+      var el = document.getElementById('saveStatus');
+      el.textContent = msg;
+      el.className = 'saving-indicator show' + (type ? ' ' + type : '');
+      if (type === 'success' || type === 'error') {
+        setTimeout(function() { el.className = 'saving-indicator'; }, 4000);
+      }
+    }
+
+    // ── Tabs ──
+    function showTab(tab, btn) {
+      document.querySelectorAll('.admin-panel').forEach(function(p) { p.classList.remove('active'); });
+      document.querySelectorAll('.admin-tab').forEach(function(t) { t.classList.remove('active'); });
+      document.getElementById('panel-' + tab).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // ── Data loading ──
+    function loadAllData() {
+      showStatus('Loading data from GitHub...', '');
+
+      Promise.all([
+        loadFileFromGitHub('data/policies.json'),
+        loadFileFromGitHub('data/politicians.json')
+      ]).then(function(results) {
+        policies = results[0].data;
+        policiesSha = results[0].sha;
+        politicians = results[1].data;
+        politiciansSha = results[1].sha;
+        renderAdminPolicies();
+        renderAdminPoliticians();
+        showStatus('Data loaded.', 'success');
+      }).catch(function(err) {
+        showStatus('Error loading data: ' + err.message, 'error');
+      });
+    }
+
+    // ── Modals ──
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    // ── POLICIES ──
+    function renderAdminPolicies() {
+      var el = document.getElementById('adminPoliciesList');
+      if (policies.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No policies yet. Click "+ Add New Policy" to get started.</p></div>';
+        return;
+      }
+      el.innerHTML = policies.map(function(p) {
+        return '<div class="admin-item' + (p.approved ? '' : ' pending') + '">' +
+          '<div class="admin-item-info">' +
+            '<h4>' + esc(p.name) + '</h4>' +
+            '<p>' + esc(p.description) + '</p>' +
+            '<div style="margin-top:8px">' +
+              '<span class="badge badge-category">' + capitalize(p.category) + '</span>' +
+              '<span class="badge badge-' + p.status + '">' + formatStatus(p.status) + '</span>' +
+              (p.approved
+                ? '<span class="badge badge-passed">Approved</span>'
+                : '<span class="badge badge-failed">Hidden</span>') +
+            '</div>' +
+          '</div>' +
+          '<div class="admin-item-actions">' +
+            '<button class="btn btn-sm btn-blue" onclick="editPolicy(' + p.id + ')">Edit</button>' +
+            '<button class="btn btn-sm btn-danger" onclick="deletePolicy(' + p.id + ')">Delete</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function openPolicyForm(policy) {
+      document.getElementById('adminPolicyForm').reset();
+      if (policy) {
+        document.getElementById('policyModalTitle').textContent = 'Edit Policy';
+        document.getElementById('editPolicyId').value = policy.id;
+        document.getElementById('apName').value = policy.name;
+        document.getElementById('apSponsor').value = policy.sponsor;
+        document.getElementById('apCategory').value = policy.category;
+        document.getElementById('apDescription').value = policy.description;
+        document.getElementById('apLink').value = policy.link || '';
+        document.getElementById('apStatus').value = policy.status;
+        document.getElementById('apApproved').value = policy.approved ? 'true' : 'false';
+      } else {
+        document.getElementById('policyModalTitle').textContent = 'Add New Policy';
+        document.getElementById('editPolicyId').value = '';
+        document.getElementById('apApproved').value = 'true';
+      }
+      openModal('policyModal');
+    }
+
+    function editPolicy(id) {
+      var p = policies.find(function(x) { return x.id === id; });
+      if (p) openPolicyForm(p);
+    }
+
+    function savePolicy(e) {
+      e.preventDefault();
+      var editId = document.getElementById('editPolicyId').value;
+      var isEdit = editId !== '';
+
+      var policyData = {
+        id: isEdit ? parseInt(editId) : nextId(policies),
+        name: document.getElementById('apName').value,
+        sponsor: document.getElementById('apSponsor').value,
+        category: document.getElementById('apCategory').value,
+        description: document.getElementById('apDescription').value,
+        link: document.getElementById('apLink').value,
+        status: document.getElementById('apStatus').value,
+        approved: document.getElementById('apApproved').value === 'true',
+        kudos: 0
+      };
+
+      if (isEdit) {
+        var idx = policies.findIndex(function(p) { return p.id === parseInt(editId); });
+        if (idx !== -1) {
+          policyData.kudos = policies[idx].kudos || 0;
+          policies[idx] = policyData;
+        }
+      } else {
+        policies.push(policyData);
+      }
+
+      closeModal('policyModal');
+      showStatus('Saving policies to GitHub...', '');
+
+      saveFileToGitHub('data/policies.json', policies, policiesSha)
+        .then(function(result) {
+          policiesSha = result.content.sha;
+          renderAdminPolicies();
+          showStatus('Policy saved! Site will update in about a minute.', 'success');
+        })
+        .catch(function(err) {
+          showStatus('Error saving: ' + err.message, 'error');
+        });
+    }
+
+    function deletePolicy(id) {
+      openModal('deleteModal');
+      document.getElementById('confirmDeleteBtn').onclick = function() {
+        policies = policies.filter(function(p) { return p.id !== id; });
+        closeModal('deleteModal');
+        showStatus('Deleting policy...', '');
+
+        saveFileToGitHub('data/policies.json', policies, policiesSha)
+          .then(function(result) {
+            policiesSha = result.content.sha;
+            renderAdminPolicies();
+            showStatus('Policy deleted.', 'success');
+          })
+          .catch(function(err) {
+            showStatus('Error deleting: ' + err.message, 'error');
+          });
+      };
+    }
+
+    // ── POLITICIANS ──
+    function renderAdminPoliticians() {
+      var el = document.getElementById('adminPoliticiansList');
+      if (politicians.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No politicians yet. Click "+ Add New Politician" to get started.</p></div>';
+        return;
+      }
+      el.innerHTML = politicians.map(function(p) {
+        var avg = calcGrade(p.grades);
+        return '<div class="admin-item">' +
+          '<div class="admin-item-info">' +
+            '<h4>' + esc(p.name) + '</h4>' +
+            '<p>' + esc(p.position) +
+              (p.party ? ' &middot; ' + esc(p.party) : '') +
+              (p.district ? ' &middot; ' + esc(p.district) : '') +
+            '</p>' +
+            '<div style="margin-top:8px">' +
+              '<span class="grade grade-' + avg.toLowerCase() + '" style="font-size:1.2em">' + avg + '</span>' +
+              '<span style="color:var(--text-muted);font-size:0.85em;margin-left:8px">' + (p.kudos || 0) + ' kudos</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="admin-item-actions">' +
+            '<button class="btn btn-sm btn-blue" onclick="editPolitician(' + p.id + ')">Edit</button>' +
+            '<button class="btn btn-sm btn-danger" onclick="deletePolitician(' + p.id + ')">Delete</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function openPoliticianForm(politician) {
+      document.getElementById('adminPoliticianForm').reset();
+      if (politician) {
+        document.getElementById('politicianModalTitle').textContent = 'Edit Politician';
+        document.getElementById('editPoliticianId').value = politician.id;
+        document.getElementById('appName').value = politician.name;
+        document.getElementById('appPosition').value = politician.position;
+        document.getElementById('appParty').value = politician.party || '';
+        document.getElementById('appDistrict').value = politician.district || '';
+      } else {
+        document.getElementById('politicianModalTitle').textContent = 'Add New Politician';
+        document.getElementById('editPoliticianId').value = '';
+      }
+      openModal('politicianModal');
+    }
+
+    function editPolitician(id) {
+      var p = politicians.find(function(x) { return x.id === id; });
+      if (p) openPoliticianForm(p);
+    }
+
+    function savePolitician(e) {
+      e.preventDefault();
+      var editId = document.getElementById('editPoliticianId').value;
+      var isEdit = editId !== '';
+
+      var data = {
+        id: isEdit ? parseInt(editId) : nextId(politicians),
+        name: document.getElementById('appName').value,
+        position: document.getElementById('appPosition').value,
+        party: document.getElementById('appParty').value,
+        district: document.getElementById('appDistrict').value,
+        photo: '',
+        grades: { A: 0, B: 0, C: 0, D: 0, F: 0 },
+        kudos: 0
+      };
+
+      if (isEdit) {
+        var idx = politicians.findIndex(function(p) { return p.id === parseInt(editId); });
+        if (idx !== -1) {
+          data.grades = politicians[idx].grades || data.grades;
+          data.kudos = politicians[idx].kudos || 0;
+          data.photo = politicians[idx].photo || '';
+          politicians[idx] = data;
+        }
+      } else {
+        politicians.push(data);
+      }
+
+      closeModal('politicianModal');
+      showStatus('Saving politicians to GitHub...', '');
+
+      saveFileToGitHub('data/politicians.json', politicians, politiciansSha)
+        .then(function(result) {
+          politiciansSha = result.content.sha;
+          renderAdminPoliticians();
+          showStatus('Politician saved! Site will update in about a minute.', 'success');
+        })
+        .catch(function(err) {
+          showStatus('Error saving: ' + err.message, 'error');
+        });
+    }
+
+    function deletePolitician(id) {
+      openModal('deleteModal');
+      document.getElementById('confirmDeleteBtn').onclick = function() {
+        politicians = politicians.filter(function(p) { return p.id !== id; });
+        closeModal('deleteModal');
+        showStatus('Deleting politician...', '');
+
+        saveFileToGitHub('data/politicians.json', politicians, politiciansSha)
+          .then(function(result) {
+            politiciansSha = result.content.sha;
+            renderAdminPoliticians();
+            showStatus('Politician deleted.', 'success');
+          })
+          .catch(function(err) {
+            showStatus('Error deleting: ' + err.message, 'error');
+          });
+      };
+    }
+
+    // ── Helpers ──
+    function nextId(arr) {
+      return arr.reduce(function(max, item) { return Math.max(max, item.id || 0); }, 0) + 1;
+    }
+    function calcGrade(grades) {
+      if (!grades) return 'N/A';
+      var vals = { A: 4, B: 3, C: 2, D: 1, F: 0 };
+      var total = 0, count = 0;
+      for (var g in vals) { total += vals[g] * (grades[g] || 0); count += (grades[g] || 0); }
+      if (count === 0) return 'N/A';
+      var avg = total / count;
+      if (avg >= 3.5) return 'A';
+      if (avg >= 2.5) return 'B';
+      if (avg >= 1.5) return 'C';
+      if (avg >= 0.5) return 'D';
+      return 'F';
+    }
+    function formatStatus(s) { return s === 'in-progress' ? 'In Progress' : capitalize(s); }
+    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  </script>
+</body>
+</html>
