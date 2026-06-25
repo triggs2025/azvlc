@@ -96,7 +96,7 @@
     "party": "Republican",
     "district": "District 7",
     "website": "https://www.azleg.gov/House/House-member/?legislature=57&session=130&legislator=2356",
-    "veteran": false,
+    "veteran": true,
     "photo": "",
     "grades": {
       "A": 0,
