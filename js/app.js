@@ -5,7 +5,12 @@
   var CONFIG = {
     ghlWebhookPolicy: '',   // paste your GHL webhook URL here
     ghlWebhookRating: '',   // paste your GHL webhook URL here
-    kudosStorageKey: 'azvlc_kudos'
+    kudosStorageKey: 'azvlc_kudos',
+    ratingsStorageKey: 'azvlc_ratings',
+    repoOwner: 'triggs2025',
+    repoName: 'azvlc',
+    branch: 'master',
+    ghToken: ''  // paste a fine-grained GitHub token here with contents:write scope for this repo only
   };
 
   // ── State ──
@@ -38,10 +43,65 @@
         renderPolicies();
         renderPoliticians();
         populatePoliticianSelect();
+        loadPoliticiansWithSha();
       })
       .catch(function (err) {
         console.error('Failed to load data:', err);
       });
+  }
+
+  // ── Ratings persistence (localStorage) ──
+  function getRatingsStore() {
+    try { return JSON.parse(localStorage.getItem(CONFIG.ratingsStorageKey)) || {}; }
+    catch (e) { return {}; }
+  }
+
+  function saveRating(politicianId, grade) {
+    var store = getRatingsStore();
+    store[politicianId] = grade;
+    localStorage.setItem(CONFIG.ratingsStorageKey, JSON.stringify(store));
+  }
+
+  function getPreviousRating(politicianId) {
+    return getRatingsStore()[politicianId] || null;
+  }
+
+  // ── GitHub API (public, no auth needed for reading; uses token-free content API for writing) ──
+  var politiciansSha = '';
+
+  function loadPoliticiansWithSha() {
+    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/politicians.json?ref=' + CONFIG.branch)
+      .then(function (r) { return r.json(); })
+      .then(function (result) {
+        politiciansSha = result.sha;
+      })
+      .catch(function () { politiciansSha = ''; });
+  }
+
+  function savePoliticiansToGitHub(allPoliticians) {
+    if (!CONFIG.ghToken) {
+      console.log('No GitHub token configured. Rating saved locally only.');
+      return Promise.resolve({ content: { sha: politiciansSha } });
+    }
+    var content = btoa(unescape(encodeURIComponent(JSON.stringify(allPoliticians, null, 2) + '\n')));
+    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/politicians.json', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'token ' + CONFIG.ghToken
+      },
+      body: JSON.stringify({
+        message: 'Update rating via public site',
+        content: content,
+        sha: politiciansSha,
+        branch: CONFIG.branch
+      })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (result) {
+      if (result.content) politiciansSha = result.content.sha;
+      return result;
+    });
   }
 
   // ── Kudos persistence (localStorage) ──
@@ -407,6 +467,20 @@
     document.getElementById('politicianName').value = p.name;
     document.getElementById('politicianPosition').value = p.position;
     document.getElementById('rateDropdown').style.display = 'none';
+
+    var prev = getPreviousRating(id);
+    var gradeSelect = document.getElementById('politicianGrade');
+    var prevNotice = document.getElementById('prevRatingNotice');
+    if (prev) {
+      gradeSelect.value = prev;
+      if (prevNotice) {
+        prevNotice.textContent = 'You previously rated this politician: ' + prev + '. You can change your rating below.';
+        prevNotice.classList.add('show');
+      }
+    } else {
+      gradeSelect.value = '';
+      if (prevNotice) prevNotice.classList.remove('show');
+    }
   }
 
   document.addEventListener('click', function (e) {
@@ -449,18 +523,87 @@
     e.preventDefault();
     var form = e.target;
 
-    var data = {
-      politicianName: form.politicianName.value,
-      politicianPosition: form.politicianPosition.value,
-      politicianGrade: form.politicianGrade.value,
-      ratingReason: form.ratingReason.value,
-      raterEmail: form.raterEmail.value,
-      raterName: form.raterAnonymous.checked ? 'Anonymous' : form.raterName.value,
-      submissionType: 'Politician Rating',
-      timestamp: new Date().toISOString()
-    };
+    var politicianName = form.politicianName.value;
+    var newGrade = form.politicianGrade.value;
 
-    sendToGHL(CONFIG.ghlWebhookRating, data, 'ratingSuccess', form);
+    var politician = politicians.find(function (p) { return p.name === politicianName; });
+    if (!politician) {
+      alert('Please select a politician from the dropdown.');
+      return;
+    }
+
+    if (!politiciansSha) {
+      alert('Still loading. Please wait a moment and try again.');
+      return;
+    }
+
+    var prevGrade = getPreviousRating(politician.id);
+
+    if (prevGrade) {
+      politician.grades[prevGrade] = Math.max(0, (politician.grades[prevGrade] || 0) - 1);
+    }
+    politician.grades[newGrade] = (politician.grades[newGrade] || 0) + 1;
+
+    saveRating(politician.id, newGrade);
+
+    var successEl = document.getElementById('ratingSuccess');
+    var submitBtn = form.querySelector('.form-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    // need all politicians (including unapproved) for the save
+    fetch('data/politicians.json').then(function(r) { return r.json(); }).then(function(allPoliticians) {
+      var target = allPoliticians.find(function(p) { return p.id === politician.id; });
+      if (target) {
+        target.grades = politician.grades;
+      }
+
+      return savePoliticiansToGitHub(allPoliticians);
+    }).then(function (result) {
+      if (result.content) {
+        if (successEl) {
+          successEl.textContent = prevGrade
+            ? 'Your rating has been updated from ' + prevGrade + ' to ' + newGrade + '.'
+            : 'Thank you! Your rating of ' + newGrade + ' has been submitted.';
+          successEl.classList.add('show');
+        }
+        form.reset();
+        renderPoliticians();
+        renderDashboard();
+        setTimeout(function () { if (successEl) successEl.classList.remove('show'); }, 5000);
+      } else {
+        throw new Error(result.message || 'Save failed');
+      }
+    }).catch(function (err) {
+      console.error('Rating error:', err);
+      if (prevGrade) {
+        politician.grades[newGrade] = Math.max(0, (politician.grades[newGrade] || 0) - 1);
+        politician.grades[prevGrade] = (politician.grades[prevGrade] || 0) + 1;
+        saveRating(politician.id, prevGrade);
+      } else {
+        politician.grades[newGrade] = Math.max(0, (politician.grades[newGrade] || 0) - 1);
+        localStorage.removeItem(CONFIG.ratingsStorageKey);
+      }
+      alert('There was an issue submitting your rating. Please try again.');
+    }).finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Rating';
+      loadPoliticiansWithSha();
+    });
+
+    if (CONFIG.ghlWebhookRating) {
+      var ghlData = {
+        politicianName: politicianName,
+        politicianPosition: form.politicianPosition.value,
+        politicianGrade: newGrade,
+        ratingReason: form.ratingReason.value,
+        raterEmail: form.raterEmail.value,
+        raterName: form.raterAnonymous.checked ? 'Anonymous' : form.raterName.value,
+        submissionType: 'Politician Rating',
+        timestamp: new Date().toISOString()
+      };
+      sendToGHL(CONFIG.ghlWebhookRating, ghlData, null, null);
+    }
   }
 
   function sendToGHL(url, data, successId, form) {
