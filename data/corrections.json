@@ -1,6 +1,6 @@
 [
   {
-    "id": 1782434077653,
+    "id": 1782434247570,
     "policyId": 10,
     "originalName": "HB 2165 - Veterans; State Park Fees; Exemption",
     "correctedName": "HB 2165 - Veterans; State Park Fees; Exemption",
@@ -9,8 +9,8 @@
     "correctedDescription": "Exempts Veterans from state park fees in Arizona.",
     "correctedLink": "https://apps.azleg.gov/BillStatus/BillOverview/83825",
     "correctedStatus": "proposed",
-    "reason": "Testing for Sponsor",
+    "reason": "sponsor added",
     "submitterEmail": "",
-    "submittedAt": "2026-06-26T00:34:37.653Z"
+    "submittedAt": "2026-06-26T00:37:27.570Z"
   }
 ]
