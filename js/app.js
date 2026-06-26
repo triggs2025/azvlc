@@ -437,6 +437,7 @@
             (voted ? 'Thanked' : 'Give Kudos') +
           '</button>' +
           '<span class="kudos-count" id="kudos-politician-' + p.id + '">' + (p.kudos || 0) + '</span>' +
+          '<a href="#rate" data-nav="rate" class="btn btn-sm btn-blue" style="margin-left:auto;font-size:0.8em" onclick="AZVLC.rateFromCard(' + p.id + ')">Rate this Politician</a>' +
         '</div>' +
         '</div>';
     }).join('');
@@ -931,6 +932,10 @@
     searchPoliticians: searchPoliticians,
     onRateSearch: onRateSearch,
     selectRatePolitician: selectRatePolitician,
+    rateFromCard: function(id) {
+      navigate('rate');
+      setTimeout(function() { selectRatePolitician(id); }, 100);
+    },
     openCorrectionModal: openCorrectionModal,
     closeCorrectionModal: closeCorrectionModal,
     submitCorrection: submitCorrection
