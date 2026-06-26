@@ -79,8 +79,8 @@
         var text2 = msgs.slice(half).join(separator) + separator;
         if (msgs.length < 2) { text2 = text1; }
 
-        line1.textContent = text1 + text1;
-        line2.textContent = text2 + text2;
+        line1.innerHTML = text1 + text1;
+        line2.innerHTML = text2 + text2;
 
         var speedMultiplier = data.speed || 1;
         var baseSpeed1 = Math.max(10, text1.length * 0.32);
