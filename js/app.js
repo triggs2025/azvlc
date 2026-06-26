@@ -55,9 +55,17 @@
 
   // ── Ticker ──
   function loadTicker() {
-    fetch(RAW_BASE + 'ticker.json?t=' + Date.now())
+    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/ticker.json?ref=' + CONFIG.branch, {
+        headers: { 'Authorization': 'token ' + CONFIG.ghToken }
+      })
       .then(function(r) { return r.json(); })
+      .then(function(result) {
+        if (!result.content) return null;
+        var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
+        return JSON.parse(decoded);
+      })
       .then(function(data) {
+        if (!data) return;
         if (!data.enabled || !data.messages || data.messages.length === 0) return;
         var bar = document.getElementById('tickerBar');
         var content = document.getElementById('tickerContent');
