@@ -336,6 +336,10 @@
           <input type="text" id="appDistrict" placeholder="e.g., District 4">
         </div>
         <div class="form-group">
+          <label for="appEmail">Email (optional)</label>
+          <input type="email" id="appEmail" placeholder="e.g., JSMITH@azleg.gov">
+        </div>
+        <div class="form-group">
           <label for="appWebsite">Legislative Website (optional)</label>
           <input type="url" id="appWebsite" placeholder="https://www.azleg.gov/...">
         </div>
@@ -791,6 +795,7 @@
         document.getElementById('appPosition').value = politician.position;
         document.getElementById('appParty').value = politician.party || '';
         document.getElementById('appDistrict').value = politician.district || '';
+        document.getElementById('appEmail').value = politician.email || '';
         document.getElementById('appWebsite').value = politician.website || '';
         document.getElementById('appVeteran').checked = !!politician.veteran;
       } else {
@@ -816,6 +821,7 @@
         position: document.getElementById('appPosition').value,
         party: document.getElementById('appParty').value,
         district: document.getElementById('appDistrict').value,
+        email: document.getElementById('appEmail').value,
         website: document.getElementById('appWebsite').value,
         veteran: document.getElementById('appVeteran').checked,
         photo: '',
@@ -828,6 +834,7 @@
         if (idx !== -1) {
           data.grades = politicians[idx].grades || data.grades;
           data.kudos = politicians[idx].kudos || 0;
+          data.email = document.getElementById('appEmail').value;
           data.photo = politicians[idx].photo || '';
           data.veteran = document.getElementById('appVeteran').checked;
           politicians[idx] = data;

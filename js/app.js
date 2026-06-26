@@ -413,6 +413,7 @@
           (p.party ? ' &middot; ' + esc(p.party) : '') +
           (p.district ? ' &middot; ' + esc(p.district) : '') +
         '</p>' +
+        (p.email ? '<p style="font-size:0.85em;margin-bottom:4px"><a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a></p>' : '') +
         (p.website ? '<p style="margin-bottom:8px"><a href="' + esc(p.website) + '" target="_blank" rel="noopener">Legislative Profile &rarr;</a></p>' : '') +
         (total > 0
           ? '<div class="grade grade-' + avg.toLowerCase() + '">' + avg + '</div>' +
