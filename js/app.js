@@ -1199,6 +1199,7 @@
     searchPoliticians: searchPoliticians,
     onRateSearch: onRateSearch,
     selectRatePolitician: selectRatePolitician,
+    nav: navigate,
     rateFromCard: function(id) {
       navigate('rate');
       setTimeout(function() { selectRatePolitician(id); }, 100);
