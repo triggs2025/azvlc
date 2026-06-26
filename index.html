@@ -44,12 +44,17 @@
   </section>
 
   <!-- ── Ticker Bar ── -->
-  <div id="tickerBar" style="display:none;background:var(--navy);color:var(--white);overflow:hidden;white-space:nowrap;padding:10px 0;font-size:0.95em;border-bottom:2px solid var(--gold)">
-    <div id="tickerContent" style="display:inline-block;animation:ticker 20s linear infinite;padding-left:100%"></div>
+  <div id="tickerBar" style="display:none;background:var(--navy);color:var(--white);overflow:hidden;white-space:nowrap;font-size:0.9em;border-bottom:2px solid var(--gold)">
+    <div style="overflow:hidden;padding:6px 0">
+      <div id="tickerLine1" style="display:inline-block;animation:ticker 20s linear infinite;padding-left:100%"></div>
+    </div>
+    <div style="overflow:hidden;padding:6px 0;border-top:1px solid rgba(255,255,255,0.1)">
+      <div id="tickerLine2" style="display:inline-block;animation:ticker 20s linear infinite;padding-left:100%"></div>
+    </div>
   </div>
   <style>
     @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-    #tickerBar:hover #tickerContent { animation-play-state: paused; }
+    #tickerBar:hover div[id^="tickerLine"] { animation-play-state: paused; }
   </style>
 
   <div class="container">
