@@ -493,7 +493,8 @@
             (voted ? 'Thanked' : 'Give Kudos') +
           '</button>' +
           '<span class="kudos-count" id="kudos-politician-' + p.id + '">' + (p.kudos || 0) + '</span>' +
-          '<a href="#rate" data-nav="rate" class="btn btn-sm btn-blue" style="margin-left:auto;font-size:0.8em" onclick="AZVLC.rateFromCard(' + p.id + ')">Rate this Politician</a>' +
+          '<a href="scorecard.html?id=' + p.id + '" class="btn btn-sm btn-success" style="margin-left:auto;font-size:0.8em">View Scorecard</a>' +
+          '<a href="#rate" data-nav="rate" class="btn btn-sm btn-blue" style="font-size:0.8em" onclick="AZVLC.rateFromCard(' + p.id + ')">Rate this Politician</a>' +
         '</div>' +
         '</div>';
     }).join('');

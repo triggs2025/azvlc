@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AZVLC Veteran Scorecard</title>
+  <meta name="description" content="Arizona Veterans Policy Tracker - Politician Scorecard">
+  <meta property="og:title" content="AZVLC Veteran Scorecard">
+  <meta property="og:description" content="See how this Arizona politician scores on Veteran issues.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" id="ogUrl" content="https://azvlc.org/scorecard.html">
+  <meta property="og:image" content="https://azvlc.org/assets/logo.png">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: var(--bg); }
+
+    .scorecard-page {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .scorecard-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .scorecard-header img {
+      height: 60px;
+      margin-bottom: 12px;
+    }
+
+    .scorecard-header h1 {
+      color: var(--navy);
+      font-size: 1.4em;
+      margin-bottom: 4px;
+    }
+
+    .scorecard-header p {
+      color: var(--text-muted);
+      font-size: 0.9em;
+    }
+
+    .scorecard {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .scorecard-top {
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      color: var(--white);
+      padding: 30px;
+      text-align: center;
+    }
+
+    .scorecard-top h2 {
+      font-size: 1.8em;
+      margin-bottom: 4px;
+    }
+
+    .scorecard-top .position {
+      opacity: 0.85;
+      font-size: 1em;
+    }
+
+    .scorecard-grade-section {
+      padding: 30px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    .scorecard-grade-big {
+      font-size: 5em;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .scorecard-grade-label {
+      font-size: 1.1em;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .scorecard-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .scorecard-stat {
+      text-align: center;
+      padding: 20px;
+      border-right: 1px solid #eee;
+    }
+
+    .scorecard-stat:last-child { border-right: none; }
+
+    .scorecard-stat .num {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .scorecard-stat .label {
+      font-size: 0.8em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    .scorecard-breakdown {
+      padding: 24px 30px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .scorecard-breakdown h4 {
+      color: var(--navy);
+      margin-bottom: 12px;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .scorecard-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .scorecard-bar .letter {
+      font-weight: 700;
+      width: 20px;
+      text-align: center;
+    }
+
+    .scorecard-bar .bar-bg {
+      flex: 1;
+      height: 24px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .scorecard-bar .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s;
+    }
+
+    .scorecard-bar .count {
+      font-size: 0.85em;
+      color: var(--text-muted);
+      width: 30px;
+      text-align: right;
+    }
+
+    .scorecard-footer {
+      padding: 24px 30px;
+      text-align: center;
+    }
+
+    .scorecard-footer p {
+      color: var(--text-muted);
+      font-size: 0.85em;
+      margin-bottom: 16px;
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9em;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      color: #fff;
+      transition: opacity 0.2s;
+    }
+
+    .share-btn:hover { opacity: 0.85; }
+    .share-btn-x { background: #000; }
+    .share-btn-fb { background: #1877f2; }
+    .share-btn-copy { background: var(--gold); color: var(--navy); }
+    .share-btn-email { background: var(--blue); }
+
+    .scorecard-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .no-politician {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .no-politician h2 { color: var(--navy); margin-bottom: 12px; }
+
+    @media (max-width: 480px) {
+      .scorecard-top h2 { font-size: 1.4em; }
+      .scorecard-grade-big { font-size: 3.5em; }
+      .scorecard-stats { grid-template-columns: 1fr; }
+      .scorecard-stat { border-right: none; border-bottom: 1px solid #eee; }
+      .scorecard-stat:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scorecard-page">
+    <div class="scorecard-header">
+      <a href="index.html"><img src="assets/logo.png" alt="AZVLC"></a>
+      <h1>Arizona Veterans Policy Tracker</h1>
+      <p>Veteran Scorecard</p>
+    </div>
+
+    <div id="scorecardContent">
+      <div class="no-politician">
+        <h2>Loading...</h2>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var CONFIG = {
+      repoOwner: 'triggs2025',
+      repoName: 'azvlc',
+      branch: 'master'
+    };
+
+    var RAW_BASE = 'https://raw.githubusercontent.com/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/' + CONFIG.branch + '/data/';
+
+    var params = new URLSearchParams(window.location.search);
+    var politicianId = parseInt(params.get('id'));
+
+    if (!politicianId) {
+      showError('No politician selected. <a href="index.html#politicians">Browse all politicians</a>');
+    } else {
+      fetch(RAW_BASE + 'politicians.json?t=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(politicians) {
+          var p = politicians.find(function(x) { return x.id === politicianId; });
+          if (!p) {
+            showError('Politician not found. <a href="index.html#politicians">Browse all politicians</a>');
+            return;
+          }
+          renderScorecard(p);
+        })
+        .catch(function() {
+          showError('Error loading data. Please try again.');
+        });
+    }
+
+    function showError(msg) {
+      document.getElementById('scorecardContent').innerHTML =
+        '<div class="no-politician"><h2>Oops</h2><p>' + msg + '</p></div>';
+    }
+
+    function renderScorecard(p) {
+      var grades = p.grades || {};
+      var total = (grades.A || 0) + (grades.B || 0) + (grades.C || 0) + (grades.D || 0) + (grades.F || 0);
+      var avg = calcGrade(grades);
+      var gradeClass = avg === 'N/A' ? '' : 'grade-' + avg.toLowerCase();
+      var maxCount = Math.max(grades.A || 0, grades.B || 0, grades.C || 0, grades.D || 0, grades.F || 0, 1);
+
+      var url = 'https://azvlc.org/scorecard.html?id=' + p.id;
+      var shareText = p.name + ' scored a ' + avg + ' on the Arizona Veterans Policy Tracker! See the full scorecard:';
+
+      document.title = p.name + ' - AZVLC Veteran Scorecard';
+      var ogUrl = document.getElementById('ogUrl');
+      if (ogUrl) ogUrl.content = url;
+
+      document.getElementById('scorecardContent').innerHTML =
+        '<div class="scorecard">' +
+          '<div class="scorecard-top">' +
+            '<h2>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge" style="font-size:0.4em;vertical-align:middle">VET</span>' : '') + '</h2>' +
+            '<div class="position">' + esc(p.position) +
+              (p.party ? ' &middot; ' + esc(p.party) : '') +
+              (p.district ? ' &middot; ' + esc(p.district) : '') +
+            '</div>' +
+          '</div>' +
+
+          '<div class="scorecard-grade-section">' +
+            (total > 0
+              ? '<div class="scorecard-grade-big ' + gradeClass + '">' + avg + '</div>' +
+                '<div class="scorecard-grade-label">Veteran Community Grade</div>'
+              : '<div class="scorecard-grade-label" style="font-size:1.2em;font-style:italic">No Veteran ratings yet — be the first!</div>') +
+          '</div>' +
+
+          '<div class="scorecard-stats">' +
+            '<div class="scorecard-stat">' +
+              '<div class="num">' + total + '</div>' +
+              '<div class="label">Total Ratings</div>' +
+            '</div>' +
+            '<div class="scorecard-stat">' +
+              '<div class="num">' + (p.kudos || 0) + '</div>' +
+              '<div class="label">Kudos</div>' +
+            '</div>' +
+            '<div class="scorecard-stat">' +
+              '<div class="num">' + (p.email ? '<a href="mailto:' + esc(p.email) + '" style="color:var(--blue);text-decoration:none;font-size:0.5em">Contact</a>' : '—') + '</div>' +
+              '<div class="label">Email</div>' +
+            '</div>' +
+          '</div>' +
+
+          (total > 0
+            ? '<div class="scorecard-breakdown">' +
+                '<h4>Rating Breakdown</h4>' +
+                gradeBar('A', grades.A, maxCount, '#27ae60') +
+                gradeBar('B', grades.B, maxCount, '#3498db') +
+                gradeBar('C', grades.C, maxCount, '#f39c12') +
+                gradeBar('D', grades.D, maxCount, '#e67e22') +
+                gradeBar('F', grades.F, maxCount, '#e74c3c') +
+              '</div>'
+            : '') +
+
+          '<div class="scorecard-footer">' +
+            '<p>Share this scorecard</p>' +
+            '<div class="share-buttons">' +
+              '<a class="share-btn share-btn-x" href="https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url) + '" target="_blank">𝕏 Share</a>' +
+              '<a class="share-btn share-btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '" target="_blank">Facebook</a>' +
+              '<button class="share-btn share-btn-email" onclick="window.open(\'mailto:?subject=' + encodeURIComponent(p.name + ' - Veteran Scorecard') + '&body=' + encodeURIComponent(shareText + ' ' + url) + '\')">Email</button>' +
+              '<button class="share-btn share-btn-copy" onclick="copyLink()">Copy Link</button>' +
+            '</div>' +
+            '<div class="scorecard-actions">' +
+              '<a href="index.html#rate" class="btn btn-blue btn-sm">Rate this Politician</a>' +
+              '<a href="index.html#politicians" class="btn btn-sm" style="background:#eee;color:var(--text)">View All Politicians</a>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function gradeBar(letter, count, max, color) {
+      var pct = max > 0 ? ((count || 0) / max * 100) : 0;
+      return '<div class="scorecard-bar">' +
+        '<span class="letter" style="color:' + color + '">' + letter + '</span>' +
+        '<div class="bar-bg"><div class="bar-fill" style="width:' + pct + '%;background:' + color + '"></div></div>' +
+        '<span class="count">' + (count || 0) + '</span>' +
+        '</div>';
+    }
+
+    function calcGrade(grades) {
+      if (!grades) return 'N/A';
+      var vals = { A: 4, B: 3, C: 2, D: 1, F: 0 };
+      var total = 0, count = 0;
+      for (var g in vals) { total += vals[g] * (grades[g] || 0); count += (grades[g] || 0); }
+      if (count === 0) return 'N/A';
+      var avg = total / count;
+      if (avg >= 3.5) return 'A';
+      if (avg >= 2.5) return 'B';
+      if (avg >= 1.5) return 'C';
+      if (avg >= 0.5) return 'D';
+      return 'F';
+    }
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    function copyLink() {
+      var url = 'https://azvlc.org/scorecard.html?id=' + politicianId;
+      navigator.clipboard.writeText(url).then(function() {
+        var btns = document.querySelectorAll('.share-btn-copy');
+        btns.forEach(function(b) { b.textContent = 'Copied!'; });
+        setTimeout(function() { btns.forEach(function(b) { b.textContent = 'Copy Link'; }); }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
