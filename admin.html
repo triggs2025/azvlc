@@ -183,15 +183,49 @@
       <div id="saveStatus" class="saving-indicator"></div>
 
       <div class="admin-tabs">
-        <button class="admin-tab active" onclick="showTab('policies', this)">Policies</button>
+        <button class="admin-tab active" onclick="showTab('analytics', this)">Analytics</button>
+        <button class="admin-tab" onclick="showTab('policies', this)">Policies</button>
         <button class="admin-tab" onclick="showTab('politicians', this)">Politicians</button>
         <button class="admin-tab" onclick="showTab('corrections', this)">Corrections <span id="correctionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('polsubmissions', this)">Politician Submissions <span id="polSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('help', this)">How-To Guide</button>
       </div>
 
+      <!-- ANALYTICS PANEL -->
+      <div id="panel-analytics" class="admin-panel active">
+        <h3 style="color:var(--navy);margin-bottom:20px">Site Analytics</h3>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:30px">
+          <div class="stat-card"><h3>Total Ratings</h3><div class="number" id="analRatings">0</div></div>
+          <div class="stat-card"><h3>Total Kudos</h3><div class="number" id="analKudos">0</div></div>
+          <div class="stat-card"><h3>Politicians Rated</h3><div class="number" id="analPoliticiansRated">0</div></div>
+          <div class="stat-card"><h3>Policy Suggestions</h3><div class="number" id="analSuggestions">0</div></div>
+          <div class="stat-card"><h3>Corrections</h3><div class="number" id="analCorrections">0</div></div>
+          <div class="stat-card"><h3>Page Views</h3><div class="number" id="analViews">—</div><p style="font-size:0.7em;color:var(--text-muted);margin-top:4px">Since tracking started</p></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+          <div style="background:var(--white);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)">
+            <h4 style="color:var(--navy);margin-bottom:12px">Most Rated Politicians</h4>
+            <div id="analTopRated"></div>
+          </div>
+          <div style="background:var(--white);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)">
+            <h4 style="color:var(--navy);margin-bottom:12px">Most Popular Policies (by Kudos)</h4>
+            <div id="analTopPolicies"></div>
+          </div>
+          <div style="background:var(--white);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)">
+            <h4 style="color:var(--navy);margin-bottom:12px">Most Kudos (Politicians)</h4>
+            <div id="analTopKudosPol"></div>
+          </div>
+          <div style="background:var(--white);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)">
+            <h4 style="color:var(--navy);margin-bottom:12px">Grade Distribution (All Politicians)</h4>
+            <div id="analGradeDist"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- POLICIES PANEL -->
-      <div id="panel-policies" class="admin-panel active">
+      <div id="panel-policies" class="admin-panel">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:12px">
           <h3 style="color:var(--navy)">Manage Policies</h3>
           <button class="btn btn-blue btn-sm" onclick="openPolicyForm()">+ Add New Policy</button>
@@ -569,6 +603,8 @@
         renderAdminPoliticians();
         loadCorrections();
         loadPolSubmissions();
+        renderAnalytics();
+        loadPageViews();
         showStatus('Data loaded.', 'success');
       }).catch(function(err) {
         showStatus('Error loading data: ' + err.message, 'error');
@@ -1221,6 +1257,127 @@
         })
         .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
     }
+
+    // ── Analytics ──
+    function renderAnalytics() {
+      // total ratings across all politicians
+      var totalRatings = 0;
+      var totalKudosPol = 0;
+      var totalKudosPol2 = 0;
+      var ratedPoliticians = 0;
+      politicians.forEach(function(p) {
+        var g = p.grades || {};
+        var r = (g.A||0)+(g.B||0)+(g.C||0)+(g.D||0)+(g.F||0);
+        totalRatings += r;
+        totalKudosPol += (p.kudos||0);
+        if (r > 0) ratedPoliticians++;
+      });
+
+      var totalKudosPolicy = 0;
+      var suggestions = 0;
+      policies.forEach(function(p) {
+        totalKudosPolicy += (p.kudos||0);
+        if (p.category === 'suggestion') suggestions++;
+      });
+
+      var totalKudos = totalKudosPol + totalKudosPolicy;
+
+      setText2('analRatings', totalRatings);
+      setText2('analKudos', totalKudos);
+      setText2('analPoliticiansRated', ratedPoliticians + ' / ' + politicians.length);
+      setText2('analSuggestions', suggestions);
+      setText2('analCorrections', corrections.length);
+
+      // most rated politicians
+      var byRatings = politicians.slice().map(function(p) {
+        var g = p.grades || {};
+        return { name: p.name, total: (g.A||0)+(g.B||0)+(g.C||0)+(g.D||0)+(g.F||0), grade: calcGrade(p.grades) };
+      }).filter(function(p) { return p.total > 0; })
+        .sort(function(a,b) { return b.total - a.total; })
+        .slice(0, 5);
+
+      var el = document.getElementById('analTopRated');
+      if (byRatings.length === 0) {
+        el.innerHTML = '<p style="color:#aaa;text-align:center">No ratings yet</p>';
+      } else {
+        el.innerHTML = byRatings.map(function(p, i) {
+          return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0">' +
+            '<span>' + (i+1) + '. ' + esc(p.name) + '</span>' +
+            '<span><strong class="grade-' + p.grade.toLowerCase() + '">' + p.grade + '</strong> &middot; ' + p.total + ' ratings</span>' +
+          '</div>';
+        }).join('');
+      }
+
+      // most popular policies
+      var byKudos = policies.slice().filter(function(p) { return (p.kudos||0) > 0; })
+        .sort(function(a,b) { return (b.kudos||0) - (a.kudos||0); })
+        .slice(0, 5);
+
+      var el2 = document.getElementById('analTopPolicies');
+      if (byKudos.length === 0) {
+        el2.innerHTML = '<p style="color:#aaa;text-align:center">No kudos yet</p>';
+      } else {
+        el2.innerHTML = byKudos.map(function(p, i) {
+          return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0">' +
+            '<span style="flex:1">' + (i+1) + '. ' + esc(p.name) + '</span>' +
+            '<span style="font-weight:700;color:var(--blue)">' + p.kudos + '</span>' +
+          '</div>';
+        }).join('');
+      }
+
+      // most kudos politicians
+      var polByKudos = politicians.slice().filter(function(p) { return (p.kudos||0) > 0; })
+        .sort(function(a,b) { return (b.kudos||0) - (a.kudos||0); })
+        .slice(0, 5);
+
+      var el3 = document.getElementById('analTopKudosPol');
+      if (polByKudos.length === 0) {
+        el3.innerHTML = '<p style="color:#aaa;text-align:center">No kudos yet</p>';
+      } else {
+        el3.innerHTML = polByKudos.map(function(p, i) {
+          return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0">' +
+            '<span>' + (i+1) + '. ' + esc(p.name) + '</span>' +
+            '<span style="font-weight:700;color:var(--blue)">' + (p.kudos||0) + '</span>' +
+          '</div>';
+        }).join('');
+      }
+
+      // grade distribution
+      var dist = { A: 0, B: 0, C: 0, D: 0, F: 0 };
+      politicians.forEach(function(p) {
+        var g = p.grades || {};
+        dist.A += (g.A||0); dist.B += (g.B||0); dist.C += (g.C||0); dist.D += (g.D||0); dist.F += (g.F||0);
+      });
+      var maxDist = Math.max(dist.A, dist.B, dist.C, dist.D, dist.F, 1);
+
+      var el4 = document.getElementById('analGradeDist');
+      var colors = { A: '#27ae60', B: '#3498db', C: '#f39c12', D: '#e67e22', F: '#e74c3c' };
+      el4.innerHTML = ['A','B','C','D','F'].map(function(g) {
+        var pct = (dist[g] / maxDist * 100);
+        return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">' +
+          '<span style="font-weight:700;width:20px;color:' + colors[g] + '">' + g + '</span>' +
+          '<div style="flex:1;height:20px;background:#f0f0f0;border-radius:4px;overflow:hidden">' +
+            '<div style="height:100%;width:' + pct + '%;background:' + colors[g] + ';border-radius:4px"></div>' +
+          '</div>' +
+          '<span style="font-size:0.85em;color:var(--text-muted);width:30px;text-align:right">' + dist[g] + '</span>' +
+        '</div>';
+      }).join('');
+    }
+
+    function loadPageViews() {
+      // use the GitHub API to check how many commits have the "rating" or "kudos" message as a proxy
+      // For real page views, load from a tracking file
+      fetch('data/analytics.json?t=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          setText2('analViews', data.views || 0);
+        })
+        .catch(function() {
+          setText2('analViews', '—');
+        });
+    }
+
+    function setText2(id, val) { var e = document.getElementById(id); if (e) e.textContent = val; }
 
     // ── Helpers ──
     function nextId(arr) {

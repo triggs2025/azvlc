@@ -28,7 +28,39 @@
     bindNav();
     bindMobileMenu();
     bindForms();
+    trackPageView();
   });
+
+  // ── Page view tracking ──
+  function trackPageView() {
+    if (sessionStorage.getItem('azvlc_viewed')) return;
+    sessionStorage.setItem('azvlc_viewed', '1');
+
+    if (!CONFIG.ghToken) return;
+
+    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json?ref=' + CONFIG.branch)
+      .then(function(r) { return r.json(); })
+      .then(function(result) {
+        var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
+        var data = JSON.parse(decoded);
+        data.views = (data.views || 0) + 1;
+        var content = btoa(unescape(encodeURIComponent(JSON.stringify(data) + '\n')));
+        return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'token ' + CONFIG.ghToken
+          },
+          body: JSON.stringify({
+            message: 'Track page view',
+            content: content,
+            sha: result.sha,
+            branch: CONFIG.branch
+          })
+        });
+      })
+      .catch(function() {});
+  }
 
   // ── Data loading ──
   var RAW_BASE = 'https://raw.githubusercontent.com/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/' + CONFIG.branch + '/data/';
