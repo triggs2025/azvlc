@@ -471,6 +471,25 @@
     else renderPoliticians();
 
     renderDashboard();
+
+    // save to GitHub
+    if (type === 'politician') {
+      fetch('data/politicians.json?t=' + Date.now()).then(function(r) { return r.json(); }).then(function(all) {
+        var target = all.find(function(p) { return p.id === id; });
+        if (target) target.kudos = item.kudos;
+        return savePoliticiansToGitHub(all);
+      }).then(function() {
+        loadPoliticiansWithSha();
+      }).catch(function(err) { console.error('Kudos save error:', err); });
+    } else {
+      fetch('data/policies.json?t=' + Date.now()).then(function(r) { return r.json(); }).then(function(all) {
+        var target = all.find(function(p) { return p.id === id; });
+        if (target) target.kudos = item.kudos;
+        return savePoliciesToGitHub(all);
+      }).then(function() {
+        loadPoliciesWithSha();
+      }).catch(function(err) { console.error('Kudos save error:', err); });
+    }
   }
 
   // ── Filter ──
