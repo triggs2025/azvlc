@@ -188,6 +188,7 @@
         <button class="admin-tab" onclick="showTab('politicians', this)">Politicians</button>
         <button class="admin-tab" onclick="showTab('corrections', this)">Corrections <span id="correctionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('polsubmissions', this)">Politician Submissions <span id="polSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
+        <button class="admin-tab" onclick="showTab('ticker', this)">Ticker</button>
         <button class="admin-tab" onclick="showTab('help', this)">How-To Guide</button>
       </div>
 
@@ -283,6 +284,25 @@
         <h3 style="color:var(--navy);margin-bottom:20px">Politician Submissions</h3>
         <p style="color:var(--text-muted);margin-bottom:20px;font-size:0.9em">These are politicians submitted by the public. Approve to add them to the scorecard, or dismiss to remove the submission.</p>
         <div id="adminPolSubmissionsList"></div>
+      </div>
+
+      <!-- TICKER PANEL -->
+      <div id="panel-ticker" class="admin-panel">
+        <h3 style="color:var(--navy);margin-bottom:20px">Manage Ticker Messages</h3>
+        <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">These messages scroll below the hero image on the public site. Add, edit, or remove messages. Hover pauses the ticker for visitors.</p>
+
+        <div class="form-group checkbox-row" style="margin-bottom:20px">
+          <input type="checkbox" id="tickerEnabled" checked>
+          <label for="tickerEnabled" style="font-weight:600">Ticker enabled (visible on site)</label>
+        </div>
+
+        <div id="tickerMessagesList"></div>
+
+        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-blue btn-sm" onclick="addTickerMessage()">+ Add Message</button>
+          <button class="btn btn-success btn-sm" onclick="saveTicker()">Save Changes</button>
+        </div>
+        <div class="saving-indicator" id="tickerSaveStatus" style="margin-top:12px"></div>
       </div>
 
       <!-- HELP PANEL -->
@@ -615,6 +635,7 @@
         renderAdminPoliticians();
         loadCorrections();
         loadPolSubmissions();
+        loadTicker();
         renderAnalytics();
         loadPageViews();
         showStatus('Data loaded.', 'success');
@@ -1268,6 +1289,82 @@
           showStatus('Kudos updated.', 'success');
         })
         .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    // ── Ticker ──
+    var tickerData = { enabled: true, messages: [] };
+    var tickerSha = '';
+
+    function loadTicker() {
+      ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/ticker.json?ref=master')
+        .then(function(result) {
+          tickerSha = result.sha;
+          var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
+          tickerData = JSON.parse(decoded);
+          document.getElementById('tickerEnabled').checked = tickerData.enabled !== false;
+          renderTickerMessages();
+        })
+        .catch(function() {});
+    }
+
+    function renderTickerMessages() {
+      var el = document.getElementById('tickerMessagesList');
+      if (!tickerData.messages || tickerData.messages.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No messages yet. Click "+ Add Message" to get started.</p></div>';
+        return;
+      }
+      el.innerHTML = tickerData.messages.map(function(msg, i) {
+        return '<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:10px">' +
+          '<textarea style="flex:1;padding:10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:0.9em;min-height:50px;resize:vertical" id="tickerMsg-' + i + '">' + esc(msg) + '</textarea>' +
+          '<button class="btn btn-sm btn-danger" onclick="removeTickerMessage(' + i + ')">Remove</button>' +
+        '</div>';
+      }).join('');
+    }
+
+    function addTickerMessage() {
+      tickerData.messages.push('New message here...');
+      renderTickerMessages();
+      var last = document.getElementById('tickerMsg-' + (tickerData.messages.length - 1));
+      if (last) { last.focus(); last.select(); }
+    }
+
+    function removeTickerMessage(idx) {
+      tickerData.messages.splice(idx, 1);
+      renderTickerMessages();
+    }
+
+    function saveTicker() {
+      // read current values from textareas
+      tickerData.messages = [];
+      var i = 0;
+      while (true) {
+        var el = document.getElementById('tickerMsg-' + i);
+        if (!el) break;
+        var val = el.value.trim();
+        if (val) tickerData.messages.push(val);
+        i++;
+      }
+      tickerData.enabled = document.getElementById('tickerEnabled').checked;
+
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(tickerData, null, 2) + '\n')));
+      var statusEl = document.getElementById('tickerSaveStatus');
+
+      ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/ticker.json', {
+        message: 'Update ticker messages',
+        content: content,
+        sha: tickerSha,
+        branch: 'master'
+      }).then(function(result) {
+        if (result.content) tickerSha = result.content.sha;
+        renderTickerMessages();
+        statusEl.textContent = 'Ticker saved!';
+        statusEl.className = 'saving-indicator show success';
+        setTimeout(function() { statusEl.className = 'saving-indicator'; }, 3000);
+      }).catch(function(err) {
+        statusEl.textContent = 'Error: ' + err.message;
+        statusEl.className = 'saving-indicator show error';
+        setTimeout(function() { statusEl.className = 'saving-indicator'; }, 4000);
+      });
     }
 
     // ── Analytics ──

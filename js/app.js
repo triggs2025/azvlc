@@ -25,11 +25,31 @@
   // ── Init ──
   document.addEventListener('DOMContentLoaded', function () {
     loadData();
+    loadTicker();
     bindNav();
     bindMobileMenu();
     bindForms();
     trackPageView();
   });
+
+  // ── Ticker ──
+  function loadTicker() {
+    fetch(RAW_BASE + 'ticker.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (!data.enabled || !data.messages || data.messages.length === 0) return;
+        var bar = document.getElementById('tickerBar');
+        var content = document.getElementById('tickerContent');
+        if (!bar || !content) return;
+        var separator = '  ★  ';
+        var text = data.messages.join(separator) + separator;
+        content.textContent = text + text;
+        var speed = Math.max(15, text.length * 0.4);
+        content.style.animationDuration = speed + 's';
+        bar.style.display = 'block';
+      })
+      .catch(function() {});
+  }
 
   // ── Page view tracking ──
   function trackPageView() {

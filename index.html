@@ -42,6 +42,15 @@
     </div>
   </section>
 
+  <!-- ── Ticker Bar ── -->
+  <div id="tickerBar" style="display:none;background:var(--navy);color:var(--white);overflow:hidden;white-space:nowrap;padding:10px 0;font-size:0.95em;border-bottom:2px solid var(--gold)">
+    <div id="tickerContent" style="display:inline-block;animation:ticker 20s linear infinite;padding-left:100%"></div>
+  </div>
+  <style>
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+    #tickerBar:hover #tickerContent { animation-play-state: paused; }
+  </style>
+
   <div class="container">
 
     <!-- ══ DASHBOARD ══ -->
