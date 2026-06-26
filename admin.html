@@ -188,6 +188,7 @@
         <button class="admin-tab" onclick="showTab('politicians', this)">Politicians</button>
         <button class="admin-tab" onclick="showTab('corrections', this)">Corrections <span id="correctionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('polsubmissions', this)">Politician Submissions <span id="polSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
+        <button class="admin-tab" onclick="showTab('sponsor', this)">Sponsor</button>
         <button class="admin-tab" onclick="showTab('ticker', this)">Ticker</button>
         <button class="admin-tab" onclick="showTab('help', this)">How-To Guide</button>
       </div>
@@ -284,6 +285,28 @@
         <h3 style="color:var(--navy);margin-bottom:20px">Politician Submissions</h3>
         <p style="color:var(--text-muted);margin-bottom:20px;font-size:0.9em">These are politicians submitted by the public. Approve to add them to the scorecard, or dismiss to remove the submission.</p>
         <div id="adminPolSubmissionsList"></div>
+      </div>
+
+      <!-- SPONSOR PANEL -->
+      <div id="panel-sponsor" class="admin-panel">
+        <h3 style="color:var(--navy);margin-bottom:20px">Manage Sponsor</h3>
+        <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">This appears below the hero buttons on the home page.</p>
+        <div class="form-container" style="max-width:500px;margin:0">
+          <div class="form-group">
+            <label for="sponsorLabel">Label Text</label>
+            <input type="text" id="sponsorLabel" placeholder="e.g., Sponsored by">
+          </div>
+          <div class="form-group">
+            <label for="sponsorName">Sponsor Name</label>
+            <input type="text" id="sponsorName" placeholder="e.g., Major Opinion">
+          </div>
+          <div class="form-group">
+            <label for="sponsorUrl">Sponsor Link</label>
+            <input type="url" id="sponsorUrl" placeholder="https://...">
+          </div>
+          <button class="btn btn-success btn-sm" onclick="saveSponsor()">Save Sponsor</button>
+          <div class="saving-indicator" id="sponsorSaveStatus" style="margin-top:12px"></div>
+        </div>
       </div>
 
       <!-- TICKER PANEL -->
@@ -636,6 +659,7 @@
         loadCorrections();
         loadPolSubmissions();
         loadTicker();
+        loadSponsor();
         renderAnalytics();
         loadPageViews();
         showStatus('Data loaded.', 'success');
@@ -1289,6 +1313,49 @@
           showStatus('Kudos updated.', 'success');
         })
         .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    // ── Sponsor ──
+    var sponsorSha = '';
+
+    function loadSponsor() {
+      ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/sponsor.json?ref=master')
+        .then(function(result) {
+          sponsorSha = result.sha;
+          var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
+          var data = JSON.parse(decoded);
+          document.getElementById('sponsorLabel').value = data.label || '';
+          document.getElementById('sponsorName').value = data.name || '';
+          document.getElementById('sponsorUrl').value = data.url || '';
+        })
+        .catch(function() {});
+    }
+
+    function saveSponsor() {
+      var data = {
+        label: document.getElementById('sponsorLabel').value.trim(),
+        name: document.getElementById('sponsorName').value.trim(),
+        url: document.getElementById('sponsorUrl').value.trim()
+      };
+
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2) + '\n')));
+      var statusEl = document.getElementById('sponsorSaveStatus');
+
+      ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/sponsor.json', {
+        message: 'Update sponsor',
+        content: content,
+        sha: sponsorSha,
+        branch: 'master'
+      }).then(function(result) {
+        if (result.content) sponsorSha = result.content.sha;
+        statusEl.textContent = 'Sponsor saved!';
+        statusEl.className = 'saving-indicator show success';
+        setTimeout(function() { statusEl.className = 'saving-indicator'; }, 3000);
+      }).catch(function(err) {
+        statusEl.textContent = 'Error: ' + err.message;
+        statusEl.className = 'saving-indicator show error';
+        setTimeout(function() { statusEl.className = 'saving-indicator'; }, 4000);
+      });
     }
 
     // ── Ticker ──

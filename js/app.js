@@ -25,12 +25,25 @@
   // ── Init ──
   document.addEventListener('DOMContentLoaded', function () {
     loadData();
+    loadSponsor();
     loadTicker();
     bindNav();
     bindMobileMenu();
     bindForms();
     trackPageView();
   });
+
+  // ── Sponsor ──
+  function loadSponsor() {
+    fetch(RAW_BASE + 'sponsor.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var el = document.getElementById('sponsorLine');
+        if (!el || !data.name) return;
+        el.innerHTML = esc(data.label || 'Sponsored by') + ' <a href="' + esc(data.url || '#') + '" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">' + esc(data.name) + '</a>';
+      })
+      .catch(function() {});
+  }
 
   // ── Ticker ──
   function loadTicker() {
