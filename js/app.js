@@ -239,7 +239,7 @@
     topEl.innerHTML = sorted.map(function (p) {
       var avg = calcGrade(p.grades);
       var total = gradeTotal(p.grades);
-      return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.nav(\'politicians\')">' +
+      return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.navToPolitician(' + p.id + ')">' +
         '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<p>' + esc(p.position) +
           (p.party ? ' &middot; ' + esc(p.party) : '') +
@@ -433,7 +433,7 @@
       var total = gradeTotal(p.grades);
       var voted = hasVotedKudo('politician', p.id);
 
-      return '<div class="card">' +
+      return '<div class="card" id="politician-card-' + p.id + '">' +
         '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<p style="color:var(--text-muted);margin-bottom:4px">' + esc(p.position) +
           (p.party ? ' &middot; ' + esc(p.party) : '') +
@@ -961,6 +961,17 @@
       setTimeout(function() { selectRatePolitician(id); }, 100);
     },
     nav: navigate,
+    navToPolitician: function(id) {
+      navigate('politicians');
+      setTimeout(function() {
+        var card = document.getElementById('politician-card-' + id);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.style.boxShadow = '0 0 0 3px var(--gold)';
+          setTimeout(function() { card.style.boxShadow = ''; }, 2000);
+        }
+      }, 150);
+    },
     openCorrectionModal: openCorrectionModal,
     closeCorrectionModal: closeCorrectionModal,
     submitCorrection: submitCorrection
