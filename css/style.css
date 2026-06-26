@@ -563,9 +563,25 @@ body {
     flex-direction: column;
     padding: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 101;
   }
 
   .navbar-links.open { display: flex; }
+
+  .navbar-links a {
+    text-align: left !important;
+    line-height: 1.6 !important;
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .navbar-links a br { display: none; }
+
+  .navbar-links .btn {
+    margin-top: 4px;
+    text-align: center !important;
+    justify-content: center;
+  }
 
   .navbar-toggle { display: block; }
 
