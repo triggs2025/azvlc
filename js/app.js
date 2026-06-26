@@ -250,7 +250,7 @@
     topEl.innerHTML = sorted.map(function (p) {
       var avg = calcGrade(p.grades);
       var total = gradeTotal(p.grades);
-      return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.nav(\'politicians\')">' +
+      return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.navToItem(\'politicians\',\'politician-card-' + p.id + '\')">' +
         '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<p>' + esc(p.position) +
           (p.party ? ' &middot; ' + esc(p.party) : '') +
@@ -272,7 +272,7 @@
         topPolEl.innerHTML = emptyState('No kudos yet');
       } else {
         topPolEl.innerHTML = top3Policies.map(function (p) {
-          return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.nav(\'policies\')">' +
+          return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.navToItem(\'policies\',\'policy-card-' + p.id + '\')">' +
             '<h3>' + esc(p.name) + '</h3>' +
             '<p>' + esc(p.description) + '</p>' +
             '<div style="margin-top:8px">' +
@@ -296,7 +296,7 @@
     }
 
     passedEl.innerHTML = passed.map(function (p) {
-      return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.nav(\'policies\')">' +
+      return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.navToItem(\'policies\',\'policy-card-' + p.id + '\')">' +
         '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<p>' + esc(p.description) + '</p>' +
         '<span class="badge badge-passed">Passed</span>' +
@@ -1210,6 +1210,17 @@
     onRateSearch: onRateSearch,
     selectRatePolitician: selectRatePolitician,
     nav: navigate,
+    navToItem: function(section, cardId) {
+      navigate(section);
+      setTimeout(function() {
+        var el = document.getElementById(cardId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.style.boxShadow = '0 0 0 3px var(--gold)';
+          setTimeout(function() { el.style.boxShadow = ''; }, 2000);
+        }
+      }, 150);
+    },
     rateFromCard: function(id) {
       navigate('rate');
       setTimeout(function() { selectRatePolitician(id); }, 100);
