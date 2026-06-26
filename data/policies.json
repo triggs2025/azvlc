@@ -5,10 +5,10 @@
     "sponsor": "Tony Riggs",
     "category": "benefits",
     "description": "Exempts Veterans from state park fees in Arizona.",
-    "status": "proposed",
-    "kudos": 0,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/83825",
-    "approved": true
+    "status": "proposed",
+    "approved": true,
+    "kudos": 0
   },
   {
     "id": 11,
