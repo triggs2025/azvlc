@@ -88,6 +88,7 @@
         <button class="filter-btn" onclick="AZVLC.filterPolicies('benefits', this)">Benefits</button>
         <button class="filter-btn" onclick="AZVLC.filterPolicies('employment', this)">Employment</button>
         <button class="filter-btn" onclick="AZVLC.filterPolicies('housing', this)">Housing</button>
+        <button class="filter-btn" onclick="AZVLC.filterPolicies('suggestion', this)">Public Suggestions</button>
       </div>
 
       <div class="card-grid" id="policiesList"></div>
@@ -146,18 +147,7 @@
             <label for="policySponsor">Current Sponsor *</label>
             <input type="text" id="policySponsor" name="policySponsor" required placeholder="Representative or organization name">
           </div>
-          <div class="form-group">
-            <label for="policyCategory">Category *</label>
-            <select id="policyCategory" name="policyCategory" required>
-              <option value="">Select a category</option>
-              <option value="healthcare">Healthcare</option>
-              <option value="education">Education</option>
-              <option value="benefits">Benefits</option>
-              <option value="employment">Employment</option>
-              <option value="housing">Housing</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
+          <!-- category auto-set to "suggestion" -->
           <div class="form-group">
             <label for="policyDescription">Description *</label>
             <textarea id="policyDescription" name="policyDescription" required placeholder="What does this policy do and how will it benefit Veterans?"></textarea>
@@ -166,16 +156,7 @@
             <label for="policyLink">Bill Link (optional)</label>
             <input type="url" id="policyLink" name="policyLink" placeholder="https://...">
           </div>
-          <div class="form-group">
-            <label for="policyStatus">Status *</label>
-            <select id="policyStatus" name="policyStatus" required>
-              <option value="">Select status</option>
-              <option value="proposed">Proposed</option>
-              <option value="in-progress">In Progress</option>
-              <option value="passed">Passed</option>
-              <option value="failed">Failed</option>
-            </select>
-          </div>
+          <!-- status auto-set to "proposed" -->
           <div class="form-group">
             <label for="submitterEmail">Your Email *</label>
             <input type="email" id="submitterEmail" name="submitterEmail" required placeholder="your@email.com">

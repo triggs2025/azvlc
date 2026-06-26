@@ -314,6 +314,7 @@ body {
 .badge-in-progress { background: #fff3e0; color: #e65100; }
 .badge-passed { background: #e8f5e9; color: #388e3c; }
 .badge-failed { background: #ffebee; color: #d32f2f; }
+.badge-suggestion { background: #e0f2f1; color: #00695c; }
 
 /* ── Grades ── */
 .grade { font-size: 2.2em; font-weight: 800; }

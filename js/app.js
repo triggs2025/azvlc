@@ -37,6 +37,7 @@
 
     Promise.all([policyReq, politicianReq])
       .then(function (results) {
+        allPoliciesRaw = results[0];
         policies = results[0].filter(function (p) { return p.approved; });
         politicians = results[1];
         applySavedKudos();
@@ -45,6 +46,7 @@
         renderPoliticians();
         populatePoliticianSelect();
         loadPoliticiansWithSha();
+        loadPoliciesWithSha();
       })
       .catch(function (err) {
         console.error('Failed to load data:', err);
@@ -101,6 +103,44 @@
     .then(function (r) { return r.json(); })
     .then(function (result) {
       if (result.content) politiciansSha = result.content.sha;
+      return result;
+    });
+  }
+
+  // ── Policies GitHub save ──
+  var policiesSha = '';
+  var allPoliciesRaw = [];
+
+  function loadPoliciesWithSha() {
+    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/policies.json?ref=' + CONFIG.branch)
+      .then(function (r) { return r.json(); })
+      .then(function (result) {
+        policiesSha = result.sha;
+      })
+      .catch(function () { policiesSha = ''; });
+  }
+
+  function savePoliciesToGitHub(allPolicies) {
+    if (!CONFIG.ghToken) {
+      return Promise.resolve({ content: { sha: policiesSha } });
+    }
+    var content = btoa(unescape(encodeURIComponent(JSON.stringify(allPolicies, null, 2) + '\n')));
+    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/policies.json', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'token ' + CONFIG.ghToken
+      },
+      body: JSON.stringify({
+        message: 'New policy suggestion via public site',
+        content: content,
+        sha: policiesSha,
+        branch: CONFIG.branch
+      })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (result) {
+      if (result.content) policiesSha = result.content.sha;
       return result;
     });
   }
@@ -526,20 +566,70 @@
     e.preventDefault();
     var form = e.target;
 
-    var data = {
-      policyName: form.policyName.value,
-      policySponsor: form.policySponsor.value,
-      policyCategory: form.policyCategory.value,
-      policyDescription: form.policyDescription.value,
-      policyLink: form.policyLink.value,
-      policyStatus: form.policyStatus.value,
-      submitterEmail: form.submitterEmail.value,
-      submitterName: form.submitterAnonymous.checked ? 'Anonymous' : form.submitterName.value,
-      submissionType: 'Policy Suggestion',
-      timestamp: new Date().toISOString()
+    if (!policiesSha) {
+      alert('Still loading. Please wait a moment and try again.');
+      return;
+    }
+
+    var maxId = allPoliciesRaw.reduce(function (max, p) { return Math.max(max, p.id || 0); }, 0);
+
+    var newPolicy = {
+      id: maxId + 1,
+      name: form.policyName.value,
+      sponsor: form.policySponsor.value,
+      category: 'suggestion',
+      description: form.policyDescription.value,
+      status: 'proposed',
+      kudos: 0,
+      link: form.policyLink.value || '',
+      approved: true,
+      submittedBy: form.submitterAnonymous.checked ? 'Anonymous' : form.submitterName.value,
+      submittedEmail: form.submitterEmail.value,
+      submittedAt: new Date().toISOString()
     };
 
-    sendToGHL(CONFIG.ghlWebhookPolicy, data, 'policySuccess', form);
+    var submitBtn = form.querySelector('.form-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    allPoliciesRaw.push(newPolicy);
+
+    savePoliciesToGitHub(allPoliciesRaw).then(function (result) {
+      if (result.content) {
+        policies = allPoliciesRaw.filter(function (p) { return p.approved; });
+        renderPolicies();
+        renderDashboard();
+        var successEl = document.getElementById('policySuccess');
+        if (successEl) {
+          successEl.textContent = 'Thank you! Your policy suggestion has been added to the Public Suggestions tab.';
+          successEl.classList.add('show');
+        }
+        form.reset();
+        setTimeout(function () { if (successEl) successEl.classList.remove('show'); }, 5000);
+      } else {
+        allPoliciesRaw.pop();
+        throw new Error(result.message || 'Save failed');
+      }
+    }).catch(function (err) {
+      allPoliciesRaw.pop();
+      console.error('Policy submission error:', err);
+      alert('There was an issue submitting your suggestion. Please try again.');
+    }).finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Policy Suggestion';
+      loadPoliciesWithSha();
+    });
+
+    if (CONFIG.ghlWebhookPolicy) {
+      sendToGHL(CONFIG.ghlWebhookPolicy, {
+        policyName: form.policyName.value,
+        policySponsor: form.policySponsor.value,
+        policyDescription: form.policyDescription.value,
+        submitterEmail: form.submitterEmail.value,
+        submissionType: 'Policy Suggestion',
+        timestamp: new Date().toISOString()
+      }, null, null);
+    }
   }
 
   function submitRatingForm(e) {
