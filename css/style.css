@@ -117,7 +117,7 @@ body {
     url('../assets/hero.jpg') center/cover no-repeat;
   color: var(--white);
   text-align: center;
-  padding: 80px 20px;
+  padding: 120px 20px 80px;
   border-bottom: 4px solid var(--gold);
 }
 
