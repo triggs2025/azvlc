@@ -527,6 +527,19 @@
     var politiciansSha = '';
 
     // ── Auth ──
+    // auto-login if session is active
+    (function() {
+      if (sessionStorage.getItem('azvlc_admin_session')) {
+        var savedToken = localStorage.getItem(TOKEN_KEY);
+        if (savedToken) {
+          ghToken = savedToken;
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('adminDashboard').style.display = 'block';
+          loadAllData();
+        }
+      }
+    })();
+
     function tryPassword() {
       var pass = document.getElementById('adminPass').value;
       if (pass !== ADMIN_PASSWORD) {
@@ -540,6 +553,7 @@
         ghToken = savedToken;
         ghAPI('GET', '/repos/' + REPO_OWNER + '/' + REPO_NAME)
           .then(function() {
+            sessionStorage.setItem('azvlc_admin_session', '1');
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
             loadAllData();
@@ -586,9 +600,10 @@
 
     function logout() {
       ghToken = '';
+      sessionStorage.removeItem('azvlc_admin_session');
       document.getElementById('adminDashboard').style.display = 'none';
       document.getElementById('loginScreen').style.display = 'block';
-      document.getElementById('ghToken').value = '';
+      document.getElementById('adminPass').value = '';
     }
 
     // ── GitHub API ──
