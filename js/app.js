@@ -47,6 +47,7 @@
         populatePoliticianSelect();
         loadPoliticiansWithSha();
         loadPoliciesWithSha();
+        loadCorrectionsWithSha();
       })
       .catch(function (err) {
         console.error('Failed to load data:', err);
@@ -314,6 +315,7 @@
             (voted ? 'Thanked' : 'Give Kudos') +
           '</button>' +
           '<span class="kudos-count" id="kudos-policy-' + p.id + '">' + (p.kudos || 0) + '</span>' +
+          '<button class="btn btn-sm" style="background:#eee;color:var(--text-muted);margin-left:auto;font-size:0.8em" onclick="AZVLC.openCorrectionModal(' + p.id + ')">Submit Correction</button>' +
         '</div>' +
         '</div>';
     }).join('');
@@ -553,6 +555,119 @@
       dropdown.style.display = 'none';
     }
   });
+
+  // ── Corrections ──
+  var correctionsSha = '';
+
+  function loadCorrectionsWithSha() {
+    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/corrections.json?ref=' + CONFIG.branch)
+      .then(function (r) { return r.json(); })
+      .then(function (result) { correctionsSha = result.sha; })
+      .catch(function () { correctionsSha = ''; });
+  }
+
+  function openCorrectionModal(policyId) {
+    var p = policies.find(function (x) { return x.id === policyId; });
+    if (!p) return;
+    document.getElementById('corrPolicyId').value = policyId;
+    document.getElementById('corrName').value = p.name;
+    document.getElementById('corrSponsor').value = p.sponsor || '';
+    document.getElementById('corrCategory').value = p.category || 'benefits';
+    document.getElementById('corrDescription').value = p.description || '';
+    document.getElementById('corrLink').value = p.link || '';
+    document.getElementById('corrStatus').value = p.status || 'proposed';
+    document.getElementById('corrReason').value = '';
+    document.getElementById('corrEmail').value = '';
+    document.getElementById('correctionSuccess').classList.remove('show');
+    document.getElementById('correctionModal').style.display = 'flex';
+  }
+
+  function closeCorrectionModal() {
+    document.getElementById('correctionModal').style.display = 'none';
+  }
+
+  function submitCorrection(e) {
+    e.preventDefault();
+    var form = e.target;
+    var policyId = parseInt(document.getElementById('corrPolicyId').value);
+    var original = policies.find(function (x) { return x.id === policyId; });
+
+    var correction = {
+      id: Date.now(),
+      policyId: policyId,
+      originalName: original ? original.name : '',
+      correctedName: document.getElementById('corrName').value,
+      correctedSponsor: document.getElementById('corrSponsor').value,
+      correctedCategory: document.getElementById('corrCategory').value,
+      correctedDescription: document.getElementById('corrDescription').value,
+      correctedLink: document.getElementById('corrLink').value,
+      correctedStatus: document.getElementById('corrStatus').value,
+      reason: document.getElementById('corrReason').value,
+      submitterEmail: document.getElementById('corrEmail').value,
+      submittedAt: new Date().toISOString()
+    };
+
+    var submitBtn = form.querySelector('.form-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    // load current corrections
+    fetch('data/corrections.json').then(function (r) { return r.json(); }).then(function (corrections) {
+      corrections.push(correction);
+
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(corrections, null, 2) + '\n')));
+      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/corrections.json', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'token ' + CONFIG.ghToken
+        },
+        body: JSON.stringify({
+          message: 'Policy correction submitted for: ' + correction.originalName,
+          content: content,
+          sha: correctionsSha,
+          branch: CONFIG.branch
+        })
+      });
+    }).then(function (r) { return r.json(); }).then(function (result) {
+      if (result.content) {
+        correctionsSha = result.content.sha;
+
+        // create GitHub issue for notification
+        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'token ' + CONFIG.ghToken
+          },
+          body: JSON.stringify({
+            title: 'Policy Correction: ' + correction.originalName,
+            body: '**Policy:** ' + correction.originalName + '\n' +
+              '**Reason:** ' + correction.reason + '\n' +
+              '**Submitted by:** ' + (correction.submitterEmail || 'Anonymous') + '\n' +
+              '**Date:** ' + correction.submittedAt + '\n\n' +
+              'Review this correction in the [Admin Panel](https://azvlc.org/admin.html).',
+            labels: ['correction']
+          })
+        }).catch(function () {});
+
+        var successEl = document.getElementById('correctionSuccess');
+        successEl.classList.add('show');
+        document.getElementById('corrReason').value = '';
+        document.getElementById('corrEmail').value = '';
+        setTimeout(function () { successEl.classList.remove('show'); closeCorrectionModal(); }, 3000);
+      } else {
+        throw new Error(result.message || 'Save failed');
+      }
+    }).catch(function (err) {
+      console.error('Correction error:', err);
+      alert('There was an issue submitting your correction. Please try again.');
+    }).finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Correction';
+      loadCorrectionsWithSha();
+    });
+  }
 
   // ── Forms ──
   function bindForms() {
@@ -796,6 +911,9 @@
     sortPoliticians: sortPoliticians,
     searchPoliticians: searchPoliticians,
     onRateSearch: onRateSearch,
-    selectRatePolitician: selectRatePolitician
+    selectRatePolitician: selectRatePolitician,
+    openCorrectionModal: openCorrectionModal,
+    closeCorrectionModal: closeCorrectionModal,
+    submitCorrection: submitCorrection
   };
 })();

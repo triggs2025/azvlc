@@ -185,6 +185,7 @@
       <div class="admin-tabs">
         <button class="admin-tab active" onclick="showTab('policies', this)">Policies</button>
         <button class="admin-tab" onclick="showTab('politicians', this)">Politicians</button>
+        <button class="admin-tab" onclick="showTab('corrections', this)">Corrections <span id="correctionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('help', this)">How-To Guide</button>
       </div>
 
@@ -222,6 +223,12 @@
           </select>
         </div>
         <div id="adminPoliticiansList"></div>
+      </div>
+
+      <!-- CORRECTIONS PANEL -->
+      <div id="panel-corrections" class="admin-panel">
+        <h3 style="color:var(--navy);margin-bottom:20px">Policy Corrections</h3>
+        <div id="adminCorrectionsList"></div>
       </div>
 
       <!-- HELP PANEL -->
@@ -552,6 +559,7 @@
         politiciansSha = results[1].sha;
         renderAdminPolicies();
         renderAdminPoliticians();
+        loadCorrections();
         showStatus('Data loaded.', 'success');
       }).catch(function(err) {
         showStatus('Error loading data: ' + err.message, 'error');
@@ -874,6 +882,121 @@
             showStatus('Error deleting: ' + err.message, 'error');
           });
       };
+    }
+
+    // ── CORRECTIONS ──
+    var corrections = [];
+    var correctionsShaAdmin = '';
+
+    function loadCorrections() {
+      fetch('data/corrections.json').then(function(r) { return r.json(); }).then(function(d) {
+        corrections = d;
+        renderAdminCorrections();
+        var badge = document.getElementById('correctionBadge');
+        if (corrections.length > 0) {
+          badge.textContent = corrections.length;
+          badge.style.display = 'inline';
+        } else {
+          badge.style.display = 'none';
+        }
+      });
+      // load sha for deleting
+      fetch('https://api.github.com/repos/triggs2025/azvlc/contents/data/corrections.json?ref=master')
+        .then(function(r) { return r.json(); })
+        .then(function(result) { correctionsShaAdmin = result.sha; })
+        .catch(function() {});
+    }
+
+    function renderAdminCorrections() {
+      var el = document.getElementById('adminCorrectionsList');
+      if (corrections.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No corrections submitted.</p></div>';
+        return;
+      }
+      el.innerHTML = corrections.map(function(c, idx) {
+        var date = new Date(c.submittedAt).toLocaleDateString();
+        return '<div class="admin-item" style="border-left-color:var(--orange);flex-direction:column">' +
+          '<h4>Correction for: ' + esc(c.originalName) + '</h4>' +
+          '<p style="margin-top:4px"><strong>Reason:</strong> ' + esc(c.reason) + '</p>' +
+          '<p><strong>Submitted:</strong> ' + date + (c.submitterEmail ? ' by ' + esc(c.submitterEmail) : ' (Anonymous)') + '</p>' +
+          '<div style="margin-top:12px;background:#f8f9fa;padding:12px;border-radius:6px;font-size:0.85em">' +
+            '<p><strong>Name:</strong> ' + esc(c.correctedName) + '</p>' +
+            '<p><strong>Sponsor:</strong> ' + esc(c.correctedSponsor) + '</p>' +
+            '<p><strong>Category:</strong> ' + capitalize(c.correctedCategory) + '</p>' +
+            '<p><strong>Status:</strong> ' + formatStatus(c.correctedStatus) + '</p>' +
+            '<p><strong>Description:</strong> ' + esc(c.correctedDescription) + '</p>' +
+            (c.correctedLink ? '<p><strong>Link:</strong> <a href="' + esc(c.correctedLink) + '" target="_blank">' + esc(c.correctedLink) + '</a></p>' : '') +
+          '</div>' +
+          '<div style="margin-top:12px;display:flex;gap:8px">' +
+            '<button class="btn btn-sm btn-success" onclick="applyCorrection(' + idx + ')">Apply Correction</button>' +
+            '<button class="btn btn-sm btn-danger" onclick="dismissCorrection(' + idx + ')">Dismiss</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function applyCorrection(idx) {
+      var c = corrections[idx];
+      if (!c) return;
+      var policy = policies.find(function(p) { return p.id === c.policyId; });
+      if (policy) {
+        policy.name = c.correctedName;
+        policy.sponsor = c.correctedSponsor;
+        policy.category = c.correctedCategory;
+        policy.description = c.correctedDescription;
+        policy.link = c.correctedLink;
+        policy.status = c.correctedStatus;
+      }
+
+      corrections.splice(idx, 1);
+
+      showStatus('Applying correction...', '');
+
+      // save both files
+      saveFileToGitHub('data/policies.json', policies, policiesSha)
+        .then(function(result) {
+          policiesSha = result.content.sha;
+          renderAdminPolicies();
+          return saveCorrectionsList();
+        })
+        .then(function() {
+          renderAdminCorrections();
+          updateCorrectionBadge();
+          showStatus('Correction applied!', 'success');
+        })
+        .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    function dismissCorrection(idx) {
+      corrections.splice(idx, 1);
+      showStatus('Dismissing correction...', '');
+      saveCorrectionsList().then(function() {
+        renderAdminCorrections();
+        updateCorrectionBadge();
+        showStatus('Correction dismissed.', 'success');
+      }).catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    function saveCorrectionsList() {
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(corrections, null, 2) + '\n')));
+      return ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/corrections.json', {
+        message: 'Update corrections',
+        content: content,
+        sha: correctionsShaAdmin,
+        branch: 'master'
+      }).then(function(result) {
+        if (result.content) correctionsShaAdmin = result.content.sha;
+      });
+    }
+
+    function updateCorrectionBadge() {
+      var badge = document.getElementById('correctionBadge');
+      if (corrections.length > 0) {
+        badge.textContent = corrections.length;
+        badge.style.display = 'inline';
+      } else {
+        badge.style.display = 'none';
+      }
     }
 
     // ── Grades editing ──
