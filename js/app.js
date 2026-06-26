@@ -239,7 +239,7 @@
     topEl.innerHTML = sorted.map(function (p) {
       var avg = calcGrade(p.grades);
       var total = gradeTotal(p.grades);
-      return '<div class="card">' +
+      return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.nav(\'politicians\')">' +
         '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<p>' + esc(p.position) +
           (p.party ? ' &middot; ' + esc(p.party) : '') +
@@ -261,7 +261,7 @@
         topPolEl.innerHTML = emptyState('No kudos yet');
       } else {
         topPolEl.innerHTML = top3Policies.map(function (p) {
-          return '<div class="card">' +
+          return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.nav(\'policies\')">' +
             '<h3>' + esc(p.name) + '</h3>' +
             '<p>' + esc(p.description) + '</p>' +
             '<div style="margin-top:8px">' +
@@ -285,7 +285,7 @@
     }
 
     passedEl.innerHTML = passed.map(function (p) {
-      return '<div class="card">' +
+      return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.nav(\'policies\')">' +
         '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<p>' + esc(p.description) + '</p>' +
         '<span class="badge badge-passed">Passed</span>' +
@@ -960,6 +960,7 @@
       navigate('rate');
       setTimeout(function() { selectRatePolitician(id); }, 100);
     },
+    nav: navigate,
     openCorrectionModal: openCorrectionModal,
     closeCorrectionModal: closeCorrectionModal,
     submitCorrection: submitCorrection
