@@ -48,6 +48,7 @@
         loadPoliticiansWithSha();
         loadPoliciesWithSha();
         loadCorrectionsWithSha();
+        loadPolSubmissionsWithSha();
       })
       .catch(function (err) {
         console.error('Failed to load data:', err);
@@ -713,6 +714,104 @@
     });
   }
 
+  // ── Add Politician Submissions ──
+  var polSubmissionsSha = '';
+
+  function loadPolSubmissionsWithSha() {
+    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/politician-submissions.json?ref=' + CONFIG.branch)
+      .then(function (r) { return r.json(); })
+      .then(function (result) { polSubmissionsSha = result.sha; })
+      .catch(function () { polSubmissionsSha = ''; });
+  }
+
+  function openAddPoliticianModal() {
+    var modal = document.getElementById('addPoliticianModal');
+    modal.style.display = 'flex';
+    document.getElementById('addPoliticianForm').reset();
+    document.getElementById('addPoliticianSuccess').classList.remove('show');
+  }
+
+  function closeAddPoliticianModal() {
+    document.getElementById('addPoliticianModal').style.display = 'none';
+  }
+
+  function submitAddPolitician(e) {
+    e.preventDefault();
+    var form = e.target;
+    var submitBtn = form.querySelector('.form-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    var submission = {
+      id: Date.now(),
+      name: document.getElementById('addPolName').value,
+      position: document.getElementById('addPolPosition').value,
+      party: document.getElementById('addPolParty').value,
+      district: document.getElementById('addPolDistrict').value || '',
+      email: document.getElementById('addPolEmail').value || '',
+      website: document.getElementById('addPolWebsite').value || '',
+      veteran: document.getElementById('addPolVeteran').value === 'true',
+      submitterEmail: document.getElementById('addPolSubmitterEmail').value || '',
+      submittedAt: new Date().toISOString()
+    };
+
+    fetch('data/politician-submissions.json').then(function (r) { return r.json(); }).then(function (submissions) {
+      submissions.push(submission);
+
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(submissions, null, 2) + '\n')));
+      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/politician-submissions.json', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'token ' + CONFIG.ghToken
+        },
+        body: JSON.stringify({
+          message: 'Politician submission: ' + submission.name,
+          content: content,
+          sha: polSubmissionsSha,
+          branch: CONFIG.branch
+        })
+      });
+    }).then(function (r) { return r.json(); }).then(function (result) {
+      if (result.content) {
+        polSubmissionsSha = result.content.sha;
+
+        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'token ' + CONFIG.ghToken
+          },
+          body: JSON.stringify({
+            title: 'New Politician Submission: ' + submission.name,
+            body: '**Name:** ' + submission.name + '\n' +
+              '**Position:** ' + submission.position + '\n' +
+              '**Party:** ' + submission.party + '\n' +
+              '**District:** ' + (submission.district || 'N/A') + '\n' +
+              '**Veteran:** ' + (submission.veteran ? 'Yes' : 'No') + '\n' +
+              '**Submitted by:** ' + (submission.submitterEmail || 'Anonymous') + '\n' +
+              '**Date:** ' + submission.submittedAt + '\n\n' +
+              'Review this submission in the [Admin Panel](https://azvlc.org/admin.html).',
+            labels: ['politician-submission']
+          })
+        }).catch(function () {});
+
+        var successEl = document.getElementById('addPoliticianSuccess');
+        successEl.classList.add('show');
+        setTimeout(function () { successEl.classList.remove('show'); closeAddPoliticianModal(); }, 3000);
+      } else {
+        throw new Error(result.message || 'Save failed');
+      }
+    }).catch(function (err) {
+      console.error('Politician submission error:', err);
+      alert('There was an issue submitting. Please try again.');
+    }).finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit for Review';
+      loadPolSubmissionsWithSha();
+    });
+  }
+
   // ── Forms ──
   function bindForms() {
     var policyForm = document.getElementById('policyForm');
@@ -985,6 +1084,9 @@
     },
     openCorrectionModal: openCorrectionModal,
     closeCorrectionModal: closeCorrectionModal,
-    submitCorrection: submitCorrection
+    submitCorrection: submitCorrection,
+    openAddPoliticianModal: openAddPoliticianModal,
+    closeAddPoliticianModal: closeAddPoliticianModal,
+    submitAddPolitician: submitAddPolitician
   };
 })();
