@@ -44,7 +44,7 @@
         var separator = '  ★  ';
         var text = data.messages.join(separator) + separator;
         content.textContent = text + text;
-        var speed = Math.max(15, text.length * 0.4);
+        var speed = Math.max(13, text.length * 0.36);
         content.style.animationDuration = speed + 's';
         bar.style.display = 'block';
       })
