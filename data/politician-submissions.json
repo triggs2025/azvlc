@@ -1,18 +1,1 @@
-[
-  {
-    "id": 1782447932531,
-    "type": "modify",
-    "politicianId": 137,
-    "originalName": "Aaron Márquez",
-    "name": "Aaron Márquez",
-    "position": "State Representative",
-    "party": "Democrat",
-    "district": "District 5",
-    "email": "AMARQUEZ@azleg.gov",
-    "website": "https://www.azleg.gov/House/House-member/?legislature=57&session=130&legislator=2355",
-    "veteran": true,
-    "reason": "He is a Veteran",
-    "submitterEmail": "",
-    "submittedAt": "2026-06-26T04:25:32.531Z"
-  }
-]
+[]
