@@ -229,5 +229,19 @@
     "kudos": 0,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/85473",
     "approved": true
+  },
+  {
+    "id": 37,
+    "name": "Veteran Tracking on Arizona Corporation Commission",
+    "sponsor": "AZVLC",
+    "category": "suggestion",
+    "description": "Help track how many Veteran Owned Businesses are in Arizona.",
+    "status": "proposed",
+    "kudos": 0,
+    "link": "",
+    "approved": true,
+    "submittedBy": "",
+    "submittedEmail": "triggs@nscshirts.com",
+    "submittedAt": "2026-06-26T00:15:43.854Z"
   }
 ]
