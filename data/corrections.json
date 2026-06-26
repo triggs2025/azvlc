@@ -1,16 +1,1 @@
-[
-  {
-    "id": 1782487784674,
-    "policyId": 37,
-    "originalName": "Veteran Tracking on Arizona Corporation Commission",
-    "correctedName": "Voluntary Data Tracking for Veteran-Owned Businesses with ACC",
-    "correctedSponsor": "AZVLC",
-    "correctedCategory": "suggestion",
-    "correctedDescription": "The Problem \nOur state currently lacks accurate data on the economic impact, growth, and geographic distribution of veteran-owned businesses. Because the state business registry does not capture this information, policymakers and economic development agencies cannot efficiently allocate resources, network opportunities, or support systems tailored to our local veteran entrepreneurs. \n\nThe Solution \nWe propose a minor, low-cost administrative update to the state's online business portal. This initiative would add a voluntary, self-reporting checkbox for veteran ownership during initial business formation and annual report filings. \n\nWhy This Works \nZero Bureaucracy: The system is purely voluntary and self-reported. The state will not require or audit verification paperwork (such as DD-214 forms), ensuring no new administrative or compliance burdens are placed on state agencies. \n\nSmart Data: This simple metric provides immediate, actionable statistical insights into veteran-owned business trends, helping economic development groups better serve those who served our country. \n\nCost-Effective: This change requires a minor IT update to the existing digital filing platform. It eliminates the need to create a new state agency, certification registry, or costly oversight program. \n\nProven Success: Other states, including Texas and Missouri, successfully utilize self-reporting mechanisms to accurately map, understand, and champion their veteran business communities.",
-    "correctedLink": "",
-    "correctedStatus": "proposed",
-    "reason": "Better description",
-    "submitterEmail": "",
-    "submittedAt": "2026-06-26T15:29:44.674Z"
-  }
-]
+[]
