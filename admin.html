@@ -901,8 +901,7 @@
         }
       });
       // load sha for deleting
-      fetch('https://api.github.com/repos/triggs2025/azvlc/contents/data/corrections.json?ref=master')
-        .then(function(r) { return r.json(); })
+      ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/corrections.json?ref=master')
         .then(function(result) { correctionsShaAdmin = result.sha; })
         .catch(function() {});
     }
