@@ -186,6 +186,7 @@
         <button class="admin-tab active" onclick="showTab('policies', this)">Policies</button>
         <button class="admin-tab" onclick="showTab('politicians', this)">Politicians</button>
         <button class="admin-tab" onclick="showTab('corrections', this)">Corrections <span id="correctionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
+        <button class="admin-tab" onclick="showTab('polsubmissions', this)">Politician Submissions <span id="polSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('help', this)">How-To Guide</button>
       </div>
 
@@ -229,6 +230,13 @@
       <div id="panel-corrections" class="admin-panel">
         <h3 style="color:var(--navy);margin-bottom:20px">Policy Corrections</h3>
         <div id="adminCorrectionsList"></div>
+      </div>
+
+      <!-- POLITICIAN SUBMISSIONS PANEL -->
+      <div id="panel-polsubmissions" class="admin-panel">
+        <h3 style="color:var(--navy);margin-bottom:20px">Politician Submissions</h3>
+        <p style="color:var(--text-muted);margin-bottom:20px;font-size:0.9em">These are politicians submitted by the public. Approve to add them to the scorecard, or dismiss to remove the submission.</p>
+        <div id="adminPolSubmissionsList"></div>
       </div>
 
       <!-- HELP PANEL -->
@@ -560,6 +568,7 @@
         renderAdminPolicies();
         renderAdminPoliticians();
         loadCorrections();
+        loadPolSubmissions();
         showStatus('Data loaded.', 'success');
       }).catch(function(err) {
         showStatus('Error loading data: ' + err.message, 'error');
@@ -992,6 +1001,124 @@
       var badge = document.getElementById('correctionBadge');
       if (corrections.length > 0) {
         badge.textContent = corrections.length;
+        badge.style.display = 'inline';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    // ── Politician Submissions ──
+    var polSubmissions = [];
+    var polSubmissionsShaAdmin = '';
+
+    function loadPolSubmissions() {
+      fetch('data/politician-submissions.json?t=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          polSubmissions = d || [];
+          renderPolSubmissions();
+          updatePolSubmissionBadge();
+        })
+        .catch(function(err) {
+          console.error('Failed to load politician submissions:', err);
+          polSubmissions = [];
+          renderPolSubmissions();
+        });
+      ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/politician-submissions.json?ref=master')
+        .then(function(result) { polSubmissionsShaAdmin = result.sha; })
+        .catch(function() {});
+    }
+
+    function renderPolSubmissions() {
+      var el = document.getElementById('adminPolSubmissionsList');
+      if (polSubmissions.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No politician submissions to review.</p></div>';
+        return;
+      }
+      el.innerHTML = polSubmissions.map(function(s, idx) {
+        var date = new Date(s.submittedAt).toLocaleDateString();
+        return '<div class="admin-item" style="border-left-color:var(--gold);flex-direction:column">' +
+          '<h4>' + esc(s.name) + '</h4>' +
+          '<div style="margin-top:8px;background:#f8f9fa;padding:12px;border-radius:6px;font-size:0.85em">' +
+            '<p><strong>Position:</strong> ' + esc(s.position) + '</p>' +
+            '<p><strong>Party:</strong> ' + esc(s.party) + '</p>' +
+            (s.district ? '<p><strong>District:</strong> ' + esc(s.district) + '</p>' : '') +
+            (s.email ? '<p><strong>Email:</strong> ' + esc(s.email) + '</p>' : '') +
+            (s.website ? '<p><strong>Website:</strong> <a href="' + esc(s.website) + '" target="_blank">' + esc(s.website) + '</a></p>' : '') +
+            '<p><strong>Veteran:</strong> ' + (s.veteran ? 'Yes' : 'No') + '</p>' +
+          '</div>' +
+          '<p style="margin-top:8px"><strong>Submitted:</strong> ' + date + (s.submitterEmail ? ' by ' + esc(s.submitterEmail) : ' (Anonymous)') + '</p>' +
+          '<div style="margin-top:12px;display:flex;gap:8px">' +
+            '<button class="btn btn-sm btn-success" onclick="approvePolSubmission(' + idx + ')">Approve &amp; Add</button>' +
+            '<button class="btn btn-sm btn-danger" onclick="dismissPolSubmission(' + idx + ')">Dismiss</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function approvePolSubmission(idx) {
+      var s = polSubmissions[idx];
+      if (!s) return;
+
+      var newPolitician = {
+        id: nextId(politicians),
+        name: s.name,
+        position: s.position,
+        party: s.party,
+        district: s.district || '',
+        email: s.email || '',
+        website: s.website || '',
+        veteran: !!s.veteran,
+        photo: '',
+        grades: { A: 0, B: 0, C: 0, D: 0, F: 0 },
+        kudos: 0
+      };
+
+      politicians.push(newPolitician);
+      polSubmissions.splice(idx, 1);
+
+      showStatus('Approving politician...', '');
+
+      saveFileToGitHub('data/politicians.json', politicians, politiciansSha)
+        .then(function(result) {
+          politiciansSha = result.content.sha;
+          renderAdminPoliticians();
+          return savePolSubmissionsList();
+        })
+        .then(function() {
+          renderPolSubmissions();
+          updatePolSubmissionBadge();
+          showStatus('Politician "' + newPolitician.name + '" approved and added!', 'success');
+        })
+        .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    function dismissPolSubmission(idx) {
+      polSubmissions.splice(idx, 1);
+      showStatus('Dismissing submission...', '');
+      savePolSubmissionsList().then(function() {
+        renderPolSubmissions();
+        updatePolSubmissionBadge();
+        showStatus('Submission dismissed.', 'success');
+      }).catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    function savePolSubmissionsList() {
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(polSubmissions, null, 2) + '\n')));
+      return ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/politician-submissions.json', {
+        message: 'Update politician submissions',
+        content: content,
+        sha: polSubmissionsShaAdmin,
+        branch: 'master'
+      }).then(function(result) {
+        if (result.content) polSubmissionsShaAdmin = result.content.sha;
+      });
+    }
+
+    function updatePolSubmissionBadge() {
+      var badge = document.getElementById('polSubmissionBadge');
+      if (polSubmissions.length > 0) {
+        badge.textContent = polSubmissions.length;
         badge.style.display = 'inline';
       } else {
         badge.style.display = 'none';
