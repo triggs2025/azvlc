@@ -97,7 +97,7 @@
             '<p style="text-align:center;color:var(--text-muted);font-size:0.9em">Share this policy with fellow Veterans</p>' +
             '<div class="share-buttons">' +
               '<a class="share-btn share-btn-x" href="https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url) + '" target="_blank">𝕏 Share</a>' +
-              '<a class="share-btn share-btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '&quote=' + encodeURIComponent(shareText) + '" target="_blank">Facebook</a>' +
+              '<button class="share-btn share-btn-fb" onclick="shareFB(\'' + url.replace(/'/g, "\\'") + '\', \'' + shareText.replace(/'/g, "\\'") + '\')">Facebook</button>' +
               '<button class="share-btn share-btn-email" onclick="window.open(\'mailto:?subject=' + encodeURIComponent(p.name + ' - Arizona Veterans Policy') + '&body=' + encodeURIComponent(shareText + ' ' + url) + '\')">Email</button>' +
               '<button class="share-btn share-btn-copy" onclick="copyLink()">Copy Link</button>' +
             '</div>' +
@@ -106,6 +106,15 @@
             '</div>' +
           '</div>' +
         '</div>';
+    }
+
+    function shareFB(url, text) {
+      navigator.clipboard.writeText(text + ' ' + url).then(function() {
+        alert('Text and link copied! Facebook will open — just paste into your post.');
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank');
+      }).catch(function() {
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank');
+      });
     }
 
     function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }

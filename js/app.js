@@ -223,7 +223,13 @@
     var p = policies.find(function(x) { return x.id === policyId; });
     if (!p) return;
     var url = 'https://azvlc.org/policy.html?id=' + policyId;
-    window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '&quote=' + encodeURIComponent('As a Veteran I support this - check it out! ' + p.name), '_blank');
+    var text = 'As a Veteran I support this - check it out! ' + p.name + ' ' + url;
+    navigator.clipboard.writeText(text).then(function() {
+      alert('Text and link copied to your clipboard! Facebook will open — just paste into your post.');
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank');
+    }).catch(function() {
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank');
+    });
   }
 
   // ── Page view tracking ──
