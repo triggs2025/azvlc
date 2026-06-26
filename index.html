@@ -54,7 +54,8 @@
   </div>
   <style>
     @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-    #tickerBar:hover div[id^="tickerLine"] { animation-play-state: paused; }
+    #tickerBar.paused #tickerLine1,
+    #tickerBar.paused #tickerLine2 { animation-play-state: paused !important; }
     #tickerBar a { color: var(--gold); text-decoration: underline; }
     #tickerBar a:hover { color: var(--gold-light); }
   </style>

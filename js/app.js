@@ -90,6 +90,8 @@
         line2.style.animationDelay = '-' + (baseSpeed2 / speedMultiplier / 2) + 's';
 
         bar.style.display = 'block';
+        bar.addEventListener('mouseenter', function() { bar.classList.add('paused'); });
+        bar.addEventListener('mouseleave', function() { bar.classList.remove('paused'); });
       })
       .catch(function() {});
   }
