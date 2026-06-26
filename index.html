@@ -122,7 +122,8 @@
         <button class="filter-btn" onclick="AZVLC.filterPoliticians('republican', this)">Republican</button>
         <button class="filter-btn" onclick="AZVLC.filterPoliticians('democrat', this)">Democrat</button>
         <button class="filter-btn" onclick="AZVLC.filterPoliticians('veteran', this)">Veterans</button>
-        <button class="btn btn-sm btn-blue" style="margin-left:auto;font-size:0.85em;padding:8px 16px" onclick="AZVLC.openAddPoliticianModal()">Add Politician</button>
+        <button class="btn btn-sm btn-blue" style="margin-left:auto;font-size:0.85em;padding:8px 16px" onclick="AZVLC.openModifyPoliticianModal()">Modify Politician</button>
+        <button class="btn btn-sm btn-blue" style="font-size:0.85em;padding:8px 16px" onclick="AZVLC.openAddPoliticianModal()">Add Politician</button>
       </div>
 
       <div style="margin-bottom:20px">
@@ -320,6 +321,85 @@
         </div>
       </form>
       <div class="alert alert-success" id="correctionSuccess" style="margin-top:12px">Correction submitted. Thank you for helping us keep the data accurate!</div>
+    </div>
+  </div>
+
+  <div id="modifyPoliticianModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto">
+    <div style="background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.2);width:100%;max-width:600px;padding:32px">
+      <button onclick="AZVLC.closeModifyPoliticianModal()" style="float:right;background:none;border:none;font-size:1.5em;cursor:pointer;color:#666">&times;</button>
+      <h3 style="color:var(--navy);margin-bottom:20px">Request Politician Modification</h3>
+      <p style="color:var(--text-muted);font-size:0.9em;margin-bottom:16px">Select a politician, edit the fields you want changed, and submit for admin review.</p>
+      <form id="modifyPoliticianForm" onsubmit="AZVLC.submitModifyPolitician(event)">
+        <div class="form-group">
+          <label for="modPolSelect">Select Politician *</label>
+          <select id="modPolSelect" required onchange="AZVLC.populateModifyFields()">
+            <option value="">Choose a politician...</option>
+          </select>
+        </div>
+        <div id="modifyFieldsContainer" style="display:none">
+          <div class="form-group">
+            <label for="modPolName">Full Name</label>
+            <input type="text" id="modPolName">
+          </div>
+          <div class="form-group">
+            <label for="modPolPosition">Position</label>
+            <select id="modPolPosition">
+              <option value="State Representative">State Representative</option>
+              <option value="State Senator">State Senator</option>
+              <option value="Governor">Governor</option>
+              <option value="US Representative">US Representative</option>
+              <option value="US Senator">US Senator</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="modPolParty">Party</label>
+            <select id="modPolParty">
+              <option value="Republican">Republican</option>
+              <option value="Democrat">Democrat</option>
+              <option value="Independent">Independent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="modPolDistrict">District</label>
+            <input type="text" id="modPolDistrict">
+          </div>
+          <div class="form-group">
+            <label for="modPolEmail">Politician's Email</label>
+            <input type="email" id="modPolEmail">
+          </div>
+          <div class="form-group">
+            <label for="modPolWebsite">Legislative Profile URL</label>
+            <input type="url" id="modPolWebsite" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label for="modPolVeteran">Is this politician a Veteran?</label>
+            <select id="modPolVeteran">
+              <option value="false">No</option>
+              <option value="true">Yes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="modPolReason">What needs changing and why? *</label>
+            <textarea id="modPolReason" required placeholder="Explain what is incorrect or needs updating..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="modPolAction">Action Requested *</label>
+            <select id="modPolAction">
+              <option value="modify">Modify Information</option>
+              <option value="delete">Delete This Politician</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="modPolSubmitterEmail">Your Email (optional)</label>
+            <input type="email" id="modPolSubmitterEmail" placeholder="your@email.com">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button type="submit" class="form-submit" style="flex:1">Submit for Review</button>
+            <button type="button" class="btn" style="background:#eee;color:var(--text)" onclick="AZVLC.closeModifyPoliticianModal()">Cancel</button>
+          </div>
+        </div>
+      </form>
+      <div class="alert alert-success" id="modifyPoliticianSuccess" style="margin-top:12px">Modification request submitted for review. Thank you!</div>
     </div>
   </div>
 

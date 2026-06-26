@@ -1037,8 +1037,16 @@
       }
       el.innerHTML = polSubmissions.map(function(s, idx) {
         var date = new Date(s.submittedAt).toLocaleDateString();
-        return '<div class="admin-item" style="border-left-color:var(--gold);flex-direction:column">' +
-          '<h4>' + esc(s.name) + '</h4>' +
+        var isModify = s.type === 'modify';
+        var isDelete = s.type === 'delete';
+        var typeLabel = isDelete ? '<span class="badge badge-failed">Delete Request</span>' :
+                        isModify ? '<span class="badge badge-category">Modify Request</span>' :
+                        '<span class="badge badge-passed">New Submission</span>';
+        var approveLabel = isDelete ? 'Approve Delete' : isModify ? 'Apply Changes' : 'Approve &amp; Add';
+        return '<div class="admin-item" style="border-left-color:' + (isDelete ? 'var(--red)' : 'var(--gold)') + ';flex-direction:column">' +
+          '<h4>' + esc(s.name) + ' ' + typeLabel + '</h4>' +
+          (s.originalName && (isModify || isDelete) ? '<p style="margin-top:4px"><strong>Original:</strong> ' + esc(s.originalName) + '</p>' : '') +
+          (s.reason ? '<p style="margin-top:4px"><strong>Reason:</strong> ' + esc(s.reason) + '</p>' : '') +
           '<div style="margin-top:8px;background:#f8f9fa;padding:12px;border-radius:6px;font-size:0.85em">' +
             '<p><strong>Position:</strong> ' + esc(s.position) + '</p>' +
             '<p><strong>Party:</strong> ' + esc(s.party) + '</p>' +
@@ -1049,7 +1057,7 @@
           '</div>' +
           '<p style="margin-top:8px"><strong>Submitted:</strong> ' + date + (s.submitterEmail ? ' by ' + esc(s.submitterEmail) : ' (Anonymous)') + '</p>' +
           '<div style="margin-top:12px;display:flex;gap:8px">' +
-            '<button class="btn btn-sm btn-success" onclick="approvePolSubmission(' + idx + ')">Approve &amp; Add</button>' +
+            '<button class="btn btn-sm btn-success" onclick="approvePolSubmission(' + idx + ')">' + approveLabel + '</button>' +
             '<button class="btn btn-sm btn-danger" onclick="dismissPolSubmission(' + idx + ')">Dismiss</button>' +
           '</div>' +
         '</div>';
@@ -1060,24 +1068,43 @@
       var s = polSubmissions[idx];
       if (!s) return;
 
-      var newPolitician = {
-        id: nextId(politicians),
-        name: s.name,
-        position: s.position,
-        party: s.party,
-        district: s.district || '',
-        email: s.email || '',
-        website: s.website || '',
-        veteran: !!s.veteran,
-        photo: '',
-        grades: { A: 0, B: 0, C: 0, D: 0, F: 0 },
-        kudos: 0
-      };
+      var statusMsg = '';
 
-      politicians.push(newPolitician);
+      if (s.type === 'delete') {
+        politicians = politicians.filter(function(p) { return p.id !== s.politicianId; });
+        statusMsg = 'Politician "' + s.originalName + '" deleted.';
+      } else if (s.type === 'modify') {
+        var existing = politicians.find(function(p) { return p.id === s.politicianId; });
+        if (existing) {
+          existing.name = s.name;
+          existing.position = s.position;
+          existing.party = s.party;
+          existing.district = s.district || '';
+          existing.email = s.email || '';
+          existing.website = s.website || '';
+          existing.veteran = !!s.veteran;
+        }
+        statusMsg = 'Politician "' + s.name + '" updated.';
+      } else {
+        var newPolitician = {
+          id: nextId(politicians),
+          name: s.name,
+          position: s.position,
+          party: s.party,
+          district: s.district || '',
+          email: s.email || '',
+          website: s.website || '',
+          veteran: !!s.veteran,
+          photo: '',
+          grades: { A: 0, B: 0, C: 0, D: 0, F: 0 },
+          kudos: 0
+        };
+        politicians.push(newPolitician);
+        statusMsg = 'Politician "' + newPolitician.name + '" approved and added!';
+      }
+
       polSubmissions.splice(idx, 1);
-
-      showStatus('Approving politician...', '');
+      showStatus('Processing...', '');
 
       saveFileToGitHub('data/politicians.json', politicians, politiciansSha)
         .then(function(result) {
@@ -1088,7 +1115,7 @@
         .then(function() {
           renderPolSubmissions();
           updatePolSubmissionBadge();
-          showStatus('Politician "' + newPolitician.name + '" approved and added!', 'success');
+          showStatus(statusMsg, 'success');
         })
         .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
     }
