@@ -167,7 +167,7 @@
       "D": 0,
       "F": 0
     },
-    "kudos": 0,
+    "kudos": 1,
     "email": "MCARBONE@azleg.gov"
   },
   {
@@ -708,6 +708,7 @@
     "position": "State Representative",
     "party": "Democrat",
     "district": "District 5",
+    "email": "AMARQUEZ@azleg.gov",
     "website": "https://www.azleg.gov/House/House-member/?legislature=57&session=130&legislator=2355",
     "veteran": false,
     "photo": "",
@@ -718,8 +719,7 @@
       "D": 0,
       "F": 0
     },
-    "kudos": 0,
-    "email": "AMARQUEZ@azleg.gov"
+    "kudos": 0
   },
   {
     "id": 138,
@@ -1525,8 +1525,9 @@
     "position": "State Senator",
     "party": "Republican",
     "district": "District 17",
+    "email": "VLEACH@azleg.gov",
     "website": "https://www.azleg.gov/Senate/Senate-member/?legislature=57&session=130&legislator=2398",
-    "veteran": false,
+    "veteran": true,
     "photo": "",
     "grades": {
       "A": 0,
@@ -1535,8 +1536,7 @@
       "D": 0,
       "F": 0
     },
-    "kudos": 0,
-    "email": "VLEACH@azleg.gov"
+    "kudos": 0
   },
   {
     "id": 219,
@@ -1639,8 +1639,9 @@
     "position": "State Senator",
     "party": "Republican",
     "district": "District 7",
+    "email": "WROGERS@azleg.gov",
     "website": "https://www.azleg.gov/Senate/Senate-member/?legislature=57&session=130&legislator=2394",
-    "veteran": false,
+    "veteran": true,
     "photo": "",
     "grades": {
       "A": 0,
@@ -1649,8 +1650,7 @@
       "D": 0,
       "F": 0
     },
-    "kudos": 0,
-    "email": "WROGERS@azleg.gov"
+    "kudos": 0
   },
   {
     "id": 225,

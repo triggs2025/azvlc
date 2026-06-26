@@ -117,7 +117,7 @@ body {
     url('../assets/hero.jpg') center/cover no-repeat;
   color: var(--white);
   text-align: center;
-  padding: 80px 20px;
+  padding: 120px 20px 80px;
   border-bottom: 4px solid var(--gold);
 }
 
@@ -263,6 +263,12 @@ body {
   font-size: 2.5em;
   color: var(--blue);
   font-weight: 700;
+}
+
+.stat-card.clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 /* ── Cards ── */
