@@ -250,6 +250,30 @@
         '</div>';
     }).join('');
 
+    // top policies by kudos
+    var topPoliciesWithKudos = policies.filter(function (p) { return (p.kudos || 0) > 0; });
+    topPoliciesWithKudos.sort(function (a, b) { return (b.kudos || 0) - (a.kudos || 0); });
+    var top3Policies = topPoliciesWithKudos.slice(0, 3);
+
+    var topPolEl = document.getElementById('topPolicies');
+    if (topPolEl) {
+      if (top3Policies.length === 0) {
+        topPolEl.innerHTML = emptyState('No kudos yet');
+      } else {
+        topPolEl.innerHTML = top3Policies.map(function (p) {
+          return '<div class="card">' +
+            '<h3>' + esc(p.name) + '</h3>' +
+            '<p>' + esc(p.description) + '</p>' +
+            '<div style="margin-top:8px">' +
+              '<span class="badge badge-category">' + capitalize(p.category) + '</span> ' +
+              '<span class="badge badge-' + p.status + '">' + formatStatus(p.status) + '</span>' +
+              '<span style="font-weight:700;color:var(--blue);margin-left:12px">' + (p.kudos || 0) + ' kudos</span>' +
+            '</div>' +
+            '</div>';
+        }).join('');
+      }
+    }
+
     // passed policies
     var passed = policies.filter(function (p) { return p.status === 'passed'; });
     var passedEl = document.getElementById('passedPolicies');
