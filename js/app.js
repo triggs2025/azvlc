@@ -35,13 +35,17 @@
 
   // ── Sponsor ──
   function loadSponsor() {
-    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/sponsor.json?ref=' + CONFIG.branch)
+    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/sponsor.json?ref=' + CONFIG.branch, {
+        headers: { 'Authorization': 'token ' + CONFIG.ghToken }
+      })
       .then(function(r) { return r.json(); })
       .then(function(result) {
+        if (!result.content) return null;
         var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
         return JSON.parse(decoded);
       })
       .then(function(data) {
+        if (!data) return;
         var el = document.getElementById('sponsorLine');
         if (!el || !data.name) return;
         el.innerHTML = esc(data.label || 'Sponsored by') + ' <a href="' + esc(data.url || '#') + '" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">' + esc(data.name) + '</a>';
