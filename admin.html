@@ -188,6 +188,7 @@
         <button class="admin-tab" onclick="showTab('politicians', this)">Politicians</button>
         <button class="admin-tab" onclick="showTab('corrections', this)">Corrections <span id="correctionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('polsubmissions', this)">Politician Submissions <span id="polSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
+        <button class="admin-tab" onclick="showTab('contacts', this)">Contacts <span id="contactsBadge" style="background:var(--blue);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('sponsor', this)">Sponsor</button>
         <button class="admin-tab" onclick="showTab('ticker', this)">Ticker</button>
         <button class="admin-tab" onclick="showTab('help', this)">How-To Guide</button>
@@ -285,6 +286,14 @@
         <h3 style="color:var(--navy);margin-bottom:20px">Politician Submissions</h3>
         <p style="color:var(--text-muted);margin-bottom:20px;font-size:0.9em">These are politicians submitted by the public. Approve to add them to the scorecard, or dismiss to remove the submission.</p>
         <div id="adminPolSubmissionsList"></div>
+      </div>
+
+      <!-- CONTACTS PANEL -->
+      <div id="panel-contacts" class="admin-panel">
+        <h3 style="color:var(--navy);margin-bottom:8px">Collected Contacts</h3>
+        <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">Emails collected from rating and policy suggestion forms.</p>
+        <button class="btn btn-sm btn-blue" onclick="exportContacts()" style="margin-bottom:16px">Export as CSV</button>
+        <div id="adminContactsList"></div>
       </div>
 
       <!-- SPONSOR PANEL -->
@@ -681,6 +690,7 @@
         loadPolSubmissions();
         loadTicker();
         loadSponsor();
+        loadContacts();
         renderAnalytics();
         loadPageViews();
         showStatus('Data loaded.', 'success');
@@ -1334,6 +1344,60 @@
           showStatus('Kudos updated.', 'success');
         })
         .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    // ── Contacts ──
+    function loadContacts() {
+      fetch('data/contacts.json?t=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var el = document.getElementById('adminContactsList');
+          var badge = document.getElementById('contactsBadge');
+          if (data.length > 0) {
+            badge.textContent = data.length;
+            badge.style.display = 'inline';
+          } else {
+            badge.style.display = 'none';
+          }
+          if (data.length === 0) {
+            el.innerHTML = '<div class="admin-empty"><p>No contacts collected yet.</p></div>';
+            return;
+          }
+          el.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:0.9em">' +
+            '<thead><tr style="background:var(--navy);color:#fff">' +
+              '<th style="padding:10px;text-align:left">Email</th>' +
+              '<th style="padding:10px;text-align:left">Name</th>' +
+              '<th style="padding:10px;text-align:left">Source</th>' +
+              '<th style="padding:10px;text-align:left">Date</th>' +
+            '</tr></thead><tbody>' +
+            data.map(function(c, i) {
+              return '<tr style="border-bottom:1px solid #eee;background:' + (i % 2 ? '#f9f9f9' : '#fff') + '">' +
+                '<td style="padding:8px 10px">' + esc(c.email) + '</td>' +
+                '<td style="padding:8px 10px">' + esc(c.name || 'Anonymous') + '</td>' +
+                '<td style="padding:8px 10px">' + esc(c.source || '') + '</td>' +
+                '<td style="padding:8px 10px">' + esc(c.date || '') + '</td>' +
+              '</tr>';
+            }).join('') +
+            '</tbody></table>';
+        })
+        .catch(function() {});
+    }
+
+    function exportContacts() {
+      fetch('data/contacts.json?t=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var csv = 'Email,Name,Source,Date\n';
+          data.forEach(function(c) {
+            csv += '"' + (c.email || '') + '","' + (c.name || '') + '","' + (c.source || '') + '","' + (c.date || '') + '"\n';
+          });
+          var blob = new Blob([csv], { type: 'text/csv' });
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'azvlc_contacts.csv';
+          a.click();
+          URL.revokeObjectURL(a.href);
+        });
     }
 
     // ── Sponsor ──

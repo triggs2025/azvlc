@@ -96,6 +96,132 @@
       .catch(function() {});
   }
 
+  // ── Find My District ──
+  function populateDistrictDropdown() {
+    var sel = document.getElementById('districtSelect');
+    if (!sel) return;
+    for (var i = 1; i <= 30; i++) {
+      var opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = 'District ' + i;
+      sel.appendChild(opt);
+    }
+  }
+
+  function showDistrict(distNum) {
+    if (!distNum) {
+      document.getElementById('districtResults').style.display = 'none';
+      return;
+    }
+    var distLabel = 'District ' + distNum;
+    var reps = politicians.filter(function(p) {
+      return (p.district || '').replace(/\D/g, '') === String(distNum);
+    });
+
+    var resultsEl = document.getElementById('districtResults');
+    var titleEl = document.getElementById('districtTitle');
+    var cardsEl = document.getElementById('districtCards');
+
+    if (reps.length === 0) {
+      titleEl.textContent = distLabel;
+      cardsEl.innerHTML = '<div class="empty-state"><p>No legislators found for ' + distLabel + '</p></div>';
+      resultsEl.style.display = 'block';
+      return;
+    }
+
+    titleEl.textContent = 'Your Legislators — ' + distLabel;
+    cardsEl.innerHTML = reps.map(function(p) {
+      var avg = calcGrade(p.grades);
+      var total = gradeTotal(p.grades);
+      var voted = hasVotedKudo('politician', p.id);
+
+      return '<div class="card" id="district-card-' + p.id + '">' +
+        '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
+        '<p style="color:var(--text-muted);margin-bottom:4px">' + esc(p.position) +
+          (p.party ? ' &middot; ' + esc(p.party) : '') +
+          ' &middot; ' + esc(p.district) +
+        '</p>' +
+        (p.email ? '<p style="font-size:0.85em;margin-bottom:4px"><a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a></p>' : '') +
+        (p.website ? '<p style="margin-bottom:8px"><a href="' + esc(p.website) + '" target="_blank" rel="noopener">Legislative Profile &rarr;</a></p>' : '') +
+        (total > 0
+          ? '<div class="grade grade-' + avg.toLowerCase() + '">' + avg + '</div>' +
+            '<p style="font-size:0.85em;color:var(--text-muted);margin-bottom:12px">Based on ' + total + ' Veteran rating' + (total !== 1 ? 's' : '') + '</p>' +
+            '<div class="grade-breakdown">' +
+              gradeBox('A', p.grades.A) + gradeBox('B', p.grades.B) + gradeBox('C', p.grades.C) + gradeBox('D', p.grades.D) + gradeBox('F', p.grades.F) +
+            '</div>'
+          : '<p style="font-size:0.85em;color:var(--text-muted);margin-bottom:4px;font-style:italic">No Veteran ratings yet</p>') +
+        '<div class="kudos-bar">' +
+          '<button class="kudos-btn' + (voted ? ' voted' : '') + '" onclick="AZVLC.giveKudos(' + p.id + ',\'politician\')" ' + (voted ? 'disabled' : '') + '>' +
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>' +
+            (voted ? 'Thanked' : 'Give Kudos') +
+          '</button>' +
+          '<span class="kudos-count">' + (p.kudos || 0) + '</span>' +
+          '<a href="scorecard.html?id=' + p.id + '" class="btn btn-sm btn-success" style="margin-left:auto;font-size:0.8em">View Scorecard</a>' +
+          '<a href="#rate" class="btn btn-sm btn-blue" style="font-size:0.8em" onclick="AZVLC.rateFromCard(' + p.id + ')">Rate</a>' +
+        '</div>' +
+        '</div>';
+    }).join('');
+    resultsEl.style.display = 'block';
+  }
+
+  // ── Contact saving ──
+  var contactsSha = '';
+
+  function loadContactsSha() {
+    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/contacts.json?ref=' + CONFIG.branch)
+      .then(function(r) { return r.json(); })
+      .then(function(result) { contactsSha = result.sha; })
+      .catch(function() {});
+  }
+
+  function saveContact(email, name, source) {
+    if (!email || !CONFIG.ghToken || !contactsSha) return;
+
+    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/contacts.json?ref=' + CONFIG.branch, {
+      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
+      var contacts = JSON.parse(decoded);
+      var exists = contacts.some(function(c) { return c.email === email; });
+      if (exists) return null;
+      contacts.push({
+        email: email,
+        name: name || 'Anonymous',
+        source: source || 'unknown',
+        date: new Date().toISOString().split('T')[0]
+      });
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(contacts, null, 2) + '\n')));
+      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/contacts.json', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'token ' + CONFIG.ghToken
+        },
+        body: JSON.stringify({
+          message: 'New contact from ' + source,
+          content: content,
+          sha: result.sha,
+          branch: CONFIG.branch
+        })
+      });
+    })
+    .catch(function() {});
+  }
+
+  // ── Social share for policies ──
+  function sharePolicyX(policyId) {
+    var p = policies.find(function(x) { return x.id === policyId; });
+    if (!p) return;
+    var text = 'I support ' + p.name + '! Arizona Veterans deserve better. See all Veteran bills at azvlc.org #AZVets #Veterans';
+    window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+  }
+
+  function sharePolicyFB(policyId) {
+    window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('https://azvlc.org/index.html#policies'), '_blank');
+  }
+
   // ── Page view tracking ──
   function trackPageView() {
     if (sessionStorage.getItem('azvlc_viewed')) return;
@@ -149,10 +275,12 @@
         renderPolicies();
         renderPoliticians();
         populatePoliticianSelect();
+        populateDistrictDropdown();
         loadPoliticiansWithSha();
         loadPoliciesWithSha();
         loadCorrectionsWithSha();
         loadPolSubmissionsWithSha();
+        loadContactsSha();
       })
       .catch(function (err) {
         console.error('Failed to load data:', err);
@@ -451,7 +579,9 @@
             (voted ? 'Thanked' : 'Give Kudos') +
           '</button>' +
           '<span class="kudos-count" id="kudos-policy-' + p.id + '">' + (p.kudos || 0) + '</span>' +
-          '<button class="btn btn-sm" style="background:#eee;color:var(--text-muted);margin-left:auto;font-size:0.8em" onclick="AZVLC.openCorrectionModal(' + p.id + ')">Submit Correction</button>' +
+          '<button class="btn btn-sm" style="background:#eee;color:var(--text-muted);font-size:0.8em" onclick="AZVLC.openCorrectionModal(' + p.id + ')">Correction</button>' +
+          '<button class="btn btn-sm" style="background:#000;color:#fff;font-size:0.8em;margin-left:auto" onclick="AZVLC.sharePolicyX(' + p.id + ')">𝕏</button>' +
+          '<button class="btn btn-sm" style="background:#1877f2;color:#fff;font-size:0.8em" onclick="AZVLC.sharePolicyFB(' + p.id + ')">FB</button>' +
         '</div>' +
         '<div style="margin-top:12px;padding-top:12px;border-top:1px solid #eee;display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
           '<label style="font-weight:600;font-size:0.85em;color:var(--text-muted);margin:0">Send to Politician:</label>' +
@@ -1148,6 +1278,7 @@
         timestamp: new Date().toISOString()
       }, null, null);
     }
+    saveContact(form.submitterEmail.value, form.submitterAnonymous.checked ? '' : form.submitterName.value, 'policy-suggestion');
   }
 
   var ratingFormOpenedAt = 0;
@@ -1261,6 +1392,7 @@
         timestamp: new Date().toISOString()
       };
       sendToGHL(CONFIG.ghlWebhookRating, ghlData, null, null);
+      saveContact(form.raterEmail.value, form.raterAnonymous.checked ? '' : form.raterName.value, 'rating');
     }
   }
 
@@ -1342,6 +1474,9 @@
     onRateSearch: onRateSearch,
     selectRatePolitician: selectRatePolitician,
     nav: navigate,
+    showDistrict: showDistrict,
+    sharePolicyX: sharePolicyX,
+    sharePolicyFB: sharePolicyFB,
     navToItem: function(section, cardId) {
       navigate(section);
       setTimeout(function() {

@@ -23,6 +23,7 @@
       <button class="navbar-toggle" id="menuToggle" aria-label="Menu">&#9776;</button>
       <div class="navbar-links">
         <a href="#dashboard" data-nav="dashboard" class="active">Dashboard</a>
+        <a href="#mydistrict" data-nav="mydistrict">My District</a>
         <a href="#policies" data-nav="policies">Policies</a>
         <a href="#politicians" data-nav="politicians">Politicians</a>
         <a href="#suggest" data-nav="suggest">Suggest Policy</a>
@@ -100,6 +101,26 @@
       <h3 style="color:var(--navy);margin:30px 0 20px;cursor:pointer" onclick="AZVLC.nav('policies')">Recently Passed Policies</h3>
       <div class="card-grid" id="passedPolicies">
         <div class="empty-state"><p>No passed policies yet</p></div>
+      </div>
+    </section>
+
+    <!-- ══ MY DISTRICT ══ -->
+    <section id="section-mydistrict" class="page-section">
+      <div style="text-align:center"><h2 class="section-header">Find My District</h2></div>
+
+      <div class="form-container" style="max-width:500px;margin:0 auto 30px;text-align:center">
+        <p style="color:var(--text-muted);margin-bottom:16px">Select your legislative district to see your State Senator and Representatives.</p>
+        <div style="display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap">
+          <select id="districtSelect" onchange="AZVLC.showDistrict(this.value)" style="padding:12px 16px;border:1px solid var(--border);border-radius:6px;font-size:1em;min-width:200px">
+            <option value="">-- Select your district --</option>
+          </select>
+        </div>
+        <p style="font-size:0.8em;color:var(--text-muted);margin-top:10px">Don't know your district? <a href="https://azredistricting.org/districtlocator/" target="_blank" rel="noopener">Look it up by address here</a></p>
+      </div>
+
+      <div id="districtResults" style="display:none">
+        <h3 id="districtTitle" style="color:var(--navy);text-align:center;margin-bottom:20px"></h3>
+        <div class="card-grid" id="districtCards"></div>
       </div>
     </section>
 
