@@ -184,10 +184,17 @@
 
     // handle direct URL hash
     var hash = window.location.hash.replace('#', '');
-    if (hash) navigate(hash);
+    if (hash) navigate(hash, true);
+
+    // handle browser back/forward
+    window.addEventListener('hashchange', function () {
+      var h = window.location.hash.replace('#', '');
+      if (h) navigate(h, true);
+      else navigate('dashboard', true);
+    });
   }
 
-  function navigate(section) {
+  function navigate(section, skipHash) {
     document.querySelectorAll('.page-section').forEach(function (s) {
       s.classList.remove('active');
     });
@@ -203,7 +210,7 @@
     if (menu) menu.classList.remove('open');
 
     window.scrollTo(0, 0);
-    window.location.hash = section;
+    if (!skipHash) window.location.hash = section;
   }
 
   function bindMobileMenu() {
