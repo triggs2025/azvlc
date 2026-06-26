@@ -183,7 +183,10 @@
             <input type="checkbox" id="submitterAnonymous" name="submitterAnonymous">
             <label for="submitterAnonymous">Submit anonymously</label>
           </div>
-          <button type="submit" class="form-submit">Submit Policy Suggestion</button>
+          <div style="display:flex;gap:8px">
+            <button type="submit" class="form-submit" style="flex:1">Submit Policy Suggestion</button>
+            <button type="button" class="btn" style="background:#eee;color:var(--text)" onclick="document.getElementById('policyForm').reset()">Clear</button>
+          </div>
         </form>
       </div>
     </section>
@@ -204,7 +207,10 @@
         <form id="ratingForm">
           <div class="form-group" style="position:relative">
             <label for="politicianSearch2">Politician Name *</label>
-            <input type="text" id="politicianSearch2" autocomplete="off" required placeholder="Start typing a name..." oninput="AZVLC.onRateSearch(this.value)" onfocus="AZVLC.onRateSearch(this.value)">
+            <div style="display:flex;gap:8px">
+              <input type="text" id="politicianSearch2" autocomplete="off" required placeholder="Start typing a name..." oninput="AZVLC.onRateSearch(this.value)" onfocus="AZVLC.onRateSearch(this.value)" style="flex:1">
+              <button type="button" class="btn btn-sm" style="background:#eee;color:var(--text-muted);white-space:nowrap" onclick="AZVLC.clearRateForm()">Clear</button>
+            </div>
             <input type="hidden" id="politicianName" name="politicianName">
             <div id="rateDropdown" style="display:none;position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 6px 6px;max-height:200px;overflow-y:auto;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,0.1)"></div>
           </div>

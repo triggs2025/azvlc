@@ -1328,6 +1328,21 @@
       }
       window.open('mailto:' + pol.email + '?subject=' + subject + '&body=' + body);
     },
+    clearRateForm: function() {
+      document.getElementById('politicianSearch2').value = '';
+      document.getElementById('politicianName').value = '';
+      document.getElementById('politicianPosition').value = '';
+      document.getElementById('politicianGrade').value = '';
+      document.getElementById('ratingReason').value = '';
+      document.getElementById('raterZip').value = '';
+      document.getElementById('raterEmail').value = '';
+      document.getElementById('raterName').value = '';
+      document.getElementById('raterAnonymous').checked = false;
+      var notice = document.getElementById('prevRatingNotice');
+      if (notice) notice.classList.remove('show');
+      document.getElementById('rateDropdown').style.display = 'none';
+      ratingFormOpenedAt = 0;
+    },
     openCorrectionModal: openCorrectionModal,
     closeCorrectionModal: closeCorrectionModal,
     submitCorrection: submitCorrection,
