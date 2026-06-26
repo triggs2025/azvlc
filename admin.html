@@ -889,18 +889,18 @@
     var correctionsShaAdmin = '';
 
     function loadCorrections() {
-      fetch('data/corrections.json').then(function(r) { return r.json(); }).then(function(d) {
-        corrections = d;
-        renderAdminCorrections();
-        var badge = document.getElementById('correctionBadge');
-        if (corrections.length > 0) {
-          badge.textContent = corrections.length;
-          badge.style.display = 'inline';
-        } else {
-          badge.style.display = 'none';
-        }
-      });
-      // load sha for deleting
+      fetch('data/corrections.json?t=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          corrections = d || [];
+          renderAdminCorrections();
+          updateCorrectionBadge();
+        })
+        .catch(function(err) {
+          console.error('Failed to load corrections:', err);
+          corrections = [];
+          renderAdminCorrections();
+        });
       ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/corrections.json?ref=master')
         .then(function(result) { correctionsShaAdmin = result.sha; })
         .catch(function() {});
