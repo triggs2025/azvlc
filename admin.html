@@ -190,10 +190,11 @@
 
       <!-- POLICIES PANEL -->
       <div id="panel-policies" class="admin-panel active">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:12px">
           <h3 style="color:var(--navy)">Manage Policies</h3>
           <button class="btn btn-blue btn-sm" onclick="openPolicyForm()">+ Add New Policy</button>
         </div>
+        <input type="text" id="adminPolicySearch" placeholder="Search by name..." oninput="filterAdminPolicies(this.value)" style="width:100%;max-width:400px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em;margin-bottom:20px">
         <div id="adminPoliciesList"></div>
       </div>
 
@@ -203,7 +204,23 @@
           <h3 style="color:var(--navy)">Manage Politicians</h3>
           <button class="btn btn-blue btn-sm" onclick="openPoliticianForm()">+ Add New Politician</button>
         </div>
-        <input type="text" id="adminPoliticianSearch" placeholder="Search by name..." oninput="filterAdminPoliticians(this.value)" style="width:100%;max-width:400px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em;margin-bottom:20px">
+        <input type="text" id="adminPoliticianSearch" placeholder="Search by name..." oninput="filterAdminPoliticians(this.value)" style="width:100%;max-width:400px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em;margin-bottom:12px">
+        <div style="margin-bottom:20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <span style="font-weight:600;color:var(--text-muted)">Filter:</span>
+          <button class="filter-btn active" onclick="filterAdminPoliticiansByType('all', this)">All</button>
+          <button class="filter-btn" onclick="filterAdminPoliticiansByType('house', this)">House</button>
+          <button class="filter-btn" onclick="filterAdminPoliticiansByType('senate', this)">Senate</button>
+          <button class="filter-btn" onclick="filterAdminPoliticiansByType('republican', this)">Republican</button>
+          <button class="filter-btn" onclick="filterAdminPoliticiansByType('democrat', this)">Democrat</button>
+          <button class="filter-btn" onclick="filterAdminPoliticiansByType('veteran', this)">Veterans</button>
+          <span style="font-weight:600;color:var(--text-muted);margin-left:12px">Sort:</span>
+          <select id="adminPoliticianSort" onchange="sortAdminPoliticians(this.value)" style="padding:6px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.9em">
+            <option value="name">Name (A-Z)</option>
+            <option value="district">District</option>
+            <option value="grade">Grade (Best First)</option>
+            <option value="kudos">Most Kudos</option>
+          </select>
+        </div>
         <div id="adminPoliticiansList"></div>
       </div>
 
@@ -542,13 +559,30 @@
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
     // ── POLICIES ──
+    var adminPolicyQuery = '';
+
+    function filterAdminPolicies(query) {
+      adminPolicyQuery = query.toLowerCase().trim();
+      renderAdminPolicies();
+    }
+
     function renderAdminPolicies() {
       var el = document.getElementById('adminPoliciesList');
       if (policies.length === 0) {
         el.innerHTML = '<div class="admin-empty"><p>No policies yet. Click "+ Add New Policy" to get started.</p></div>';
         return;
       }
-      el.innerHTML = policies.map(function(p) {
+      var filtered = policies;
+      if (adminPolicyQuery) {
+        filtered = policies.filter(function(p) {
+          return p.name.toLowerCase().indexOf(adminPolicyQuery) !== -1;
+        });
+      }
+      if (filtered.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No policies match your search.</p></div>';
+        return;
+      }
+      el.innerHTML = filtered.map(function(p) {
         return '<div class="admin-item' + (p.approved ? '' : ' pending') + '">' +
           '<div class="admin-item-info">' +
             '<h4>' + esc(p.name) + '</h4>' +
@@ -658,9 +692,23 @@
 
     // ── POLITICIANS ──
     var adminPoliticianQuery = '';
+    var adminPoliticianFilter = 'all';
+    var adminPoliticianSortBy = 'name';
 
     function filterAdminPoliticians(query) {
       adminPoliticianQuery = query.toLowerCase().trim();
+      renderAdminPoliticians();
+    }
+
+    function filterAdminPoliticiansByType(filter, btn) {
+      adminPoliticianFilter = filter;
+      document.querySelectorAll('#panel-politicians .filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      if (btn) btn.classList.add('active');
+      renderAdminPoliticians();
+    }
+
+    function sortAdminPoliticians(sortBy) {
+      adminPoliticianSortBy = sortBy;
       renderAdminPoliticians();
     }
 
@@ -670,12 +718,42 @@
         el.innerHTML = '<div class="admin-empty"><p>No politicians yet. Click "+ Add New Politician" to get started.</p></div>';
         return;
       }
-      var filtered = politicians;
+      var filtered = politicians.slice();
+
       if (adminPoliticianQuery) {
-        filtered = politicians.filter(function(p) {
+        filtered = filtered.filter(function(p) {
           return p.name.toLowerCase().indexOf(adminPoliticianQuery) !== -1;
         });
       }
+
+      if (adminPoliticianFilter !== 'all') {
+        filtered = filtered.filter(function(p) {
+          switch (adminPoliticianFilter) {
+            case 'house': return p.position.toLowerCase().indexOf('representative') !== -1;
+            case 'senate': return p.position.toLowerCase().indexOf('senator') !== -1;
+            case 'republican': return (p.party || '').toLowerCase() === 'republican';
+            case 'democrat': return (p.party || '').toLowerCase() === 'democrat';
+            case 'veteran': return !!p.veteran;
+            default: return true;
+          }
+        });
+      }
+
+      filtered.sort(function(a, b) {
+        switch (adminPoliticianSortBy) {
+          case 'name': return a.name.localeCompare(b.name);
+          case 'district':
+            var da = parseInt((a.district || '').replace(/\D/g, '')) || 999;
+            var db = parseInt((b.district || '').replace(/\D/g, '')) || 999;
+            return da - db;
+          case 'grade':
+            var ga = calcGradeValue(a.grades), gb = calcGradeValue(b.grades);
+            return gb - ga;
+          case 'kudos': return (b.kudos || 0) - (a.kudos || 0);
+          default: return 0;
+        }
+      });
+
       if (filtered.length === 0) {
         el.innerHTML = '<div class="admin-empty"><p>No politicians match your search.</p></div>';
         return;
@@ -877,6 +955,13 @@
       if (avg >= 1.5) return 'C';
       if (avg >= 0.5) return 'D';
       return 'F';
+    }
+    function calcGradeValue(grades) {
+      if (!grades) return -1;
+      var vals = { A: 4, B: 3, C: 2, D: 1, F: 0 };
+      var total = 0, count = 0;
+      for (var g in vals) { total += vals[g] * (grades[g] || 0); count += (grades[g] || 0); }
+      return count === 0 ? -1 : total / count;
     }
     function formatStatus(s) { return s === 'in-progress' ? 'In Progress' : capitalize(s); }
     function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
