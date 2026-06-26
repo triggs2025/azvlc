@@ -152,5 +152,82 @@
     "kudos": 0,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84213",
     "approved": true
+  },
+  {
+    "id": 30,
+    "name": "SB 1050 - Veterans; Lifetime State Park Pass",
+    "sponsor": "",
+    "category": "benefits",
+    "description": "Provides Veterans with a lifetime state park pass in Arizona.",
+    "status": "proposed",
+    "kudos": 0,
+    "link": "https://apps.azleg.gov/BillStatus/BillOverview/83673",
+    "approved": true
+  },
+  {
+    "id": 31,
+    "name": "SB 1065 - Appropriation; Hyperbaric Oxygen Therapy; Veterans",
+    "sponsor": "",
+    "category": "healthcare",
+    "description": "Appropriates funds for hyperbaric oxygen therapy treatment for Veterans in Arizona.",
+    "status": "proposed",
+    "kudos": 0,
+    "link": "https://apps.azleg.gov/BillStatus/BillOverview/83689",
+    "approved": true
+  },
+  {
+    "id": 32,
+    "name": "SB 1155 - Game & Fish; Complimentary Licenses; Veterans",
+    "sponsor": "",
+    "category": "benefits",
+    "description": "Provides complimentary hunting and fishing licenses to Veterans through Arizona Game & Fish.",
+    "status": "proposed",
+    "kudos": 0,
+    "link": "https://apps.azleg.gov/BillStatus/BillOverview/83938",
+    "approved": true
+  },
+  {
+    "id": 33,
+    "name": "SB 1268 - Property Tax; Exemption; Veterans",
+    "sponsor": "",
+    "category": "benefits",
+    "description": "Provides property tax exemptions for Veterans in Arizona.",
+    "status": "proposed",
+    "kudos": 0,
+    "link": "https://apps.azleg.gov/BillStatus/BillOverview/84793",
+    "approved": true
+  },
+  {
+    "id": 34,
+    "name": "SB 1275 - Diversion Program; Military Members; Veterans",
+    "sponsor": "",
+    "category": "benefits",
+    "description": "Establishes a diversion program for military members and Veterans in the criminal justice system, allowing judicial discretion for mandatory prison sentences.",
+    "status": "proposed",
+    "kudos": 0,
+    "link": "https://apps.azleg.gov/BillStatus/BillOverview/84790",
+    "approved": true
+  },
+  {
+    "id": 35,
+    "name": "SB 1365 - Property Tax; Exemption; Veterans; Disabilities",
+    "sponsor": "",
+    "category": "benefits",
+    "description": "Provides property tax exemptions for Veterans with disabilities in Arizona.",
+    "status": "proposed",
+    "kudos": 0,
+    "link": "https://apps.azleg.gov/BillStatus/BillOverview/84967",
+    "approved": true
+  },
+  {
+    "id": 36,
+    "name": "SB 1803 - Veterans' Benefits; Claims; Prohibition",
+    "sponsor": "",
+    "category": "benefits",
+    "description": "Addresses protections related to Veterans' benefits claims processes in Arizona.",
+    "status": "proposed",
+    "kudos": 0,
+    "link": "https://apps.azleg.gov/BillStatus/BillOverview/85473",
+    "approved": true
   }
 ]
