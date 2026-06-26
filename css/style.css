@@ -602,6 +602,20 @@ body {
   .form-container { padding: 20px; }
 
   .section-header { font-size: 1.4em; }
+
+  .card { padding: 16px; overflow: hidden; }
+
+  .kudos-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .kudos-bar .btn-sm {
+    padding: 6px 10px;
+    font-size: 0.75em !important;
+  }
+
+  .card-meta { font-size: 0.85em; }
 }
 
 @media (max-width: 480px) {
