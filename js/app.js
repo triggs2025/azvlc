@@ -214,12 +214,16 @@
   function sharePolicyX(policyId) {
     var p = policies.find(function(x) { return x.id === policyId; });
     if (!p) return;
-    var text = 'I support ' + p.name + '! Arizona Veterans deserve better. See all Veteran bills at azvlc.org #AZVets #Veterans';
-    window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+    var url = 'https://azvlc.org/policy.html?id=' + policyId;
+    var text = 'As a Veteran I support this - check it out! ' + p.name;
+    window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
   }
 
   function sharePolicyFB(policyId) {
-    window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('https://azvlc.org/index.html#policies'), '_blank');
+    var p = policies.find(function(x) { return x.id === policyId; });
+    if (!p) return;
+    var url = 'https://azvlc.org/policy.html?id=' + policyId;
+    window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '&quote=' + encodeURIComponent('As a Veteran I support this - check it out! ' + p.name), '_blank');
   }
 
   // ── Page view tracking ──

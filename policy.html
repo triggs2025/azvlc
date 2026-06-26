@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AZVLC - Policy Details</title>
+  <meta name="description" content="Arizona Veterans Policy Tracker - Policy Details">
+  <meta property="og:title" content="AZVLC - Veteran Policy">
+  <meta property="og:description" content="As a Veteran I support this - check it out!">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://azvlc.org/assets/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .policy-page { max-width: 700px; margin: 0 auto; padding: 30px 20px; }
+    .policy-page-header { text-align: center; margin-bottom: 30px; }
+    .policy-page-header img { height: 60px; margin-bottom: 12px; }
+    .policy-page-header h1 { color: var(--navy); font-size: 1.4em; margin-bottom: 4px; }
+    .policy-detail {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .policy-detail-top {
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      color: var(--white);
+      padding: 30px;
+    }
+    .policy-detail-top h2 { font-size: 1.5em; margin-bottom: 10px; }
+    .policy-detail-body { padding: 24px 30px; }
+    .policy-detail-body p { color: var(--text-muted); line-height: 1.8; margin-bottom: 16px; }
+    .share-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 20px 0; }
+    .share-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border: none; border-radius: 6px; font-size: 0.9em; font-weight: 600; cursor: pointer; text-decoration: none; color: #fff; transition: opacity 0.2s; }
+    .share-btn:hover { opacity: 0.85; }
+    .share-btn-x { background: #000; }
+    .share-btn-fb { background: #1877f2; }
+    .share-btn-copy { background: var(--gold); color: var(--navy); }
+    .share-btn-email { background: var(--blue); }
+  </style>
+</head>
+<body>
+  <div class="policy-page">
+    <div class="policy-page-header">
+      <a href="index.html"><img src="assets/logo.png" alt="AZVLC"></a>
+      <h1>Arizona Veterans Policy Tracker</h1>
+    </div>
+    <div id="policyContent"><div style="text-align:center;padding:40px;color:#aaa">Loading...</div></div>
+  </div>
+
+  <script>
+    var CONFIG = { repoOwner: 'triggs2025', repoName: 'azvlc', branch: 'master' };
+    var RAW_BASE = 'https://raw.githubusercontent.com/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/' + CONFIG.branch + '/data/';
+
+    var params = new URLSearchParams(window.location.search);
+    var policyId = parseInt(params.get('id'));
+
+    if (!policyId) {
+      document.getElementById('policyContent').innerHTML = '<div style="text-align:center;padding:40px"><h2 style="color:var(--navy)">Policy not found</h2><p><a href="index.html#policies">Browse all policies</a></p></div>';
+    } else {
+      fetch(RAW_BASE + 'policies.json?t=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(policies) {
+          var p = policies.find(function(x) { return x.id === policyId; });
+          if (!p) {
+            document.getElementById('policyContent').innerHTML = '<div style="text-align:center;padding:40px"><h2 style="color:var(--navy)">Policy not found</h2><p><a href="index.html#policies">Browse all policies</a></p></div>';
+            return;
+          }
+          renderPolicy(p);
+        });
+    }
+
+    function renderPolicy(p) {
+      var url = 'https://azvlc.org/policy.html?id=' + p.id;
+      var shareText = 'As a Veteran I support this - check it out! ' + p.name;
+      var status = p.status === 'in-progress' ? 'In Progress' : p.status.charAt(0).toUpperCase() + p.status.slice(1);
+      var category = p.category.charAt(0).toUpperCase() + p.category.slice(1);
+
+      document.title = p.name + ' - AZVLC';
+
+      document.getElementById('policyContent').innerHTML =
+        '<div class="policy-detail">' +
+          '<div class="policy-detail-top">' +
+            '<h2>' + esc(p.name) + '</h2>' +
+            '<div>' +
+              '<span class="badge badge-category">' + category + '</span> ' +
+              '<span class="badge badge-' + p.status + '">' + status + '</span>' +
+              (p.sponsor ? ' <span style="opacity:0.8;font-size:0.9em">&middot; Sponsor: ' + esc(p.sponsor) + '</span>' : '') +
+            '</div>' +
+          '</div>' +
+          '<div class="policy-detail-body">' +
+            '<p style="font-size:1.1em">' + esc(p.description) + '</p>' +
+            (p.link ? '<p><a href="' + esc(p.link) + '" target="_blank" rel="noopener" class="btn btn-sm btn-blue">View Bill on azleg.gov &rarr;</a></p>' : '') +
+            '<div style="display:flex;align-items:center;gap:12px;margin:20px 0;padding:16px;background:#f8f9fa;border-radius:8px">' +
+              '<span style="font-weight:700;color:var(--blue);font-size:1.5em">' + (p.kudos || 0) + '</span>' +
+              '<span style="color:var(--text-muted)">Veterans support this policy</span>' +
+            '</div>' +
+            '<p style="text-align:center;color:var(--text-muted);font-size:0.9em">Share this policy with fellow Veterans</p>' +
+            '<div class="share-buttons">' +
+              '<a class="share-btn share-btn-x" href="https://x.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(url) + '" target="_blank">𝕏 Share</a>' +
+              '<a class="share-btn share-btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '&quote=' + encodeURIComponent(shareText) + '" target="_blank">Facebook</a>' +
+              '<button class="share-btn share-btn-email" onclick="window.open(\'mailto:?subject=' + encodeURIComponent(p.name + ' - Arizona Veterans Policy') + '&body=' + encodeURIComponent(shareText + ' ' + url) + '\')">Email</button>' +
+              '<button class="share-btn share-btn-copy" onclick="copyLink()">Copy Link</button>' +
+            '</div>' +
+            '<div style="text-align:center;margin-top:20px">' +
+              '<a href="index.html#policies" class="btn btn-sm" style="background:#eee;color:var(--text)">View All Policies</a>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    function copyLink() {
+      navigator.clipboard.writeText('https://azvlc.org/policy.html?id=' + policyId).then(function() {
+        var btns = document.querySelectorAll('.share-btn-copy');
+        btns.forEach(function(b) { b.textContent = 'Copied!'; });
+        setTimeout(function() { btns.forEach(function(b) { b.textContent = 'Copy Link'; }); }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
