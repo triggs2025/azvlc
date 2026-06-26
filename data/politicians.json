@@ -1639,8 +1639,9 @@
     "position": "State Senator",
     "party": "Republican",
     "district": "District 7",
+    "email": "WROGERS@azleg.gov",
     "website": "https://www.azleg.gov/Senate/Senate-member/?legislature=57&session=130&legislator=2394",
-    "veteran": false,
+    "veteran": true,
     "photo": "",
     "grades": {
       "A": 0,
@@ -1649,8 +1650,7 @@
       "D": 0,
       "F": 0
     },
-    "kudos": 0,
-    "email": "WROGERS@azleg.gov"
+    "kudos": 0
   },
   {
     "id": 225,
