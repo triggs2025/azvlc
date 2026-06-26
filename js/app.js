@@ -341,8 +341,32 @@
           '<span class="kudos-count" id="kudos-policy-' + p.id + '">' + (p.kudos || 0) + '</span>' +
           '<button class="btn btn-sm" style="background:#eee;color:var(--text-muted);margin-left:auto;font-size:0.8em" onclick="AZVLC.openCorrectionModal(' + p.id + ')">Submit Correction</button>' +
         '</div>' +
+        (p.category === 'suggestion'
+          ? '<div style="margin-top:12px;padding-top:12px;border-top:1px solid #eee;display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+              '<label style="font-weight:600;font-size:0.85em;color:var(--text-muted);margin:0">Send to Politician:</label>' +
+              '<select id="sendTo-' + p.id + '" style="flex:1;min-width:200px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85em">' +
+                '<option value="">-- Select a politician --</option>' +
+              '</select>' +
+              '<button class="btn btn-sm btn-blue" style="font-size:0.8em" onclick="AZVLC.sendSuggestionTo(' + p.id + ')">Send Email</button>' +
+            '</div>'
+          : '') +
         '</div>';
     }).join('');
+
+    // populate send-to dropdowns for suggestions
+    var sorted = politicians.slice().sort(function(a, b) { return a.name.localeCompare(b.name); });
+    list.forEach(function(p) {
+      if (p.category !== 'suggestion') return;
+      var sel = document.getElementById('sendTo-' + p.id);
+      if (!sel) return;
+      sorted.forEach(function(pol) {
+        if (!pol.email) return;
+        var opt = document.createElement('option');
+        opt.value = pol.id;
+        opt.textContent = pol.name + ' — ' + pol.position + (pol.district ? ' (' + pol.district + ')' : '');
+        sel.appendChild(opt);
+      });
+    });
   }
 
   // ── Politicians ──
@@ -959,6 +983,25 @@
     rateFromCard: function(id) {
       navigate('rate');
       setTimeout(function() { selectRatePolitician(id); }, 100);
+    },
+    sendSuggestionTo: function(policyId) {
+      var sel = document.getElementById('sendTo-' + policyId);
+      if (!sel || !sel.value) { alert('Please select a politician first.'); return; }
+      var pol = politicians.find(function(p) { return p.id === parseInt(sel.value); });
+      var policy = policies.find(function(p) { return p.id === policyId; });
+      if (!pol || !pol.email || !policy) return;
+      var subject = encodeURIComponent('Veteran Policy Suggestion: ' + policy.name);
+      var body = encodeURIComponent(
+        'Dear ' + pol.name + ',\n\n' +
+        'As a constituent and Veteran advocate, I would like to bring the following policy suggestion to your attention:\n\n' +
+        'Policy: ' + policy.name + '\n' +
+        'Description: ' + policy.description + '\n' +
+        (policy.link ? 'Link: ' + policy.link + '\n' : '') +
+        '\nThis suggestion was submitted through the Arizona Veterans Policy Tracker (azvlc.org) and has received ' + (policy.kudos || 0) + ' kudos from the Veteran community.\n\n' +
+        'We respectfully ask for your consideration and support on this issue.\n\n' +
+        'Sincerely,\n[Your Name]'
+      );
+      window.open('mailto:' + pol.email + '?subject=' + subject + '&body=' + body);
     },
     openCorrectionModal: openCorrectionModal,
     closeCorrectionModal: closeCorrectionModal,
