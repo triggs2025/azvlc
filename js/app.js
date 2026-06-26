@@ -261,7 +261,7 @@
         topPolEl.innerHTML = emptyState('No kudos yet');
       } else {
         topPolEl.innerHTML = top3Policies.map(function (p) {
-          return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.nav(\'policies\')">' +
+          return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.navToPolicy(' + p.id + ')">' +
             '<h3>' + esc(p.name) + '</h3>' +
             '<p>' + esc(p.description) + '</p>' +
             '<div style="margin-top:8px">' +
@@ -324,7 +324,7 @@
 
     el.innerHTML = list.map(function (p) {
       var voted = hasVotedKudo('policy', p.id);
-      return '<div class="card">' +
+      return '<div class="card" id="policy-card-' + p.id + '">' +
         '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<div class="card-meta">' +
           '<span class="badge badge-category">' + capitalize(p.category) + '</span>' +
@@ -961,6 +961,17 @@
       setTimeout(function() { selectRatePolitician(id); }, 100);
     },
     nav: navigate,
+    navToPolicy: function(id) {
+      navigate('policies');
+      setTimeout(function() {
+        var card = document.getElementById('policy-card-' + id);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.style.boxShadow = '0 0 0 3px var(--gold)';
+          setTimeout(function() { card.style.boxShadow = ''; }, 2000);
+        }
+      }, 150);
+    },
     navToPolitician: function(id) {
       navigate('politicians');
       setTimeout(function() {
