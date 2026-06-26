@@ -710,7 +710,7 @@
     "district": "District 5",
     "email": "AMARQUEZ@azleg.gov",
     "website": "https://www.azleg.gov/House/House-member/?legislature=57&session=130&legislator=2355",
-    "veteran": false,
+    "veteran": true,
     "photo": "",
     "grades": {
       "A": 0,
