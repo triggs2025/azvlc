@@ -272,7 +272,7 @@
         topPolEl.innerHTML = emptyState('No kudos yet');
       } else {
         topPolEl.innerHTML = top3Policies.map(function (p) {
-          return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.navToPolicy(' + p.id + ')">' +
+          return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.nav(\'policies\')">' +
             '<h3>' + esc(p.name) + '</h3>' +
             '<p>' + esc(p.description) + '</p>' +
             '<div style="margin-top:8px">' +
