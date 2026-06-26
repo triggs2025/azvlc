@@ -342,22 +342,19 @@
           '<span class="kudos-count" id="kudos-policy-' + p.id + '">' + (p.kudos || 0) + '</span>' +
           '<button class="btn btn-sm" style="background:#eee;color:var(--text-muted);margin-left:auto;font-size:0.8em" onclick="AZVLC.openCorrectionModal(' + p.id + ')">Submit Correction</button>' +
         '</div>' +
-        (p.category === 'suggestion'
-          ? '<div style="margin-top:12px;padding-top:12px;border-top:1px solid #eee;display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
-              '<label style="font-weight:600;font-size:0.85em;color:var(--text-muted);margin:0">Send to Politician:</label>' +
-              '<select id="sendTo-' + p.id + '" style="flex:1;min-width:200px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85em">' +
-                '<option value="">-- Select a politician --</option>' +
-              '</select>' +
-              '<button class="btn btn-sm btn-blue" style="font-size:0.8em" onclick="AZVLC.sendSuggestionTo(' + p.id + ')">Send Email</button>' +
-            '</div>'
-          : '') +
+        '<div style="margin-top:12px;padding-top:12px;border-top:1px solid #eee;display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+          '<label style="font-weight:600;font-size:0.85em;color:var(--text-muted);margin:0">Send to Politician:</label>' +
+          '<select id="sendTo-' + p.id + '" style="flex:1;min-width:200px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85em">' +
+            '<option value="">-- Select a politician --</option>' +
+          '</select>' +
+          '<button class="btn btn-sm btn-blue" style="font-size:0.8em" onclick="AZVLC.sendSuggestionTo(' + p.id + ')">Send Email</button>' +
+        '</div>' +
         '</div>';
     }).join('');
 
-    // populate send-to dropdowns for suggestions
+    // populate send-to dropdowns for all policies
     var sorted = politicians.slice().sort(function(a, b) { return a.name.localeCompare(b.name); });
     list.forEach(function(p) {
-      if (p.category !== 'suggestion') return;
       var sel = document.getElementById('sendTo-' + p.id);
       if (!sel) return;
       sorted.forEach(function(pol) {
@@ -1212,17 +1209,34 @@
       var pol = politicians.find(function(p) { return p.id === parseInt(sel.value); });
       var policy = policies.find(function(p) { return p.id === policyId; });
       if (!pol || !pol.email || !policy) return;
-      var subject = encodeURIComponent('Veteran Policy Suggestion: ' + policy.name);
-      var body = encodeURIComponent(
-        'Dear ' + pol.name + ',\n\n' +
-        'As a constituent and Veteran advocate, I would like to bring the following policy suggestion to your attention:\n\n' +
-        'Policy: ' + policy.name + '\n' +
-        'Description: ' + policy.description + '\n' +
-        (policy.link ? 'Link: ' + policy.link + '\n' : '') +
-        '\nThis suggestion was submitted through the Arizona Veterans Policy Tracker (azvlc.org) and has received ' + (policy.kudos || 0) + ' kudos from the Veteran community.\n\n' +
-        'We respectfully ask for your consideration and support on this issue.\n\n' +
-        'Sincerely,\n[Your Name]'
-      );
+
+      var subject, body;
+      if (policy.category === 'suggestion') {
+        subject = encodeURIComponent('Veteran Policy Suggestion: ' + policy.name);
+        body = encodeURIComponent(
+          'Dear ' + pol.name + ',\n\n' +
+          'As a constituent and Veteran advocate, I would like to bring the following policy suggestion to your attention:\n\n' +
+          'Policy: ' + policy.name + '\n' +
+          'Description: ' + policy.description + '\n' +
+          (policy.link ? 'Link: ' + policy.link + '\n' : '') +
+          '\nThis suggestion was submitted through the Arizona Veterans Policy Tracker (azvlc.org) and has received ' + (policy.kudos || 0) + ' kudos from the Veteran community.\n\n' +
+          'We respectfully ask for your consideration and support on this issue.\n\n' +
+          'Sincerely,\n[Your Name]'
+        );
+      } else {
+        subject = encodeURIComponent('Veteran Support for ' + policy.name);
+        body = encodeURIComponent(
+          'Dear ' + pol.name + ',\n\n' +
+          'As a Veteran in the state of Arizona, I am writing to express my support for ' + policy.name + '.\n\n' +
+          'This bill is important to the Veteran community because:\n' +
+          policy.description + '\n' +
+          (policy.link ? '\nBill Link: ' + policy.link + '\n' : '') +
+          '\nThis bill has received ' + (policy.kudos || 0) + ' kudos from Veterans and supporters on the Arizona Veterans Policy Tracker (azvlc.org).\n\n' +
+          'I respectfully ask that you support this bill and ensure it passes.\n\n' +
+          'Thank you for your service to Arizona Veterans.\n\n' +
+          'Sincerely,\n[Your Name]'
+        );
+      }
       window.open('mailto:' + pol.email + '?subject=' + subject + '&body=' + body);
     },
     openCorrectionModal: openCorrectionModal,
