@@ -31,9 +31,12 @@
   });
 
   // ── Data loading ──
+  var RAW_BASE = 'https://raw.githubusercontent.com/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/' + CONFIG.branch + '/data/';
+
   function loadData() {
-    var policyReq = fetch('data/policies.json').then(function (r) { return r.json(); });
-    var politicianReq = fetch('data/politicians.json').then(function (r) { return r.json(); });
+    var t = '?t=' + Date.now();
+    var policyReq = fetch(RAW_BASE + 'policies.json' + t).then(function (r) { return r.json(); });
+    var politicianReq = fetch(RAW_BASE + 'politicians.json' + t).then(function (r) { return r.json(); });
 
     Promise.all([policyReq, politicianReq])
       .then(function (results) {
