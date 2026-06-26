@@ -201,7 +201,18 @@
           <div class="stat-card"><h3>Politicians Rated</h3><div class="number" id="analPoliticiansRated">0</div></div>
           <div class="stat-card"><h3>Policy Suggestions</h3><div class="number" id="analSuggestions">0</div></div>
           <div class="stat-card"><h3>Corrections</h3><div class="number" id="analCorrections">0</div></div>
-          <div class="stat-card"><h3>Page Views</h3><div class="number" id="analViews">—</div><p style="font-size:0.7em;color:var(--text-muted);margin-top:4px">Since tracking started</p></div>
+          <div class="stat-card">
+            <h3>Page Views</h3>
+            <div class="number" id="analViews">—</div>
+            <select id="viewsPeriod" onchange="updateViewsPeriod()" style="margin-top:8px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:0.75em">
+              <option value="today">Today</option>
+              <option value="7days">Last 7 Days</option>
+              <option value="month">This Month</option>
+              <option value="year">Year to Date</option>
+              <option value="all" selected>All Time</option>
+            </select>
+            <p id="viewsStartDate" style="font-size:0.65em;color:var(--text-muted);margin-top:4px"></p>
+          </div>
         </div>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
@@ -1364,17 +1375,58 @@
       }).join('');
     }
 
+    var analyticsData = null;
+
     function loadPageViews() {
-      // use the GitHub API to check how many commits have the "rating" or "kudos" message as a proxy
-      // For real page views, load from a tracking file
       fetch('data/analytics.json?t=' + Date.now())
         .then(function(r) { return r.json(); })
         .then(function(data) {
-          setText2('analViews', data.views || 0);
+          analyticsData = data;
+          var startEl = document.getElementById('viewsStartDate');
+          if (startEl && data.startDate) startEl.textContent = 'Tracking since ' + data.startDate;
+          updateViewsPeriod();
         })
         .catch(function() {
           setText2('analViews', '—');
         });
+    }
+
+    function updateViewsPeriod() {
+      if (!analyticsData || !analyticsData.daily) { setText2('analViews', '—'); return; }
+
+      var period = document.getElementById('viewsPeriod').value;
+      var daily = analyticsData.daily;
+      var now = new Date();
+      var total = 0;
+
+      for (var dateStr in daily) {
+        var d = new Date(dateStr + 'T00:00:00');
+        var include = false;
+
+        switch (period) {
+          case 'today':
+            include = dateStr === now.toISOString().split('T')[0];
+            break;
+          case '7days':
+            var weekAgo = new Date(now);
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            include = d >= weekAgo;
+            break;
+          case 'month':
+            include = d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+            break;
+          case 'year':
+            include = d.getFullYear() === now.getFullYear();
+            break;
+          case 'all':
+            include = true;
+            break;
+        }
+
+        if (include) total += daily[dateStr];
+      }
+
+      setText2('analViews', total);
     }
 
     function setText2(id, val) { var e = document.getElementById(id); if (e) e.textContent = val; }

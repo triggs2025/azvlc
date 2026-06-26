@@ -38,12 +38,16 @@
 
     if (!CONFIG.ghToken) return;
 
+    var today = new Date().toISOString().split('T')[0];
+
     fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json?ref=' + CONFIG.branch)
       .then(function(r) { return r.json(); })
       .then(function(result) {
         var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
         var data = JSON.parse(decoded);
-        data.views = (data.views || 0) + 1;
+        if (!data.daily) data.daily = {};
+        if (!data.startDate) data.startDate = today;
+        data.daily[today] = (data.daily[today] || 0) + 1;
         var content = btoa(unescape(encodeURIComponent(JSON.stringify(data) + '\n')));
         return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json', {
           method: 'PUT',
