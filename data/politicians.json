@@ -1525,8 +1525,9 @@
     "position": "State Senator",
     "party": "Republican",
     "district": "District 17",
+    "email": "VLEACH@azleg.gov",
     "website": "https://www.azleg.gov/Senate/Senate-member/?legislature=57&session=130&legislator=2398",
-    "veteran": false,
+    "veteran": true,
     "photo": "",
     "grades": {
       "A": 0,
@@ -1535,8 +1536,7 @@
       "D": 0,
       "F": 0
     },
-    "kudos": 0,
-    "email": "VLEACH@azleg.gov"
+    "kudos": 0
   },
   {
     "id": 219,
