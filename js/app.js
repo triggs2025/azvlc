@@ -243,7 +243,7 @@
     topEl.innerHTML = sorted.map(function (p) {
       var avg = calcGrade(p.grades);
       var total = gradeTotal(p.grades);
-      return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.navToPolitician(' + p.id + ')">' +
+      return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.nav(\'politicians\')">' +
         '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<p>' + esc(p.position) +
           (p.party ? ' &middot; ' + esc(p.party) : '') +
