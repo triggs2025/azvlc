@@ -1009,7 +1009,10 @@
     if (policyForm) policyForm.addEventListener('submit', submitPolicyForm);
 
     var ratingForm = document.getElementById('ratingForm');
-    if (ratingForm) ratingForm.addEventListener('submit', submitRatingForm);
+    if (ratingForm) {
+      ratingForm.addEventListener('submit', submitRatingForm);
+      ratingForm.addEventListener('focusin', onRatingFormFocus);
+    }
   }
 
   function submitPolicyForm(e) {
@@ -1082,9 +1085,36 @@
     }
   }
 
+  var ratingFormOpenedAt = 0;
+
+  function onRatingFormFocus() {
+    if (!ratingFormOpenedAt) ratingFormOpenedAt = Date.now();
+  }
+
   function submitRatingForm(e) {
     e.preventDefault();
     var form = e.target;
+
+    // honeypot check
+    if (form.raterWebsite && form.raterWebsite.value) {
+      alert('Thank you for your submission.');
+      form.reset();
+      return;
+    }
+
+    // time delay check (must have form open at least 5 seconds)
+    if (Date.now() - ratingFormOpenedAt < 5000) {
+      alert('Please take a moment to review your rating before submitting.');
+      return;
+    }
+
+    // Arizona zip code check (850xx - 865xx)
+    var zip = (form.raterZip.value || '').trim();
+    var zipNum = parseInt(zip);
+    if (!/^\d{5}$/.test(zip) || zipNum < 85001 || zipNum > 86599) {
+      alert('Please enter a valid Arizona zip code (85001-86599).');
+      return;
+    }
 
     var politicianName = form.politicianName.value;
     var newGrade = form.politicianGrade.value;

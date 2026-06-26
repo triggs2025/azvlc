@@ -229,6 +229,11 @@
             <textarea id="ratingReason" name="ratingReason" required placeholder="Which policies did they support or oppose?"></textarea>
           </div>
           <div class="form-group">
+            <label for="raterZip">Arizona Zip Code *</label>
+            <input type="text" id="raterZip" name="raterZip" required placeholder="e.g., 85001" maxlength="5" pattern="[0-9]{5}">
+            <p style="font-size:0.75em;color:var(--text-muted);margin-top:4px">Only Arizona residents can submit ratings.</p>
+          </div>
+          <div class="form-group">
             <label for="raterEmail">Your Email *</label>
             <input type="email" id="raterEmail" name="raterEmail" required placeholder="your@email.com">
           </div>
@@ -239,6 +244,11 @@
           <div class="form-group checkbox-row">
             <input type="checkbox" id="raterAnonymous" name="raterAnonymous">
             <label for="raterAnonymous">Submit anonymously</label>
+          </div>
+          <!-- honeypot - hidden from humans -->
+          <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden" aria-hidden="true">
+            <label for="raterWebsite">Website</label>
+            <input type="text" id="raterWebsite" name="raterWebsite" tabindex="-1" autocomplete="off">
           </div>
           <button type="submit" class="form-submit">Submit Rating</button>
         </form>
