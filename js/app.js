@@ -35,8 +35,12 @@
 
   // ── Sponsor ──
   function loadSponsor() {
-    fetch(RAW_BASE + 'sponsor.json?t=' + Date.now())
+    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/sponsor.json?ref=' + CONFIG.branch)
       .then(function(r) { return r.json(); })
+      .then(function(result) {
+        var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
+        return JSON.parse(decoded);
+      })
       .then(function(data) {
         var el = document.getElementById('sponsorLine');
         if (!el || !data.name) return;
