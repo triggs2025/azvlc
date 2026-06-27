@@ -1031,8 +1031,9 @@
     "position": "State Representative",
     "party": "Democrat",
     "district": "District 12",
+    "email": "STRAVERS@azleg.gov",
     "website": "https://www.azleg.gov/House/House-member/?legislature=57&session=130&legislator=2340",
-    "veteran": false,
+    "veteran": true,
     "photo": "",
     "grades": {
       "A": 0,
@@ -1041,8 +1042,7 @@
       "D": 0,
       "F": 0
     },
-    "kudos": 0,
-    "email": "STRAVERS@azleg.gov"
+    "kudos": 0
   },
   {
     "id": 155,
