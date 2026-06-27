@@ -1223,6 +1223,8 @@
   function submitPolicyForm(e) {
     e.preventDefault();
     var form = e.target;
+    var suggestEmail = form.submitterEmail.value;
+    var suggestName = form.submitterAnonymous.checked ? '' : form.submitterName.value;
 
     if (!policiesSha) {
       alert('Still loading. Please wait a moment and try again.');
@@ -1288,7 +1290,7 @@
         timestamp: new Date().toISOString()
       }, null, null);
     }
-    saveContact(form.submitterEmail.value, form.submitterAnonymous.checked ? '' : form.submitterName.value, 'policy-suggestion');
+    setTimeout(function () { saveContact(suggestEmail, suggestName, 'policy-suggestion'); }, 2000);
   }
 
   var ratingFormOpenedAt = 0;
@@ -1315,6 +1317,8 @@
     }
 
     // Arizona zip code check (850xx - 865xx)
+    var raterEmail = form.raterEmail.value;
+    var raterName = form.raterAnonymous.checked ? '' : form.raterName.value;
     var zip = (form.raterZip.value || '').trim();
     var zipNum = parseInt(zip);
     if (!/^\d{5}$/.test(zip) || zipNum < 85001 || zipNum > 86599) {
@@ -1370,6 +1374,7 @@
         renderPoliticians();
         renderDashboard();
         setTimeout(function () { if (successEl) successEl.classList.remove('show'); }, 5000);
+        setTimeout(function () { saveContact(raterEmail, raterName, 'rating'); }, 2000);
       } else {
         throw new Error(result.message || 'Save failed');
       }
@@ -1402,7 +1407,6 @@
         timestamp: new Date().toISOString()
       };
       sendToGHL(CONFIG.ghlWebhookRating, ghlData, null, null);
-      saveContact(form.raterEmail.value, form.raterAnonymous.checked ? '' : form.raterName.value, 'rating');
     }
   }
 
