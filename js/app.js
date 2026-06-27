@@ -267,11 +267,23 @@
 
   // ── Data loading ──
   var RAW_BASE = 'https://raw.githubusercontent.com/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/' + CONFIG.branch + '/data/';
+  var GH_API_BASE = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/';
+
+  function fetchGHData(file) {
+    return fetch(GH_API_BASE + file + '?ref=' + CONFIG.branch, {
+      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (!result.content) throw new Error('No content');
+      var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
+      return JSON.parse(decoded);
+    });
+  }
 
   function loadData() {
-    var t = '?t=' + Date.now();
-    var policyReq = fetch(RAW_BASE + 'policies.json' + t).then(function (r) { return r.json(); });
-    var politicianReq = fetch(RAW_BASE + 'politicians.json' + t).then(function (r) { return r.json(); });
+    var policyReq = fetchGHData('policies.json');
+    var politicianReq = fetchGHData('politicians.json');
 
     Promise.all([policyReq, politicianReq])
       .then(function (results) {
