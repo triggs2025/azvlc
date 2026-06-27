@@ -1356,10 +1356,11 @@
 
     function loadContacts() {
       ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/contacts.json?ref=master')
-        .then(function(result) { contactsShaAdmin = result.sha; })
-        .catch(function() {});
-      fetch('data/contacts.json?t=' + Date.now())
-        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          contactsShaAdmin = result.sha;
+          var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
+          return JSON.parse(decoded);
+        })
         .then(function(data) {
           var el = document.getElementById('adminContactsList');
           var badge = document.getElementById('contactsBadge');

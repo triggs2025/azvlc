@@ -184,8 +184,6 @@
     .then(function(result) {
       var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
       var contacts = JSON.parse(decoded);
-      var exists = contacts.some(function(c) { return c.email === email; });
-      if (exists) return null;
       contacts.push({
         email: email,
         name: name || 'Anonymous',
