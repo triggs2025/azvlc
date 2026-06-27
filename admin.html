@@ -1399,20 +1399,27 @@
 
     function deleteContact(idx) {
       if (!confirm('Delete this contact?')) return;
-      adminContacts.splice(idx, 1);
-      var content = btoa(unescape(encodeURIComponent(JSON.stringify(adminContacts, null, 2) + '\n')));
-      ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/contacts.json', {
-        message: 'Delete contact',
-        content: content,
-        sha: contactsShaAdmin,
-        branch: 'master'
-      }).then(function(result) {
-        if (result.content) contactsShaAdmin = result.content.sha;
-        loadContacts();
-        showStatus('Contact deleted.', 'success');
-      }).catch(function(err) {
-        showStatus('Error: ' + err.message, 'error');
-      });
+      showStatus('Deleting contact...', '');
+      ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/contacts.json?ref=master')
+        .then(function(result) {
+          contactsShaAdmin = result.sha;
+          var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
+          var freshContacts = JSON.parse(decoded);
+          freshContacts.splice(idx, 1);
+          var content = btoa(unescape(encodeURIComponent(JSON.stringify(freshContacts, null, 2) + '\n')));
+          return ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/contacts.json', {
+            message: 'Delete contact',
+            content: content,
+            sha: contactsShaAdmin,
+            branch: 'master'
+          });
+        }).then(function(result) {
+          if (result.content) contactsShaAdmin = result.content.sha;
+          loadContacts();
+          showStatus('Contact deleted.', 'success');
+        }).catch(function(err) {
+          showStatus('Error: ' + err.message, 'error');
+        });
     }
 
     function exportContacts() {
