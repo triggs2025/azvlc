@@ -187,10 +187,6 @@
           Help us identify important Veteran-focused policies for Arizona. Your suggestion will appear under the Public Suggestions tab on the Policies page.
         </div>
 
-        <div class="alert alert-success" id="policySuccess">
-          Thank you! Your policy suggestion has been submitted and will be reviewed by our team.
-        </div>
-
         <form id="policyForm">
           <div class="form-group">
             <label for="policyName">Policy / Bill Name *</label>
@@ -222,6 +218,9 @@
             <input type="checkbox" id="submitterAnonymous" name="submitterAnonymous">
             <label for="submitterAnonymous">Submit anonymously</label>
           </div>
+          <div class="alert alert-success" id="policySuccess">
+            Thank you! Your policy suggestion has been submitted.
+          </div>
           <div style="display:flex;gap:8px">
             <button type="submit" class="form-submit" style="flex:1">Submit Policy Suggestion</button>
             <button type="button" class="btn" style="background:#eee;color:var(--text)" onclick="document.getElementById('policyForm').reset()">Clear</button>
@@ -237,10 +236,6 @@
       <div class="form-container">
         <div class="alert alert-info show" style="display:block">
           Share your feedback on how Arizona leaders are supporting Veterans. Your rating will update the politician's grade immediately.
-        </div>
-
-        <div class="alert alert-success" id="ratingSuccess">
-          Thank you! Your rating has been submitted. Your feedback helps hold leaders accountable.
         </div>
 
         <form id="ratingForm">
@@ -294,6 +289,9 @@
           <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden" aria-hidden="true">
             <label for="raterWebsite">Website</label>
             <input type="text" id="raterWebsite" name="raterWebsite" tabindex="-1" autocomplete="off">
+          </div>
+          <div class="alert alert-success" id="ratingSuccess">
+            Thank you! Your rating has been submitted. Your feedback helps hold leaders accountable.
           </div>
           <button type="submit" class="form-submit">Submit Rating</button>
         </form>
