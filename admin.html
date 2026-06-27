@@ -670,6 +670,10 @@
       document.querySelectorAll('.admin-tab').forEach(function(t) { t.classList.remove('active'); });
       document.getElementById('panel-' + tab).classList.add('active');
       btn.classList.add('active');
+      if (tab === 'contacts') {
+        var badge = document.getElementById('contactsBadge');
+        if (badge) badge.style.display = 'none';
+      }
     }
 
     // ── Data loading ──
@@ -1347,7 +1351,13 @@
     }
 
     // ── Contacts ──
+    var adminContacts = [];
+    var contactsShaAdmin = '';
+
     function loadContacts() {
+      ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/contacts.json?ref=master')
+        .then(function(result) { contactsShaAdmin = result.sha; })
+        .catch(function() {});
       fetch('data/contacts.json?t=' + Date.now())
         .then(function(r) { return r.json(); })
         .then(function(data) {
@@ -1363,12 +1373,14 @@
             el.innerHTML = '<div class="admin-empty"><p>No contacts collected yet.</p></div>';
             return;
           }
+          adminContacts = data;
           el.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:0.9em">' +
             '<thead><tr style="background:var(--navy);color:#fff">' +
               '<th style="padding:10px;text-align:left">Email</th>' +
               '<th style="padding:10px;text-align:left">Name</th>' +
-              '<th style="padding:10px;text-align:left">Source</th>' +
+              '<th style="padding:10px;text-align:left">Action</th>' +
               '<th style="padding:10px;text-align:left">Date</th>' +
+              '<th style="padding:10px;text-align:center">Delete</th>' +
             '</tr></thead><tbody>' +
             data.map(function(c, i) {
               return '<tr style="border-bottom:1px solid #eee;background:' + (i % 2 ? '#f9f9f9' : '#fff') + '">' +
@@ -1376,11 +1388,30 @@
                 '<td style="padding:8px 10px">' + esc(c.name || 'Anonymous') + '</td>' +
                 '<td style="padding:8px 10px">' + esc(c.source || '') + '</td>' +
                 '<td style="padding:8px 10px">' + esc(c.date || '') + '</td>' +
+                '<td style="padding:8px 10px;text-align:center"><button class="btn btn-sm btn-danger" style="padding:3px 8px;font-size:0.75em" onclick="deleteContact(' + i + ')">✕</button></td>' +
               '</tr>';
             }).join('') +
             '</tbody></table>';
         })
         .catch(function() {});
+    }
+
+    function deleteContact(idx) {
+      if (!confirm('Delete this contact?')) return;
+      adminContacts.splice(idx, 1);
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(adminContacts, null, 2) + '\n')));
+      ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/contacts.json', {
+        message: 'Delete contact',
+        content: content,
+        sha: contactsShaAdmin,
+        branch: 'master'
+      }).then(function(result) {
+        if (result.content) contactsShaAdmin = result.content.sha;
+        loadContacts();
+        showStatus('Contact deleted.', 'success');
+      }).catch(function(err) {
+        showStatus('Error: ' + err.message, 'error');
+      });
     }
 
     function exportContacts() {
