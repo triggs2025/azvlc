@@ -47,8 +47,8 @@
     "veteran": false,
     "photo": "",
     "grades": {
-      "A": 0,
-      "B": 1,
+      "A": 1,
+      "B": 0,
       "C": 0,
       "D": 0,
       "F": 0
