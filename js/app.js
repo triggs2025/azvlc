@@ -971,6 +971,9 @@
 
         var successEl = document.getElementById('correctionSuccess');
         successEl.classList.add('show');
+        if (correction.submitterEmail) {
+          setTimeout(function () { saveContact(correction.submitterEmail, '', 'Correction: ' + correction.originalName); }, 2000);
+        }
         document.getElementById('corrReason').value = '';
         document.getElementById('corrEmail').value = '';
         setTimeout(function () { successEl.classList.remove('show'); closeCorrectionModal(); }, 3000);
@@ -1225,6 +1228,7 @@
     var form = e.target;
     var suggestEmail = form.submitterEmail.value;
     var suggestName = form.submitterAnonymous.checked ? '' : form.submitterName.value;
+    var suggestPolicyName = form.policyName.value;
 
     if (!policiesSha) {
       alert('Still loading. Please wait a moment and try again.');
@@ -1290,7 +1294,7 @@
         timestamp: new Date().toISOString()
       }, null, null);
     }
-    setTimeout(function () { saveContact(suggestEmail, suggestName, 'policy-suggestion'); }, 2000);
+    setTimeout(function () { saveContact(suggestEmail, suggestName, 'Suggested Policy: ' + suggestPolicyName); }, 2000);
   }
 
   var ratingFormOpenedAt = 0;
@@ -1374,7 +1378,7 @@
         renderPoliticians();
         renderDashboard();
         setTimeout(function () { if (successEl) successEl.classList.remove('show'); }, 5000);
-        setTimeout(function () { saveContact(raterEmail, raterName, 'rating'); }, 2000);
+        setTimeout(function () { saveContact(raterEmail, raterName, 'Rated: ' + politicianName + ' (' + newGrade + ')'); }, 2000);
       } else {
         throw new Error(result.message || 'Save failed');
       }
