@@ -1746,5 +1746,24 @@
     },
     "kudos": 0,
     "email": "CWERNER@azleg.gov"
+  },
+  {
+    "id": 230,
+    "name": "Tony Riggs",
+    "position": "Governor",
+    "party": "Republican",
+    "district": "5",
+    "email": "tony.riggs2@gmail.com",
+    "website": "",
+    "veteran": true,
+    "photo": "",
+    "grades": {
+      "A": 0,
+      "B": 0,
+      "C": 0,
+      "D": 0,
+      "F": 0
+    },
+    "kudos": 0
   }
 ]
