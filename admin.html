@@ -1428,11 +1428,17 @@
     }
 
     function deleteContact(idx) {
-      if (!confirm('Delete this contact?')) return;
+      if (!confirm('Are you sure you want to delete this contact?')) return;
+
+      var row = document.querySelector('#adminContactsList tbody tr:nth-child(' + (idx * 2 + 1) + ')');
+      var detailRow = document.getElementById('contact-details-' + idx);
+      if (row) row.style.opacity = '0.4';
+      if (detailRow) detailRow.style.opacity = '0.4';
+
       showStatus('Deleting contact...', '');
       ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/contacts.json?ref=master')
         .then(function(result) {
-          contactsShaAdmin = result.sha;
+          var freshSha = result.sha;
           var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
           var freshContacts = JSON.parse(decoded);
           freshContacts.splice(idx, 1);
@@ -1440,7 +1446,7 @@
           return ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/contacts.json', {
             message: 'Delete contact',
             content: content,
-            sha: contactsShaAdmin,
+            sha: freshSha,
             branch: 'master'
           });
         }).then(function(result) {
@@ -1448,7 +1454,9 @@
           loadContacts();
           showStatus('Contact deleted.', 'success');
         }).catch(function(err) {
-          showStatus('Error: ' + err.message, 'error');
+          if (row) row.style.opacity = '1';
+          if (detailRow) detailRow.style.opacity = '1';
+          showStatus('Error deleting: ' + err.message + '. Try refreshing the page.', 'error');
         });
     }
 
