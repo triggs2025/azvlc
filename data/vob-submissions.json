@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": 1782619496580,
+    "businessName": "Skilled Vets, LLC",
+    "category": "Consulting",
+    "description": "Staffing for Veterans",
+    "website": "https://skilledvets.com/",
+    "address": "4235 E Wood St",
+    "zip": "85040",
+    "phone": "4804804804",
+    "hours": "24/7 M-S",
+    "discount": "10% off for all Veterans",
+    "ownerName": "Tony Riggs",
+    "ownerEmail": "triggs@skilledvets.com",
+    "ownerPhone": "",
+    "submittedAt": "2026-06-28T04:04:56.581Z"
+  }
+]
