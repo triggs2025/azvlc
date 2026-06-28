@@ -16,20 +16,5 @@
     "name": "Anonymous",
     "source": "Rated: Stacey Travers (A)",
     "date": "2026-06-27"
-  },
-  {
-    "email": "tony.riggs2@gmail.com",
-    "name": "Harold Riggs",
-    "source": "Rated: Lisa Fink (C)",
-    "date": "2026-06-28",
-    "type": "politician-rating",
-    "politician": "Lisa Fink",
-    "position": "State Representative",
-    "grade": "C",
-    "previousGrade": "B",
-    "reason": "sdfgdsgdfg fdgdfg df fdgdfgdfg",
-    "zip": "85045",
-    "anonymous": false,
-    "timestamp": "2026-06-28T03:40:05.598Z"
   }
 ]
