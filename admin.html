@@ -184,6 +184,7 @@
         <button class="admin-tab" onclick="showTab('polsubmissions', this)">Politician Submissions <span id="polSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('vob', this)">VOB <span id="vobSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('contacts', this)">Contacts <span id="contactsBadge" style="background:var(--blue);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
+        <button class="admin-tab" onclick="showTab('emailpol', this)">Email Politicians</button>
         <button class="admin-tab" onclick="showTab('sponsor', this)">Sponsor</button>
         <button class="admin-tab" onclick="showTab('ticker', this)">Ticker</button>
         <button class="admin-tab" onclick="showTab('help', this)">How-To Guide</button>
@@ -316,6 +317,42 @@
         <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">Emails collected from rating and policy suggestion forms.</p>
         <button class="btn btn-sm btn-blue" onclick="exportContacts()" style="margin-bottom:16px">Export as CSV</button>
         <div id="adminContactsList"></div>
+      </div>
+
+      <!-- EMAIL POLITICIANS PANEL -->
+      <div id="panel-emailpol" class="admin-panel">
+        <h3 style="color:var(--navy);margin-bottom:8px">Email Politicians</h3>
+        <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">Select politicians and compose an email. The first selected will be in the TO field, the rest in BCC. Opens your email client.</p>
+
+        <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+          <input type="text" id="emailPolSearch" placeholder="Search by name..." oninput="filterEmailPoliticians(this.value)" style="flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em">
+          <button class="btn btn-sm btn-blue" onclick="selectAllEmailPol()">Select All</button>
+          <button class="btn btn-sm" style="background:#eee;color:var(--text)" onclick="deselectAllEmailPol()">Deselect All</button>
+          <span id="emailPolCount" style="font-weight:600;color:var(--blue);font-size:0.9em">0 selected</span>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+          <button class="filter-btn active" onclick="filterEmailPolByType('all', this)">All</button>
+          <button class="filter-btn" onclick="filterEmailPolByType('house', this)">House</button>
+          <button class="filter-btn" onclick="filterEmailPolByType('senate', this)">Senate</button>
+          <button class="filter-btn" onclick="filterEmailPolByType('republican', this)">Republican</button>
+          <button class="filter-btn" onclick="filterEmailPolByType('democrat', this)">Democrat</button>
+          <button class="filter-btn" onclick="filterEmailPolByType('veteran', this)">Veterans</button>
+        </div>
+
+        <div id="emailPolList" style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:6px;margin-bottom:20px"></div>
+
+        <div class="form-container" style="max-width:100%;margin:0">
+          <div class="form-group">
+            <label for="emailPolSubject">Subject</label>
+            <input type="text" id="emailPolSubject" placeholder="e.g., Support for HB 1234 - Veteran Education Benefits">
+          </div>
+          <div class="form-group">
+            <label for="emailPolBody">Message Body</label>
+            <textarea id="emailPolBody" style="min-height:150px" placeholder="Dear Legislator,&#10;&#10;..."></textarea>
+          </div>
+          <button class="btn btn-blue" onclick="sendEmailToPoliticians()" style="width:100%">Open Email Client with Selected Politicians</button>
+        </div>
       </div>
 
       <!-- SPONSOR PANEL -->
@@ -705,6 +742,7 @@
         politiciansSha = results[1].sha;
         renderAdminPolicies();
         renderAdminPoliticians();
+        renderEmailPoliticians();
         loadCorrections();
         loadPolSubmissions();
         loadPolicySubmissions();
@@ -1657,6 +1695,139 @@
       } else {
         badge.style.display = 'none';
       }
+    }
+
+    // ── Email Politicians ──
+    var emailPolSelected = {};
+    var emailPolSearchQuery = '';
+    var emailPolFilter = 'all';
+
+    function renderEmailPoliticians() {
+      var el = document.getElementById('emailPolList');
+      if (!el || politicians.length === 0) return;
+
+      var filtered = politicians.filter(function(p) { return p.email; });
+
+      if (emailPolFilter !== 'all') {
+        filtered = filtered.filter(function(p) {
+          switch (emailPolFilter) {
+            case 'house': return p.position.toLowerCase().indexOf('representative') !== -1;
+            case 'senate': return p.position.toLowerCase().indexOf('senator') !== -1;
+            case 'republican': return (p.party || '').toLowerCase() === 'republican';
+            case 'democrat': return (p.party || '').toLowerCase() === 'democrat';
+            case 'veteran': return !!p.veteran;
+            default: return true;
+          }
+        });
+      }
+
+      if (emailPolSearchQuery) {
+        filtered = filtered.filter(function(p) {
+          return p.name.toLowerCase().indexOf(emailPolSearchQuery) !== -1;
+        });
+      }
+
+      filtered.sort(function(a, b) { return a.name.localeCompare(b.name); });
+
+      el.innerHTML = filtered.map(function(p) {
+        var checked = emailPolSelected[p.id] ? ' checked' : '';
+        return '<label style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid #f0f0f0;cursor:pointer;font-size:0.9em' + (checked ? ';background:#e3f2fd' : '') + '" onmouseover="this.style.background=\'#f5f5f5\'" onmouseout="this.style.background=\'' + (checked ? '#e3f2fd' : '') + '\'">' +
+          '<input type="checkbox" onchange="toggleEmailPol(' + p.id + ', this.checked)"' + checked + ' style="width:18px;height:18px">' +
+          '<span style="flex:1"><strong>' + esc(p.name) + '</strong>' +
+            (p.veteran ? ' <span style="background:#2e7d32;color:#fff;font-size:0.7em;padding:1px 5px;border-radius:3px">VET</span>' : '') +
+            ' <span style="color:var(--text-muted);font-size:0.85em">' + esc(p.position) +
+            (p.party ? ' · ' + esc(p.party) : '') +
+            (p.district ? ' · ' + esc(p.district) : '') + '</span></span>' +
+          '<span style="color:var(--text-muted);font-size:0.8em">' + esc(p.email) + '</span>' +
+        '</label>';
+      }).join('');
+
+      updateEmailPolCount();
+    }
+
+    function toggleEmailPol(id, checked) {
+      if (checked) emailPolSelected[id] = true;
+      else delete emailPolSelected[id];
+      renderEmailPoliticians();
+    }
+
+    function selectAllEmailPol() {
+      var filtered = politicians.filter(function(p) { return p.email; });
+      if (emailPolFilter !== 'all') {
+        filtered = filtered.filter(function(p) {
+          switch (emailPolFilter) {
+            case 'house': return p.position.toLowerCase().indexOf('representative') !== -1;
+            case 'senate': return p.position.toLowerCase().indexOf('senator') !== -1;
+            case 'republican': return (p.party || '').toLowerCase() === 'republican';
+            case 'democrat': return (p.party || '').toLowerCase() === 'democrat';
+            case 'veteran': return !!p.veteran;
+            default: return true;
+          }
+        });
+      }
+      if (emailPolSearchQuery) {
+        filtered = filtered.filter(function(p) {
+          return p.name.toLowerCase().indexOf(emailPolSearchQuery) !== -1;
+        });
+      }
+      filtered.forEach(function(p) { emailPolSelected[p.id] = true; });
+      renderEmailPoliticians();
+    }
+
+    function deselectAllEmailPol() {
+      emailPolSelected = {};
+      renderEmailPoliticians();
+    }
+
+    function filterEmailPoliticians(query) {
+      emailPolSearchQuery = query.toLowerCase().trim();
+      renderEmailPoliticians();
+    }
+
+    function filterEmailPolByType(filter, btn) {
+      emailPolFilter = filter;
+      document.querySelectorAll('#panel-emailpol .filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      if (btn) btn.classList.add('active');
+      renderEmailPoliticians();
+    }
+
+    function updateEmailPolCount() {
+      var count = Object.keys(emailPolSelected).length;
+      var el = document.getElementById('emailPolCount');
+      if (el) el.textContent = count + ' selected';
+    }
+
+    function sendEmailToPoliticians() {
+      var selectedIds = Object.keys(emailPolSelected).map(Number);
+      if (selectedIds.length === 0) {
+        alert('Please select at least one politician.');
+        return;
+      }
+
+      var emails = [];
+      selectedIds.forEach(function(id) {
+        var p = politicians.find(function(x) { return x.id === id; });
+        if (p && p.email) emails.push(p.email);
+      });
+
+      if (emails.length === 0) {
+        alert('None of the selected politicians have email addresses.');
+        return;
+      }
+
+      var toEmail = emails[0];
+      var bccEmails = emails.slice(1);
+      var subject = encodeURIComponent(document.getElementById('emailPolSubject').value || '');
+      var body = encodeURIComponent(document.getElementById('emailPolBody').value || '');
+
+      var mailto = 'mailto:' + toEmail;
+      var params = [];
+      if (bccEmails.length > 0) params.push('bcc=' + bccEmails.join(','));
+      if (subject) params.push('subject=' + subject);
+      if (body) params.push('body=' + body);
+      if (params.length > 0) mailto += '?' + params.join('&');
+
+      window.location.href = mailto;
     }
 
     // ── Grades editing ──
