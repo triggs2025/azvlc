@@ -16,5 +16,17 @@
     "name": "Anonymous",
     "source": "Rated: Stacey Travers (A)",
     "date": "2026-06-27"
+  },
+  {
+    "email": "triggs@needthese.com",
+    "name": "Tony Riggs",
+    "source": "Rated: David Marshall, Sr. (B)",
+    "date": "2026-06-28",
+    "type": "politician-rating",
+    "politician": "David Marshall, Sr.",
+    "grade": "B",
+    "previousGrade": "C",
+    "zip": "85045",
+    "timestamp": "2026-06-28T01:34:07.281Z"
   }
 ]
