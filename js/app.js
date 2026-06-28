@@ -1426,7 +1426,7 @@
 
     var mailto = 'mailto:' + toEmail;
     var params = [];
-    if (bccEmails.length > 0) params.push('bcc=' + bccEmails.join(', '));
+    if (bccEmails.length > 0) params.push('bcc=' + encodeURIComponent(bccEmails.join('; ')));
     if (subject) params.push('subject=' + subject);
     if (body) params.push('body=' + body);
     if (params.length > 0) mailto += '?' + params.join('&');
