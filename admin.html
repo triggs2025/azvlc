@@ -306,24 +306,22 @@
 
       <!-- SPONSOR PANEL -->
       <div id="panel-sponsor" class="admin-panel">
-        <h3 style="color:var(--navy);margin-bottom:20px">Manage Sponsor</h3>
-        <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">This appears below the hero buttons on the home page.</p>
-        <div class="form-container" style="max-width:500px;margin:0">
-          <div class="form-group">
-            <label for="sponsorLabel">Label Text</label>
-            <input type="text" id="sponsorLabel" placeholder="e.g., Sponsored by">
-          </div>
-          <div class="form-group">
-            <label for="sponsorName">Sponsor Name</label>
-            <input type="text" id="sponsorName" placeholder="e.g., Major Opinion">
-          </div>
-          <div class="form-group">
-            <label for="sponsorUrl">Sponsor Link</label>
-            <input type="url" id="sponsorUrl" placeholder="https://...">
-          </div>
-          <button class="btn btn-success btn-sm" onclick="saveSponsor()">Save Sponsor</button>
-          <div class="saving-indicator" id="sponsorSaveStatus" style="margin-top:12px"></div>
+        <h3 style="color:var(--navy);margin-bottom:20px">Manage Sponsors</h3>
+        <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">Sponsors rotate on the home page below the hero. Fewer sponsors rotate every 3 days; more sponsors rotate faster so everyone gets shown.</p>
+
+        <div style="margin-bottom:20px">
+          <label style="font-weight:600;color:var(--navy)">Label Text</label>
+          <input type="text" id="sponsorLabel" placeholder="e.g., Sponsored by" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:1em;width:100%;max-width:300px;margin-top:4px">
         </div>
+
+        <div id="sponsorsList"></div>
+
+        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-blue btn-sm" onclick="addSponsorRow()">+ Add Sponsor</button>
+          <button class="btn btn-success btn-sm" onclick="saveSponsors()">Save Changes</button>
+        </div>
+        <div class="saving-indicator" id="sponsorSaveStatus" style="margin-top:12px"></div>
+        <div id="sponsorRotationInfo" style="margin-top:16px;padding:12px;background:#f0f4f8;border-radius:6px;font-size:0.85em;color:var(--text-muted)"></div>
       </div>
 
       <!-- TICKER PANEL -->
@@ -1631,37 +1629,99 @@
     // ── Sponsor ──
     var sponsorSha = '';
 
+    var adminSponsors = [];
+
     function loadSponsor() {
       ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/sponsor.json?ref=master')
         .then(function(result) {
           sponsorSha = result.sha;
           var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
           var data = JSON.parse(decoded);
-          document.getElementById('sponsorLabel').value = data.label || '';
-          document.getElementById('sponsorName').value = data.name || '';
-          document.getElementById('sponsorUrl').value = data.url || '';
+          document.getElementById('sponsorLabel').value = data.label || 'Sponsored by';
+          adminSponsors = data.sponsors || [];
+          if (adminSponsors.length === 0 && data.name) {
+            adminSponsors = [{ name: data.name, url: data.url || '' }];
+          }
+          renderSponsorsList();
         })
         .catch(function() {});
     }
 
-    function saveSponsor() {
+    function renderSponsorsList() {
+      var el = document.getElementById('sponsorsList');
+      if (adminSponsors.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No sponsors yet. Click "+ Add Sponsor" to get started.</p></div>';
+      } else {
+        el.innerHTML = adminSponsors.map(function(s, i) {
+          return '<div class="admin-item" style="align-items:center">' +
+            '<div class="admin-item-info">' +
+              '<h4>' + esc(s.name) + '</h4>' +
+              '<p>' + (s.url ? '<a href="' + esc(s.url) + '" target="_blank">' + esc(s.url) + '</a>' : 'No link') + '</p>' +
+            '</div>' +
+            '<div class="admin-item-actions">' +
+              '<button class="btn btn-sm btn-blue" onclick="editSponsor(' + i + ')">Edit</button>' +
+              '<button class="btn btn-sm btn-danger" onclick="deleteSponsor(' + i + ')">Delete</button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+      updateSponsorRotationInfo();
+    }
+
+    function updateSponsorRotationInfo() {
+      var el = document.getElementById('sponsorRotationInfo');
+      var count = adminSponsors.length;
+      if (count === 0) {
+        el.innerHTML = 'No sponsors to rotate.';
+        return;
+      }
+      var daysPerSponsor = count <= 5 ? 3 : Math.max(1, Math.floor(15 / count));
+      var totalCycle = daysPerSponsor * count;
+      el.innerHTML = '<strong>' + count + ' sponsor' + (count !== 1 ? 's' : '') + '</strong> — each shown for <strong>' + daysPerSponsor + ' day' + (daysPerSponsor !== 1 ? 's' : '') + '</strong>, full cycle every <strong>' + totalCycle + ' days</strong>.';
+    }
+
+    function addSponsorRow() {
+      var name = prompt('Sponsor Name:');
+      if (!name) return;
+      var url = prompt('Sponsor Website URL (optional):') || '';
+      adminSponsors.push({ name: name.trim(), url: url.trim() });
+      renderSponsorsList();
+    }
+
+    function editSponsor(idx) {
+      var s = adminSponsors[idx];
+      if (!s) return;
+      var name = prompt('Sponsor Name:', s.name);
+      if (!name) return;
+      var url = prompt('Sponsor Website URL:', s.url || '');
+      if (url === null) return;
+      adminSponsors[idx] = { name: name.trim(), url: url.trim() };
+      renderSponsorsList();
+    }
+
+    function deleteSponsor(idx) {
+      if (!confirm('Delete sponsor "' + adminSponsors[idx].name + '"?')) return;
+      adminSponsors.splice(idx, 1);
+      renderSponsorsList();
+    }
+
+    function saveSponsors() {
       var data = {
-        label: document.getElementById('sponsorLabel').value.trim(),
-        name: document.getElementById('sponsorName').value.trim(),
-        url: document.getElementById('sponsorUrl').value.trim()
+        label: document.getElementById('sponsorLabel').value.trim() || 'Sponsored by',
+        sponsors: adminSponsors
       };
 
       var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2) + '\n')));
       var statusEl = document.getElementById('sponsorSaveStatus');
 
       ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/sponsor.json', {
-        message: 'Update sponsor',
+        message: 'Update sponsors',
         content: content,
         sha: sponsorSha,
         branch: 'master'
       }).then(function(result) {
         if (result.content) sponsorSha = result.content.sha;
-        statusEl.textContent = 'Sponsor saved!';
+        statusEl.textContent = 'Sponsors saved!';
         statusEl.className = 'saving-indicator show success';
         setTimeout(function() { statusEl.className = 'saving-indicator'; }, 3000);
       }).catch(function(err) {

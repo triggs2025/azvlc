@@ -47,8 +47,22 @@
       .then(function(data) {
         if (!data) return;
         var el = document.getElementById('sponsorLine');
-        if (!el || !data.name) return;
-        el.innerHTML = esc(data.label || 'Sponsored by') + ' <a href="' + esc(data.url || '#') + '" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">' + esc(data.name) + '</a>';
+        if (!el) return;
+
+        var sponsors = data.sponsors || [];
+        if (sponsors.length === 0) return;
+
+        // Rotation: calculate days per sponsor based on count
+        // 1-5 sponsors: rotate every 3 days
+        // 6+ sponsors: rotate faster so all get shown within ~15 days
+        var count = sponsors.length;
+        var daysPerSponsor = count <= 5 ? 3 : Math.max(1, Math.floor(15 / count));
+        var daysSinceEpoch = Math.floor(Date.now() / 86400000);
+        var idx = Math.floor(daysSinceEpoch / daysPerSponsor) % count;
+        var sponsor = sponsors[idx];
+
+        if (!sponsor || !sponsor.name) return;
+        el.innerHTML = esc(data.label || 'Sponsored by') + ' <a href="' + esc(sponsor.url || '#') + '" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">' + esc(sponsor.name) + '</a>';
       })
       .catch(function() {});
   }

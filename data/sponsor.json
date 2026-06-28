@@ -1,5 +1,9 @@
 {
   "label": "Sponsored by",
-  "name": "Major Opinion",
-  "url": "https://majoropinion.com/"
+  "sponsors": [
+    {
+      "name": "Major Opinion",
+      "url": "https://majoropinion.com/"
+    }
+  ]
 }
