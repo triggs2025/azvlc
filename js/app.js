@@ -1307,6 +1307,7 @@
   var vobSubmissionsSha = '';
   var vobCurrentSearch = '';
   var vobCurrentFilter = 'all';
+  var vobCurrentSort = 'name';
 
   function loadVOBSha() {
     return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/vob.json?ref=' + CONFIG.branch, {
@@ -1376,7 +1377,7 @@
     var el = document.getElementById('vobList');
     if (!el) return;
 
-    var filtered = vobData;
+    var filtered = vobData.slice();
     if (vobCurrentFilter !== 'all') {
       filtered = filtered.filter(function(b) { return b.category === vobCurrentFilter; });
     }
@@ -1390,6 +1391,12 @@
           (b.description || '').toLowerCase().indexOf(q) !== -1;
       });
     }
+
+    filtered.sort(function(a, b) {
+      if (vobCurrentSort === 'kudos') return (b.kudos || 0) - (a.kudos || 0);
+      if (vobCurrentSort === 'newest') return (b.id || 0) - (a.id || 0);
+      return (a.businessName || '').localeCompare(b.businessName || '');
+    });
 
     if (filtered.length === 0) {
       el.innerHTML = '<div class="empty-state"><p>' + (vobData.length === 0 ? 'No businesses listed yet. Be the first!' : 'No businesses match your search.') + '</p></div>';
@@ -1433,6 +1440,11 @@
       document.querySelectorAll('#vobFilterBar .filter-btn').forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
     }
+    renderVOB();
+  }
+
+  function sortVOB(sortBy) {
+    vobCurrentSort = sortBy;
     renderVOB();
   }
 
@@ -1996,6 +2008,7 @@
     submitModifyPolitician: submitModifyPolitician,
     searchVOB: searchVOB,
     filterVOB: filterVOB,
+    sortVOB: sortVOB,
     openVOBSubmitModal: openVOBSubmitModal,
     closeVOBSubmitModal: closeVOBSubmitModal,
     submitVOB: submitVOB

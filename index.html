@@ -311,6 +311,11 @@
 
       <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center">
         <input type="text" id="vobSearch" placeholder="Search by name, zip, or category..." oninput="AZVLC.searchVOB(this.value)" style="flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em">
+        <select id="vobSort" onchange="AZVLC.sortVOB(this.value)" style="padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em">
+          <option value="name">Sort: Name (A-Z)</option>
+          <option value="kudos">Sort: Most Kudos</option>
+          <option value="newest">Sort: Newest First</option>
+        </select>
         <button class="btn btn-blue btn-sm" onclick="AZVLC.openVOBSubmitModal()">+ List Your Business</button>
       </div>
 
