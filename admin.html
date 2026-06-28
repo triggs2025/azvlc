@@ -189,6 +189,7 @@
         <button class="admin-tab" onclick="showTab('corrections', this)">Corrections <span id="correctionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('policysubmissions', this)">Policy Submissions <span id="policySubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('polsubmissions', this)">Politician Submissions <span id="polSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
+        <button class="admin-tab" onclick="showTab('vob', this)">VOB <span id="vobSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('contacts', this)">Contacts <span id="contactsBadge" style="background:var(--blue);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('sponsor', this)">Sponsor</button>
         <button class="admin-tab" onclick="showTab('ticker', this)">Ticker</button>
@@ -294,6 +295,26 @@
         <h3 style="color:var(--navy);margin-bottom:20px">Politician Submissions</h3>
         <p style="color:var(--text-muted);margin-bottom:20px;font-size:0.9em">These are politicians submitted by the public. Approve to add them to the scorecard, or dismiss to remove the submission.</p>
         <div id="adminPolSubmissionsList"></div>
+      </div>
+
+      <!-- VOB PANEL -->
+      <div id="panel-vob" class="admin-panel">
+        <h3 style="color:var(--navy);margin-bottom:8px">Veteran Owned Businesses</h3>
+        <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">Manage approved VOBs and review new submissions.</p>
+
+        <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid #eee;padding-bottom:12px">
+          <button class="filter-btn active" id="vobAdminTabApproved" onclick="showVOBAdminTab('approved', this)">Approved Listings</button>
+          <button class="filter-btn" id="vobAdminTabPending" onclick="showVOBAdminTab('pending', this)">Pending Review <span id="vobPendingCount" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
+        </div>
+
+        <div id="vobAdminApproved">
+          <input type="text" id="adminVOBSearch" placeholder="Search by name or category..." oninput="filterAdminVOB(this.value)" style="width:100%;max-width:400px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em;margin-bottom:16px">
+          <div id="adminVOBList"></div>
+        </div>
+
+        <div id="vobAdminPending" style="display:none">
+          <div id="adminVOBSubmissionsList"></div>
+        </div>
       </div>
 
       <!-- CONTACTS PANEL -->
@@ -699,6 +720,7 @@
         loadCorrections();
         loadPolSubmissions();
         loadPolicySubmissions();
+        loadVOBData();
         loadTicker();
         loadSponsor();
         loadContacts();
@@ -1139,6 +1161,251 @@
         badge.style.display = 'inline';
       } else {
         badge.style.display = 'none';
+      }
+    }
+
+    // ── VOB Management ──
+    var adminVOBs = [];
+    var vobSha = '';
+    var vobSubmissions = [];
+    var vobSubmissionsShaAdmin = '';
+    var adminVOBSearch = '';
+
+    function loadVOBData() {
+      loadFileFromGitHub('data/vob.json')
+        .then(function(result) {
+          adminVOBs = result.data || [];
+          vobSha = result.sha;
+          renderAdminVOB();
+        })
+        .catch(function() { adminVOBs = []; renderAdminVOB(); });
+
+      fetch('data/vob-submissions.json?t=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          vobSubmissions = d || [];
+          renderVOBSubmissions();
+          updateVOBBadge();
+        })
+        .catch(function() { vobSubmissions = []; renderVOBSubmissions(); });
+
+      ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/vob-submissions.json?ref=master')
+        .then(function(result) { vobSubmissionsShaAdmin = result.sha; })
+        .catch(function() {});
+    }
+
+    function showVOBAdminTab(tab, btn) {
+      document.getElementById('vobAdminApproved').style.display = tab === 'approved' ? '' : 'none';
+      document.getElementById('vobAdminPending').style.display = tab === 'pending' ? '' : 'none';
+      document.getElementById('vobAdminTabApproved').classList.toggle('active', tab === 'approved');
+      document.getElementById('vobAdminTabPending').classList.toggle('active', tab === 'pending');
+    }
+
+    function filterAdminVOB(query) {
+      adminVOBSearch = query.toLowerCase().trim();
+      renderAdminVOB();
+    }
+
+    function renderAdminVOB() {
+      var el = document.getElementById('adminVOBList');
+      if (adminVOBs.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No approved businesses yet.</p></div>';
+        return;
+      }
+      var filtered = adminVOBs;
+      if (adminVOBSearch) {
+        filtered = adminVOBs.filter(function(b) {
+          return b.businessName.toLowerCase().indexOf(adminVOBSearch) !== -1 ||
+            (b.category || '').toLowerCase().indexOf(adminVOBSearch) !== -1;
+        });
+      }
+      if (filtered.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No businesses match your search.</p></div>';
+        return;
+      }
+      el.innerHTML = filtered.map(function(b, i) {
+        var idx = adminVOBs.indexOf(b);
+        return '<div class="admin-item" style="flex-direction:column">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%">' +
+            '<div>' +
+              '<h4>' + esc(b.businessName) + '</h4>' +
+              '<p><span class="badge badge-category">' + esc(b.category) + '</span></p>' +
+            '</div>' +
+            '<div class="admin-item-actions">' +
+              '<button class="btn btn-sm btn-blue" onclick="editVOB(' + idx + ')">Edit</button>' +
+              '<button class="btn btn-sm btn-danger" onclick="deleteVOB(' + idx + ')">Delete</button>' +
+            '</div>' +
+          '</div>' +
+          '<div style="margin-top:8px;font-size:0.85em;color:var(--text-muted);line-height:1.6">' +
+            '<p>' + esc(b.description || '').substring(0, 150) + (b.description && b.description.length > 150 ? '...' : '') + '</p>' +
+            (b.address ? '<p>📍 ' + esc(b.address) + '</p>' : '') +
+            (b.phone ? '<p>📞 ' + esc(b.phone) + '</p>' : '') +
+            (b.hours ? '<p>🕐 ' + esc(b.hours) + '</p>' : '') +
+            (b.discount ? '<p>🎖 ' + esc(b.discount) + '</p>' : '') +
+            (b.website ? '<p>🌐 <a href="' + esc(b.website) + '" target="_blank">' + esc(b.website) + '</a></p>' : '') +
+            '<p style="margin-top:4px;color:#999"><strong>Owner:</strong> ' + esc(b.ownerName || '') + ' | ' + esc(b.ownerEmail || '') + ' | ' + esc(b.ownerPhone || '') + '</p>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderVOBSubmissions() {
+      var el = document.getElementById('adminVOBSubmissionsList');
+      if (vobSubmissions.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No VOB submissions to review.</p></div>';
+        return;
+      }
+      el.innerHTML = vobSubmissions.map(function(s, idx) {
+        var date = new Date(s.submittedAt).toLocaleDateString();
+        return '<div class="admin-item" style="border-left-color:var(--gold);flex-direction:column">' +
+          '<h4>' + esc(s.businessName) + ' <span class="badge badge-category">' + esc(s.category) + '</span></h4>' +
+          '<div style="margin-top:8px;background:#f8f9fa;padding:12px;border-radius:6px;font-size:0.85em;line-height:1.6">' +
+            '<p><strong>Description:</strong> ' + esc(s.description) + '</p>' +
+            (s.address ? '<p><strong>Address:</strong> ' + esc(s.address) + '</p>' : '') +
+            (s.zip ? '<p><strong>Zip:</strong> ' + esc(s.zip) + '</p>' : '') +
+            (s.phone ? '<p><strong>Business Phone:</strong> ' + esc(s.phone) + '</p>' : '') +
+            (s.hours ? '<p><strong>Hours:</strong> ' + esc(s.hours) + '</p>' : '') +
+            (s.discount ? '<p><strong>Veteran Discount:</strong> ' + esc(s.discount) + '</p>' : '') +
+            (s.website ? '<p><strong>Website:</strong> <a href="' + esc(s.website) + '" target="_blank">' + esc(s.website) + '</a></p>' : '') +
+          '</div>' +
+          '<div style="margin-top:8px;background:#fff8e1;padding:12px;border-radius:6px;font-size:0.85em;line-height:1.6">' +
+            '<p><strong>Owner:</strong> ' + esc(s.ownerName) + '</p>' +
+            (s.ownerEmail ? '<p><strong>Email:</strong> ' + esc(s.ownerEmail) + '</p>' : '') +
+            (s.ownerPhone ? '<p><strong>Phone:</strong> ' + esc(s.ownerPhone) + '</p>' : '') +
+            '<p><strong>Submitted:</strong> ' + date + '</p>' +
+          '</div>' +
+          '<div style="margin-top:12px;display:flex;gap:8px">' +
+            '<button class="btn btn-sm btn-success" onclick="approveVOB(' + idx + ')">Approve &amp; Publish</button>' +
+            '<button class="btn btn-sm btn-danger" onclick="dismissVOB(' + idx + ')">Dismiss</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function approveVOB(idx) {
+      var s = vobSubmissions[idx];
+      if (!s) return;
+
+      var approved = {
+        id: nextId(adminVOBs),
+        businessName: s.businessName,
+        category: s.category,
+        description: s.description,
+        website: s.website || '',
+        address: s.address || '',
+        zip: s.zip || '',
+        phone: s.phone || '',
+        hours: s.hours || '',
+        discount: s.discount || '',
+        ownerName: s.ownerName,
+        ownerEmail: s.ownerEmail || '',
+        ownerPhone: s.ownerPhone || '',
+        approvedAt: new Date().toISOString()
+      };
+
+      adminVOBs.push(approved);
+      vobSubmissions.splice(idx, 1);
+
+      showStatus('Approving business...', '');
+
+      saveFileToGitHub('data/vob.json', adminVOBs, vobSha)
+        .then(function(result) {
+          vobSha = result.content.sha;
+          renderAdminVOB();
+          return saveVOBSubmissionsList();
+        })
+        .then(function() {
+          renderVOBSubmissions();
+          updateVOBBadge();
+          showStatus('Business "' + approved.businessName + '" approved and published!', 'success');
+        })
+        .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    function dismissVOB(idx) {
+      if (!confirm('Dismiss this VOB submission?')) return;
+      vobSubmissions.splice(idx, 1);
+      showStatus('Dismissing submission...', '');
+      saveVOBSubmissionsList().then(function() {
+        renderVOBSubmissions();
+        updateVOBBadge();
+        showStatus('VOB submission dismissed.', 'success');
+      }).catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    function editVOB(idx) {
+      var b = adminVOBs[idx];
+      if (!b) return;
+      var name = prompt('Business Name:', b.businessName);
+      if (!name) return;
+      var category = prompt('Category:', b.category);
+      if (category === null) return;
+      var description = prompt('Description:', b.description);
+      if (description === null) return;
+      var website = prompt('Website:', b.website || '');
+      if (website === null) return;
+      var address = prompt('Address:', b.address || '');
+      if (address === null) return;
+      var phone = prompt('Business Phone:', b.phone || '');
+      if (phone === null) return;
+      var hours = prompt('Hours:', b.hours || '');
+      if (hours === null) return;
+      var discount = prompt('Veteran Discount:', b.discount || '');
+      if (discount === null) return;
+
+      adminVOBs[idx].businessName = name.trim();
+      adminVOBs[idx].category = category.trim();
+      adminVOBs[idx].description = description.trim();
+      adminVOBs[idx].website = website.trim();
+      adminVOBs[idx].address = address.trim();
+      adminVOBs[idx].phone = phone.trim();
+      adminVOBs[idx].hours = hours.trim();
+      adminVOBs[idx].discount = discount.trim();
+
+      showStatus('Saving VOB changes...', '');
+      saveFileToGitHub('data/vob.json', adminVOBs, vobSha)
+        .then(function(result) {
+          vobSha = result.content.sha;
+          renderAdminVOB();
+          showStatus('Business updated.', 'success');
+        })
+        .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    function deleteVOB(idx) {
+      if (!confirm('Delete "' + adminVOBs[idx].businessName + '" from the directory?')) return;
+      adminVOBs.splice(idx, 1);
+      showStatus('Deleting business...', '');
+      saveFileToGitHub('data/vob.json', adminVOBs, vobSha)
+        .then(function(result) {
+          vobSha = result.content.sha;
+          renderAdminVOB();
+          showStatus('Business deleted.', 'success');
+        })
+        .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    function saveVOBSubmissionsList() {
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(vobSubmissions, null, 2) + '\n')));
+      return ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/vob-submissions.json', {
+        message: 'Update VOB submissions',
+        content: content,
+        sha: vobSubmissionsShaAdmin,
+        branch: 'master'
+      }).then(function(result) {
+        if (result.content) vobSubmissionsShaAdmin = result.content.sha;
+      });
+    }
+
+    function updateVOBBadge() {
+      var badge = document.getElementById('vobSubmissionBadge');
+      var pending = document.getElementById('vobPendingCount');
+      if (vobSubmissions.length > 0) {
+        if (badge) { badge.textContent = vobSubmissions.length; badge.style.display = 'inline'; }
+        if (pending) { pending.textContent = vobSubmissions.length; pending.style.display = 'inline'; }
+      } else {
+        if (badge) badge.style.display = 'none';
+        if (pending) pending.style.display = 'none';
       }
     }
 

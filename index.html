@@ -28,6 +28,7 @@
         <a href="#politicians" data-nav="politicians">Politicians</a>
         <a href="#suggest" data-nav="suggest" style="text-align:center;line-height:1.2">Suggest<br>Policy</a>
         <a href="#rate" data-nav="rate" style="text-align:center;line-height:1.2">Rate<br>Politician</a>
+        <a href="#vob" data-nav="vob">VOB</a>
         <a href="#donate" data-nav="donate" class="btn btn-primary" style="color:#fff;padding:6px 18px;font-size:0.9em">Donate</a>
       </div>
     </div>
@@ -303,6 +304,111 @@
         </form>
       </div>
     </section>
+
+    <!-- ══ VOB DIRECTORY ══ -->
+    <section id="section-vob" class="page-section">
+      <div style="text-align:center"><h2 class="section-header">Veteran Owned Businesses</h2></div>
+
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="vobSearch" placeholder="Search by name, zip, or category..." oninput="AZVLC.searchVOB(this.value)" style="flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em">
+        <button class="btn btn-blue btn-sm" onclick="AZVLC.openVOBSubmitModal()">+ List Your Business</button>
+      </div>
+
+      <div class="filter-bar" id="vobFilterBar">
+        <button class="filter-btn active" onclick="AZVLC.filterVOB('all', this)">All</button>
+      </div>
+
+      <div class="card-grid" id="vobList">
+        <div class="empty-state"><p>No businesses listed yet. Be the first!</p></div>
+      </div>
+    </section>
+
+    <!-- VOB SUBMISSION MODAL -->
+    <div id="vobSubmitModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto">
+      <div style="background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.2);width:100%;max-width:650px;padding:32px">
+        <button onclick="AZVLC.closeVOBSubmitModal()" style="float:right;background:none;border:none;font-size:1.5em;cursor:pointer;color:#666">&times;</button>
+        <h3 style="color:var(--navy);margin-bottom:20px">List Your Veteran Owned Business</h3>
+        <p style="color:var(--text-muted);font-size:0.9em;margin-bottom:16px">Submit your business to be listed in our VOB directory. Submissions are reviewed before appearing on the site.</p>
+        <form id="vobSubmitForm" onsubmit="AZVLC.submitVOB(event)">
+          <h4 style="color:var(--blue);margin-bottom:12px;border-bottom:1px solid #eee;padding-bottom:8px">Business Information</h4>
+          <div class="form-group">
+            <label for="vobBizName">Business Name *</label>
+            <input type="text" id="vobBizName" required placeholder="Your business name">
+          </div>
+          <div class="form-group">
+            <label for="vobCategory">Category *</label>
+            <select id="vobCategory" required>
+              <option value="">Select a category...</option>
+              <option value="Automotive">Automotive</option>
+              <option value="Construction">Construction</option>
+              <option value="Consulting">Consulting</option>
+              <option value="Education">Education</option>
+              <option value="Finance">Finance</option>
+              <option value="Food & Beverage">Food & Beverage</option>
+              <option value="Health & Wellness">Health & Wellness</option>
+              <option value="Home Services">Home Services</option>
+              <option value="IT & Technology">IT & Technology</option>
+              <option value="Legal">Legal</option>
+              <option value="Manufacturing">Manufacturing</option>
+              <option value="Real Estate">Real Estate</option>
+              <option value="Retail">Retail</option>
+              <option value="Security">Security</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="vobDescription">About Your Business *</label>
+            <textarea id="vobDescription" required placeholder="Tell us about your business, what you do, and what makes it special..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="vobWebsite">Business Website</label>
+            <input type="url" id="vobWebsite" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label for="vobAddress">Business Address</label>
+            <input type="text" id="vobAddress" placeholder="123 Main St, Phoenix, AZ 85001">
+          </div>
+          <div class="form-group">
+            <label for="vobZip">Zip Code *</label>
+            <input type="text" id="vobZip" required placeholder="85001" maxlength="5" pattern="[0-9]{5}">
+          </div>
+          <div class="form-group">
+            <label for="vobBizPhone">Business Phone (displayed on site if provided)</label>
+            <input type="tel" id="vobBizPhone" placeholder="(555) 123-4567">
+          </div>
+          <div class="form-group">
+            <label for="vobHours">Hours of Operation</label>
+            <input type="text" id="vobHours" placeholder="e.g., Mon-Fri 9am-5pm, Sat 10am-2pm">
+          </div>
+          <div class="form-group">
+            <label for="vobDiscount">Veteran Discounts Offered</label>
+            <input type="text" id="vobDiscount" placeholder="e.g., 10% off for all Veterans">
+          </div>
+
+          <h4 style="color:var(--blue);margin:20px 0 12px;border-bottom:1px solid #eee;padding-bottom:8px">Owner Contact (for verification — not displayed)</h4>
+          <div class="form-group">
+            <label for="vobOwnerName">Your Name *</label>
+            <input type="text" id="vobOwnerName" required placeholder="Full name">
+          </div>
+          <div class="form-group">
+            <label for="vobOwnerEmail">Email</label>
+            <input type="email" id="vobOwnerEmail" placeholder="your@email.com">
+          </div>
+          <div class="form-group">
+            <label for="vobOwnerPhone">Phone</label>
+            <input type="tel" id="vobOwnerPhone" placeholder="(555) 123-4567">
+          </div>
+          <p style="font-size:0.8em;color:var(--text-muted);margin-bottom:16px">* At least one contact method (email or phone) is required for verification.</p>
+
+          <div style="display:flex;gap:8px">
+            <button type="submit" class="form-submit" style="flex:1">Submit for Review</button>
+            <button type="button" class="btn" style="background:#eee;color:var(--text)" onclick="AZVLC.closeVOBSubmitModal()">Cancel</button>
+          </div>
+        </form>
+        <div class="alert alert-success" id="vobSubmitSuccess" style="margin-top:12px">Your business has been submitted for review. Thank you!</div>
+      </div>
+    </div>
 
     <!-- ══ DONATE ══ -->
     <section id="section-donate" class="page-section">

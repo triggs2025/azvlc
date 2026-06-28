@@ -334,6 +334,8 @@
         loadCorrectionsWithSha();
         loadPolSubmissionsWithSha();
         loadPolicySubmissionsWithSha();
+        loadVOBSubmissionsSha();
+        loadVOB();
         loadContactsSha();
       })
       .catch(function (err) {
@@ -1287,6 +1289,205 @@
     if (donateForm) donateForm.addEventListener('submit', submitDonateForm);
   }
 
+  // ── VOB Directory ──
+  var vobData = [];
+  var vobSubmissionsSha = '';
+  var vobCurrentSearch = '';
+  var vobCurrentFilter = 'all';
+
+  function loadVOBSubmissionsSha() {
+    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/vob-submissions.json?ref=' + CONFIG.branch, {
+      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) { vobSubmissionsSha = result.sha; })
+    .catch(function() { vobSubmissionsSha = ''; });
+  }
+
+  function loadVOB() {
+    fetch('data/vob.json?t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        vobData = data || [];
+        renderVOB();
+        renderVOBFilters();
+      })
+      .catch(function() { vobData = []; });
+  }
+
+  function renderVOBFilters() {
+    var cats = {};
+    vobData.forEach(function(b) { if (b.category) cats[b.category] = true; });
+    var bar = document.getElementById('vobFilterBar');
+    if (!bar) return;
+    var html = '<button class="filter-btn' + (vobCurrentFilter === 'all' ? ' active' : '') + '" onclick="AZVLC.filterVOB(\'all\', this)">All</button>';
+    Object.keys(cats).sort().forEach(function(cat) {
+      html += '<button class="filter-btn' + (vobCurrentFilter === cat ? ' active' : '') + '" onclick="AZVLC.filterVOB(\'' + esc(cat) + '\', this)">' + esc(cat) + '</button>';
+    });
+    bar.innerHTML = html;
+  }
+
+  function renderVOB() {
+    var el = document.getElementById('vobList');
+    if (!el) return;
+
+    var filtered = vobData;
+    if (vobCurrentFilter !== 'all') {
+      filtered = filtered.filter(function(b) { return b.category === vobCurrentFilter; });
+    }
+    if (vobCurrentSearch) {
+      var q = vobCurrentSearch;
+      filtered = filtered.filter(function(b) {
+        return (b.businessName || '').toLowerCase().indexOf(q) !== -1 ||
+          (b.category || '').toLowerCase().indexOf(q) !== -1 ||
+          (b.zip || '').indexOf(q) !== -1 ||
+          (b.address || '').toLowerCase().indexOf(q) !== -1 ||
+          (b.description || '').toLowerCase().indexOf(q) !== -1;
+      });
+    }
+
+    if (filtered.length === 0) {
+      el.innerHTML = '<div class="empty-state"><p>' + (vobData.length === 0 ? 'No businesses listed yet. Be the first!' : 'No businesses match your search.') + '</p></div>';
+      return;
+    }
+
+    el.innerHTML = filtered.map(function(b) {
+      return '<div class="card">' +
+        '<h3>' + esc(b.businessName) + '</h3>' +
+        '<div class="card-meta">' +
+          '<span class="badge badge-category">' + esc(b.category) + '</span>' +
+          (b.discount ? '<span class="badge badge-passed" style="background:#fff3e0;color:#e65100">🎖 ' + esc(b.discount) + '</span>' : '') +
+        '</div>' +
+        '<p>' + esc(b.description) + '</p>' +
+        '<div style="margin-top:12px;font-size:0.9em;color:var(--text-muted);line-height:1.8">' +
+          (b.address ? '<div>📍 ' + esc(b.address) + '</div>' : '') +
+          (b.phone ? '<div>📞 ' + esc(b.phone) + '</div>' : '') +
+          (b.hours ? '<div>🕐 ' + esc(b.hours) + '</div>' : '') +
+          (b.website ? '<div>🌐 <a href="' + esc(b.website) + '" target="_blank" rel="noopener">' + esc(b.website) + '</a></div>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function searchVOB(query) {
+    vobCurrentSearch = query.toLowerCase().trim();
+    renderVOB();
+  }
+
+  function filterVOB(cat, btn) {
+    vobCurrentFilter = cat;
+    if (btn) {
+      document.querySelectorAll('#vobFilterBar .filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    }
+    renderVOB();
+  }
+
+  function openVOBSubmitModal() {
+    document.getElementById('vobSubmitModal').style.display = 'flex';
+    document.getElementById('vobSubmitForm').reset();
+    document.getElementById('vobSubmitSuccess').classList.remove('show');
+  }
+
+  function closeVOBSubmitModal() {
+    document.getElementById('vobSubmitModal').style.display = 'none';
+  }
+
+  function submitVOB(e) {
+    e.preventDefault();
+    var form = e.target;
+
+    var ownerEmail = document.getElementById('vobOwnerEmail').value.trim();
+    var ownerPhone = document.getElementById('vobOwnerPhone').value.trim();
+    if (!ownerEmail && !ownerPhone) {
+      alert('Please provide at least one contact method (email or phone) for verification.');
+      return;
+    }
+
+    var submission = {
+      id: Date.now(),
+      businessName: document.getElementById('vobBizName').value.trim(),
+      category: document.getElementById('vobCategory').value,
+      description: document.getElementById('vobDescription').value.trim(),
+      website: document.getElementById('vobWebsite').value.trim(),
+      address: document.getElementById('vobAddress').value.trim(),
+      zip: document.getElementById('vobZip').value.trim(),
+      phone: document.getElementById('vobBizPhone').value.trim(),
+      hours: document.getElementById('vobHours').value.trim(),
+      discount: document.getElementById('vobDiscount').value.trim(),
+      ownerName: document.getElementById('vobOwnerName').value.trim(),
+      ownerEmail: ownerEmail,
+      ownerPhone: ownerPhone,
+      submittedAt: new Date().toISOString()
+    };
+
+    var submitBtn = form.querySelector('.form-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    fetch('data/vob-submissions.json').then(function(r) { return r.json(); }).then(function(submissions) {
+      submissions.push(submission);
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(submissions, null, 2) + '\n')));
+      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/vob-submissions.json', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'token ' + CONFIG.ghToken
+        },
+        body: JSON.stringify({
+          message: 'VOB submission: ' + submission.businessName,
+          content: content,
+          sha: vobSubmissionsSha,
+          branch: CONFIG.branch
+        })
+      });
+    }).then(function(r) { return r.json(); }).then(function(result) {
+      if (result.content) {
+        vobSubmissionsSha = result.content.sha;
+
+        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'token ' + CONFIG.ghToken
+          },
+          body: JSON.stringify({
+            title: 'VOB Submission: ' + submission.businessName,
+            body: '**Business:** ' + submission.businessName + '\n' +
+              '**Category:** ' + submission.category + '\n' +
+              '**Owner:** ' + submission.ownerName + '\n' +
+              '**Contact:** ' + (submission.ownerEmail || 'N/A') + ' / ' + (submission.ownerPhone || 'N/A') + '\n' +
+              '**Date:** ' + submission.submittedAt + '\n\n' +
+              'Review in the [Admin Panel](https://azvlc.org/admin.html).',
+            labels: ['vob-submission']
+          })
+        }).catch(function() {});
+
+        var successEl = document.getElementById('vobSubmitSuccess');
+        successEl.classList.add('show');
+        form.reset();
+        setTimeout(function() { successEl.classList.remove('show'); closeVOBSubmitModal(); }, 3000);
+      } else {
+        throw new Error(result.message || 'Save failed');
+      }
+    }).catch(function(err) {
+      console.error('VOB submission error:', err);
+      alert('There was an issue submitting. Please try again.');
+    }).finally(function() {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit for Review';
+      loadVOBSubmissionsSha();
+    });
+
+    saveContact(ownerEmail || '', submission.ownerName, 'VOB: ' + submission.businessName, {
+      type: 'vob-submission',
+      businessName: submission.businessName,
+      category: submission.category,
+      phone: ownerPhone,
+      timestamp: submission.submittedAt
+    });
+  }
+
   function submitDonateForm(e) {
     e.preventDefault();
     var form = e.target;
@@ -1739,6 +1940,11 @@
     openModifyPoliticianModal: openModifyPoliticianModal,
     closeModifyPoliticianModal: closeModifyPoliticianModal,
     populateModifyFields: populateModifyFields,
-    submitModifyPolitician: submitModifyPolitician
+    submitModifyPolitician: submitModifyPolitician,
+    searchVOB: searchVOB,
+    filterVOB: filterVOB,
+    openVOBSubmitModal: openVOBSubmitModal,
+    closeVOBSubmitModal: closeVOBSubmitModal,
+    submitVOB: submitVOB
   };
 })();
