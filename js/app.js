@@ -1267,6 +1267,9 @@
     var suggestEmail = form.submitterEmail.value;
     var suggestName = form.submitterAnonymous.checked ? '' : form.submitterName.value;
     var suggestPolicyName = form.policyName.value;
+    var suggestPolicySponsor = form.policySponsor.value;
+    var suggestPolicyDescription = form.policyDescription.value;
+    var suggestPolicyLink = form.policyLink.value || '';
 
     if (!policiesSha) {
       alert('Still loading. Please wait a moment and try again.');
@@ -1324,20 +1327,20 @@
 
     if (CONFIG.ghlWebhookPolicy) {
       sendToGHL(CONFIG.ghlWebhookPolicy, {
-        policyName: form.policyName.value,
-        policySponsor: form.policySponsor.value,
-        policyDescription: form.policyDescription.value,
-        submitterEmail: form.submitterEmail.value,
+        policyName: suggestPolicyName,
+        policySponsor: suggestPolicySponsor,
+        policyDescription: suggestPolicyDescription,
+        submitterEmail: suggestEmail,
         submissionType: 'Policy Suggestion',
         timestamp: new Date().toISOString()
       }, null, null);
     }
     setTimeout(function () { saveContact(suggestEmail, suggestName, 'Suggested Policy: ' + suggestPolicyName, {
       type: 'policy-suggestion',
-      policyName: form.policyName.value,
-      policySponsor: form.policySponsor.value,
-      policyDescription: form.policyDescription.value,
-      policyLink: form.policyLink.value || '',
+      policyName: suggestPolicyName,
+      policySponsor: suggestPolicySponsor,
+      policyDescription: suggestPolicyDescription,
+      policyLink: suggestPolicyLink,
       timestamp: new Date().toISOString()
     }); }, 2000);
   }
