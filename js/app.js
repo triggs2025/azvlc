@@ -334,6 +334,7 @@
         loadCorrectionsWithSha();
         loadPolSubmissionsWithSha();
         loadPolicySubmissionsWithSha();
+        loadVOBSha();
         loadVOBSubmissionsSha();
         loadVOB();
         loadContactsSha();
@@ -803,6 +804,8 @@
     var item;
     if (type === 'policy') {
       item = policies.find(function (p) { return p.id === id; });
+    } else if (type === 'vob') {
+      item = vobData.find(function (b) { return b.id === id; });
     } else {
       item = politicians.find(function (p) { return p.id === id; });
     }
@@ -813,12 +816,21 @@
 
     // re-render to disable button
     if (type === 'policy') renderPolicies();
+    else if (type === 'vob') renderVOB();
     else renderPoliticians();
 
-    renderDashboard();
+    if (type !== 'vob') renderDashboard();
 
     // save to GitHub
-    if (type === 'politician') {
+    if (type === 'vob') {
+      fetch('data/vob.json?t=' + Date.now()).then(function(r) { return r.json(); }).then(function(all) {
+        var target = all.find(function(b) { return b.id === id; });
+        if (target) target.kudos = item.kudos;
+        return saveVOBToGitHub(all);
+      }).then(function() {
+        loadVOBSha();
+      }).catch(function(err) { console.error('VOB kudos save error:', err); });
+    } else if (type === 'politician') {
       fetch('data/politicians.json?t=' + Date.now()).then(function(r) { return r.json(); }).then(function(all) {
         var target = all.find(function(p) { return p.id === id; });
         if (target) target.kudos = item.kudos;
@@ -1291,9 +1303,42 @@
 
   // ── VOB Directory ──
   var vobData = [];
+  var vobSha = '';
   var vobSubmissionsSha = '';
   var vobCurrentSearch = '';
   var vobCurrentFilter = 'all';
+
+  function loadVOBSha() {
+    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/vob.json?ref=' + CONFIG.branch, {
+      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) { vobSha = result.sha; })
+    .catch(function() { vobSha = ''; });
+  }
+
+  function saveVOBToGitHub(data) {
+    if (!CONFIG.ghToken) return Promise.resolve({ content: { sha: vobSha } });
+    var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2) + '\n')));
+    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/vob.json', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'token ' + CONFIG.ghToken
+      },
+      body: JSON.stringify({
+        message: 'Update VOB kudos',
+        content: content,
+        sha: vobSha,
+        branch: CONFIG.branch
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (result.content) vobSha = result.content.sha;
+      return result;
+    });
+  }
 
   function loadVOBSubmissionsSha() {
     return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/vob-submissions.json?ref=' + CONFIG.branch, {
@@ -1352,6 +1397,7 @@
     }
 
     el.innerHTML = filtered.map(function(b) {
+      var voted = hasVotedKudo('vob', b.id);
       return '<div class="card">' +
         '<h3>' + esc(b.businessName) + '</h3>' +
         '<div class="card-meta">' +
@@ -1364,6 +1410,13 @@
           (b.phone ? '<div>📞 ' + esc(b.phone) + '</div>' : '') +
           (b.hours ? '<div>🕐 ' + esc(b.hours) + '</div>' : '') +
           (b.website ? '<div>🌐 <a href="' + esc(b.website) + '" target="_blank" rel="noopener">' + esc(b.website) + '</a></div>' : '') +
+        '</div>' +
+        '<div class="kudos-bar">' +
+          '<button class="kudos-btn' + (voted ? ' voted' : '') + '" onclick="AZVLC.giveKudos(' + b.id + ',\'vob\')" ' + (voted ? 'disabled' : '') + '>' +
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>' +
+            (voted ? 'Thanked' : 'Give Kudos') +
+          '</button>' +
+          '<span class="kudos-count" id="kudos-vob-' + b.id + '">' + (b.kudos || 0) + '</span>' +
         '</div>' +
       '</div>';
     }).join('');
