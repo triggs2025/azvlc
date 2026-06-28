@@ -174,27 +174,30 @@
       .catch(function() {});
   }
 
-  function saveContact(email, name, source, details) {
-    if (!email || !CONFIG.ghToken || !contactsSha) return;
+  function saveContact(email, name, source, details, attempt) {
+    if (!email || !CONFIG.ghToken) return;
+    attempt = attempt || 0;
+
+    var entry = {
+      email: email,
+      name: name || 'Anonymous',
+      source: source || 'unknown',
+      date: new Date().toISOString().split('T')[0]
+    };
+    if (details) {
+      for (var key in details) {
+        if (details.hasOwnProperty(key)) entry[key] = details[key];
+      }
+    }
 
     fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/contacts.json?ref=' + CONFIG.branch, {
       headers: { 'Authorization': 'token ' + CONFIG.ghToken }
     })
     .then(function(r) { return r.json(); })
     .then(function(result) {
+      var freshSha = result.sha;
       var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
       var contacts = JSON.parse(decoded);
-      var entry = {
-        email: email,
-        name: name || 'Anonymous',
-        source: source || 'unknown',
-        date: new Date().toISOString().split('T')[0]
-      };
-      if (details) {
-        for (var key in details) {
-          if (details.hasOwnProperty(key)) entry[key] = details[key];
-        }
-      }
       contacts.push(entry);
       var content = btoa(unescape(encodeURIComponent(JSON.stringify(contacts, null, 2) + '\n')));
       return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/contacts.json', {
@@ -206,12 +209,22 @@
         body: JSON.stringify({
           message: 'New contact from ' + source,
           content: content,
-          sha: result.sha,
+          sha: freshSha,
           branch: CONFIG.branch
         })
+      }).then(function(r) { return r.json(); }).then(function(putResult) {
+        if (putResult.content) {
+          contactsSha = putResult.content.sha;
+        } else if (attempt < 3) {
+          setTimeout(function() { saveContact(email, name, source, details, attempt + 1); }, 1500);
+        }
       });
     })
-    .catch(function() {});
+    .catch(function() {
+      if (attempt < 3) {
+        setTimeout(function() { saveContact(email, name, source, details, attempt + 1); }, 1500);
+      }
+    });
   }
 
   // ── Social share for policies ──
