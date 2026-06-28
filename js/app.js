@@ -1364,6 +1364,9 @@
 
     var politicianName = form.politicianName.value;
     var newGrade = form.politicianGrade.value;
+    var ratingReason = form.ratingReason.value || '';
+    var politicianPosition = form.politicianPosition.value || '';
+    var isAnonymous = form.raterAnonymous.checked;
 
     var politician = politicians.find(function (p) { return p.name === politicianName; });
     if (!politician) {
@@ -1413,12 +1416,12 @@
         setTimeout(function () { saveContact(raterEmail, raterName, 'Rated: ' + politicianName + ' (' + newGrade + ')', {
           type: 'politician-rating',
           politician: politicianName,
-          position: form.politicianPosition.value || '',
+          position: politicianPosition,
           grade: newGrade,
           previousGrade: prevGrade || '',
-          reason: form.ratingReason.value || '',
+          reason: ratingReason,
           zip: zip,
-          anonymous: form.raterAnonymous.checked,
+          anonymous: isAnonymous,
           timestamp: new Date().toISOString()
         }); }, 2000);
       } else {
