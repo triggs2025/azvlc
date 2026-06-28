@@ -1290,6 +1290,22 @@
       timestamp: new Date().toISOString()
     });
 
+    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'token ' + CONFIG.ghToken
+      },
+      body: JSON.stringify({
+        title: 'Donation Interest: ' + name,
+        body: '**Name:** ' + name + '\n' +
+          '**Email:** ' + email + '\n' +
+          '**Phone:** ' + phone + '\n' +
+          '**Date:** ' + new Date().toISOString(),
+        labels: ['donate-interest']
+      })
+    }).catch(function() {});
+
     setTimeout(function() {
       var successEl = document.getElementById('donateSuccess');
       if (successEl) successEl.classList.add('show');
@@ -1499,6 +1515,25 @@
           anonymous: isAnonymous,
           timestamp: new Date().toISOString()
         }); }, 2000);
+
+        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'token ' + CONFIG.ghToken
+          },
+          body: JSON.stringify({
+            title: 'Politician Rating: ' + politicianName + ' (' + newGrade + ')',
+            body: '**Politician:** ' + politicianName + '\n' +
+              '**Position:** ' + politicianPosition + '\n' +
+              '**Grade:** ' + newGrade + (prevGrade ? ' (changed from ' + prevGrade + ')' : '') + '\n' +
+              '**Reason:** ' + (ratingReason || 'Not provided') + '\n' +
+              '**Zip:** ' + zip + '\n' +
+              '**Submitted by:** ' + (raterName || 'Anonymous') + ' (' + raterEmail + ')\n' +
+              '**Date:** ' + new Date().toISOString(),
+            labels: ['rating']
+          })
+        }).catch(function() {});
       } else {
         throw new Error(result.message || 'Save failed');
       }
