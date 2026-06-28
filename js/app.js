@@ -637,11 +637,9 @@
           '</button>' +
           '<span class="kudos-count" id="kudos-policy-' + p.id + '">' + (p.kudos || 0) + '</span>' +
           '<button class="btn btn-sm" style="background:#eee;color:var(--text-muted);font-size:0.8em" onclick="AZVLC.openCorrectionModal(' + p.id + ')">Correction</button>' +
+          '<button class="btn btn-sm btn-blue" style="font-size:0.8em" onclick="AZVLC.openEmailPolModal(' + p.id + ')">Email Politicians</button>' +
           '<button class="btn btn-sm" style="background:#000;color:#fff;font-size:0.8em;margin-left:auto" onclick="AZVLC.sharePolicyX(' + p.id + ')">𝕏</button>' +
           '<button class="btn btn-sm" style="background:#1877f2;color:#fff;font-size:0.8em" onclick="AZVLC.sharePolicyFB(' + p.id + ')">FB</button>' +
-        '</div>' +
-        '<div style="margin-top:12px;padding-top:12px;border-top:1px solid #eee">' +
-          '<button class="btn btn-sm btn-blue" style="font-size:0.85em;width:100%" onclick="AZVLC.openEmailPolModal(' + p.id + ')">Email Politicians About This Policy</button>' +
         '</div>' +
         '</div>';
     }).join('');
@@ -1328,6 +1326,7 @@
           case 'senate': return p.position.toLowerCase().indexOf('senator') !== -1;
           case 'republican': return (p.party || '').toLowerCase() === 'republican';
           case 'democrat': return (p.party || '').toLowerCase() === 'democrat';
+          case 'veteran': return !!p.veteran;
           default: return true;
         }
       });
@@ -1371,6 +1370,7 @@
           case 'senate': return p.position.toLowerCase().indexOf('senator') !== -1;
           case 'republican': return (p.party || '').toLowerCase() === 'republican';
           case 'democrat': return (p.party || '').toLowerCase() === 'democrat';
+          case 'veteran': return !!p.veteran;
           default: return true;
         }
       });
@@ -1426,7 +1426,7 @@
 
     var mailto = 'mailto:' + toEmail;
     var params = [];
-    if (bccEmails.length > 0) params.push('bcc=' + bccEmails.join(','));
+    if (bccEmails.length > 0) params.push('bcc=' + bccEmails.join(', '));
     if (subject) params.push('subject=' + subject);
     if (body) params.push('body=' + body);
     if (params.length > 0) mailto += '?' + params.join('&');
