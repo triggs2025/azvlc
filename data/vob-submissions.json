@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": 1782619189790,
+    "businessName": "Skilled Vets, LLc",
+    "category": "Other",
+    "description": "We are a staffing company for Veterans.",
+    "website": "https://skilledvets.com/",
+    "address": "PO Box 93621",
+    "zip": "85070",
+    "phone": "5551234568",
+    "hours": "24/7 M-S",
+    "discount": "10% off for all Veterans",
+    "ownerName": "Tony Riggs",
+    "ownerEmail": "triggs@skilledvets.com",
+    "ownerPhone": "555123-45687",
+    "submittedAt": "2026-06-28T03:59:49.790Z"
+  }
+]
