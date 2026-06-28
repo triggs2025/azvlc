@@ -174,7 +174,7 @@
       .catch(function() {});
   }
 
-  function saveContact(email, name, source) {
+  function saveContact(email, name, source, details) {
     if (!email || !CONFIG.ghToken || !contactsSha) return;
 
     fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/contacts.json?ref=' + CONFIG.branch, {
@@ -184,12 +184,18 @@
     .then(function(result) {
       var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
       var contacts = JSON.parse(decoded);
-      contacts.push({
+      var entry = {
         email: email,
         name: name || 'Anonymous',
         source: source || 'unknown',
         date: new Date().toISOString().split('T')[0]
-      });
+      };
+      if (details) {
+        for (var key in details) {
+          if (details.hasOwnProperty(key)) entry[key] = details[key];
+        }
+      }
+      contacts.push(entry);
       var content = btoa(unescape(encodeURIComponent(JSON.stringify(contacts, null, 2) + '\n')));
       return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/contacts.json', {
         method: 'PUT',
@@ -982,7 +988,16 @@
         var successEl = document.getElementById('correctionSuccess');
         successEl.classList.add('show');
         if (correction.submitterEmail) {
-          setTimeout(function () { saveContact(correction.submitterEmail, '', 'Correction: ' + correction.originalName); }, 2000);
+          setTimeout(function () { saveContact(correction.submitterEmail, '', 'Correction: ' + correction.originalName, {
+            type: 'policy-correction',
+            policyName: correction.originalName,
+            correctedName: correction.correctedName,
+            correctedSponsor: correction.correctedSponsor,
+            correctedCategory: correction.correctedCategory,
+            correctedStatus: correction.correctedStatus,
+            reason: correction.reason,
+            timestamp: new Date().toISOString()
+          }); }, 2000);
         }
         document.getElementById('corrReason').value = '';
         document.getElementById('corrEmail').value = '';
@@ -1304,7 +1319,14 @@
         timestamp: new Date().toISOString()
       }, null, null);
     }
-    setTimeout(function () { saveContact(suggestEmail, suggestName, 'Suggested Policy: ' + suggestPolicyName); }, 2000);
+    setTimeout(function () { saveContact(suggestEmail, suggestName, 'Suggested Policy: ' + suggestPolicyName, {
+      type: 'policy-suggestion',
+      policyName: form.policyName.value,
+      policySponsor: form.policySponsor.value,
+      policyDescription: form.policyDescription.value,
+      policyLink: form.policyLink.value || '',
+      timestamp: new Date().toISOString()
+    }); }, 2000);
   }
 
   var ratingFormOpenedAt = 0;
@@ -1388,7 +1410,14 @@
         renderPoliticians();
         renderDashboard();
         setTimeout(function () { if (successEl) successEl.classList.remove('show'); }, 5000);
-        setTimeout(function () { saveContact(raterEmail, raterName, 'Rated: ' + politicianName + ' (' + newGrade + ')'); }, 2000);
+        setTimeout(function () { saveContact(raterEmail, raterName, 'Rated: ' + politicianName + ' (' + newGrade + ')', {
+          type: 'politician-rating',
+          politician: politicianName,
+          grade: newGrade,
+          previousGrade: prevGrade || '',
+          zip: zip,
+          timestamp: new Date().toISOString()
+        }); }, 2000);
       } else {
         throw new Error(result.message || 'Save failed');
       }
