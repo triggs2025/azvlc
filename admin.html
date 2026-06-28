@@ -187,6 +187,7 @@
         <button class="admin-tab" onclick="showTab('policies', this)">Policies</button>
         <button class="admin-tab" onclick="showTab('politicians', this)">Politicians</button>
         <button class="admin-tab" onclick="showTab('corrections', this)">Corrections <span id="correctionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
+        <button class="admin-tab" onclick="showTab('policysubmissions', this)">Policy Submissions <span id="policySubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('polsubmissions', this)">Politician Submissions <span id="polSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('contacts', this)">Contacts <span id="contactsBadge" style="background:var(--blue);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('sponsor', this)">Sponsor</button>
@@ -279,6 +280,13 @@
       <div id="panel-corrections" class="admin-panel">
         <h3 style="color:var(--navy);margin-bottom:20px">Policy Corrections</h3>
         <div id="adminCorrectionsList"></div>
+      </div>
+
+      <!-- POLICY SUBMISSIONS PANEL -->
+      <div id="panel-policysubmissions" class="admin-panel">
+        <h3 style="color:var(--navy);margin-bottom:20px">Policy Submissions</h3>
+        <p style="color:var(--text-muted);margin-bottom:20px;font-size:0.9em">These are policies suggested by the public. Approve to add them to the site, or dismiss to remove the submission.</p>
+        <div id="adminPolicySubmissionsList"></div>
       </div>
 
       <!-- POLITICIAN SUBMISSIONS PANEL -->
@@ -692,6 +700,7 @@
         renderAdminPoliticians();
         loadCorrections();
         loadPolSubmissions();
+        loadPolicySubmissions();
         loadTicker();
         loadSponsor();
         loadContacts();
@@ -1129,6 +1138,123 @@
       var badge = document.getElementById('correctionBadge');
       if (corrections.length > 0) {
         badge.textContent = corrections.length;
+        badge.style.display = 'inline';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    // ── Policy Submissions ──
+    var policySubmissions = [];
+    var policySubmissionsShaAdmin = '';
+
+    function loadPolicySubmissions() {
+      fetch('data/policy-submissions.json?t=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          policySubmissions = d || [];
+          renderPolicySubmissions();
+          updatePolicySubmissionBadge();
+        })
+        .catch(function(err) {
+          console.error('Failed to load policy submissions:', err);
+          policySubmissions = [];
+          renderPolicySubmissions();
+        });
+      ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/policy-submissions.json?ref=master')
+        .then(function(result) { policySubmissionsShaAdmin = result.sha; })
+        .catch(function() {});
+    }
+
+    function renderPolicySubmissions() {
+      var el = document.getElementById('adminPolicySubmissionsList');
+      if (policySubmissions.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No policy submissions to review.</p></div>';
+        return;
+      }
+      el.innerHTML = policySubmissions.map(function(s, idx) {
+        var date = new Date(s.submittedAt).toLocaleDateString();
+        return '<div class="admin-item" style="border-left-color:var(--gold);flex-direction:column">' +
+          '<h4>' + esc(s.name) + '</h4>' +
+          '<div style="margin-top:8px;background:#f8f9fa;padding:12px;border-radius:6px;font-size:0.85em">' +
+            '<p><strong>Sponsor:</strong> ' + esc(s.sponsor) + '</p>' +
+            '<p><strong>Description:</strong> ' + esc(s.description) + '</p>' +
+            '<p><strong>Status:</strong> ' + esc(s.status || 'proposed') + '</p>' +
+            (s.link ? '<p><strong>Link:</strong> <a href="' + esc(s.link) + '" target="_blank">' + esc(s.link) + '</a></p>' : '') +
+          '</div>' +
+          '<p style="margin-top:8px"><strong>Submitted:</strong> ' + date + ' by ' + esc(s.submittedBy || 'Anonymous') + (s.submitterEmail ? ' (' + esc(s.submitterEmail) + ')' : '') + '</p>' +
+          '<div style="margin-top:12px;display:flex;gap:8px">' +
+            '<button class="btn btn-sm btn-success" onclick="approvePolicySubmission(' + idx + ')">Approve &amp; Publish</button>' +
+            '<button class="btn btn-sm btn-danger" onclick="dismissPolicySubmission(' + idx + ')">Dismiss</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function approvePolicySubmission(idx) {
+      var s = policySubmissions[idx];
+      if (!s) return;
+
+      var newPolicy = {
+        id: nextId(policies),
+        name: s.name,
+        sponsor: s.sponsor,
+        category: s.category || 'suggestion',
+        description: s.description,
+        status: s.status || 'proposed',
+        kudos: 0,
+        link: s.link || '',
+        approved: true,
+        submittedBy: s.submittedBy || 'Anonymous',
+        submittedEmail: s.submitterEmail || '',
+        submittedAt: s.submittedAt
+      };
+
+      policies.push(newPolicy);
+      policySubmissions.splice(idx, 1);
+
+      showStatus('Approving policy...', '');
+
+      saveFileToGitHub('data/policies.json', policies, policiesSha)
+        .then(function(result) {
+          policiesSha = result.content.sha;
+          renderAdminPolicies();
+          return savePolicySubmissionsList();
+        })
+        .then(function() {
+          renderPolicySubmissions();
+          updatePolicySubmissionBadge();
+          showStatus('Policy "' + newPolicy.name + '" approved and published!', 'success');
+        })
+        .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    function dismissPolicySubmission(idx) {
+      policySubmissions.splice(idx, 1);
+      showStatus('Dismissing submission...', '');
+      savePolicySubmissionsList().then(function() {
+        renderPolicySubmissions();
+        updatePolicySubmissionBadge();
+        showStatus('Policy submission dismissed.', 'success');
+      }).catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    function savePolicySubmissionsList() {
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(policySubmissions, null, 2) + '\n')));
+      return ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/policy-submissions.json', {
+        message: 'Update policy submissions',
+        content: content,
+        sha: policySubmissionsShaAdmin,
+        branch: 'master'
+      }).then(function(result) {
+        if (result.content) policySubmissionsShaAdmin = result.content.sha;
+      });
+    }
+
+    function updatePolicySubmissionBadge() {
+      var badge = document.getElementById('policySubmissionBadge');
+      if (policySubmissions.length > 0) {
+        badge.textContent = policySubmissions.length;
         badge.style.display = 'inline';
       } else {
         badge.style.display = 'none';

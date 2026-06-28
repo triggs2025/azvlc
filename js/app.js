@@ -319,6 +319,7 @@
         loadPoliciesWithSha();
         loadCorrectionsWithSha();
         loadPolSubmissionsWithSha();
+        loadPolicySubmissionsWithSha();
         loadContactsSha();
       })
       .catch(function (err) {
@@ -1030,12 +1031,20 @@
 
   // ── Add Politician Submissions ──
   var polSubmissionsSha = '';
+  var policySubmissionsSha = '';
 
   function loadPolSubmissionsWithSha() {
     return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/politician-submissions.json?ref=' + CONFIG.branch)
       .then(function (r) { return r.json(); })
       .then(function (result) { polSubmissionsSha = result.sha; })
       .catch(function () { polSubmissionsSha = ''; });
+  }
+
+  function loadPolicySubmissionsWithSha() {
+    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/policy-submissions.json?ref=' + CONFIG.branch)
+      .then(function (r) { return r.json(); })
+      .then(function (result) { policySubmissionsSha = result.sha; })
+      .catch(function () { policySubmissionsSha = ''; });
   }
 
   function openAddPoliticianModal() {
@@ -1271,25 +1280,16 @@
     var suggestPolicyDescription = form.policyDescription.value;
     var suggestPolicyLink = form.policyLink.value || '';
 
-    if (!policiesSha) {
-      alert('Still loading. Please wait a moment and try again.');
-      return;
-    }
-
-    var maxId = allPoliciesRaw.reduce(function (max, p) { return Math.max(max, p.id || 0); }, 0);
-
-    var newPolicy = {
-      id: maxId + 1,
-      name: form.policyName.value,
-      sponsor: form.policySponsor.value,
+    var submission = {
+      id: Date.now(),
+      name: suggestPolicyName,
+      sponsor: suggestPolicySponsor,
       category: 'suggestion',
-      description: form.policyDescription.value,
+      description: suggestPolicyDescription,
       status: 'proposed',
-      kudos: 0,
-      link: form.policyLink.value || '',
-      approved: true,
-      submittedBy: form.submitterAnonymous.checked ? 'Anonymous' : form.submitterName.value,
-      submittedEmail: form.submitterEmail.value,
+      link: suggestPolicyLink,
+      submittedBy: suggestName || 'Anonymous',
+      submitterEmail: suggestEmail,
       submittedAt: new Date().toISOString()
     };
 
@@ -1297,32 +1297,61 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
-    allPoliciesRaw.push(newPolicy);
-
-    savePoliciesToGitHub(allPoliciesRaw).then(function (result) {
+    fetch('data/policy-submissions.json').then(function(r) { return r.json(); }).then(function(submissions) {
+      submissions.push(submission);
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(submissions, null, 2) + '\n')));
+      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/policy-submissions.json', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'token ' + CONFIG.ghToken
+        },
+        body: JSON.stringify({
+          message: 'Policy suggestion: ' + submission.name,
+          content: content,
+          sha: policySubmissionsSha,
+          branch: CONFIG.branch
+        })
+      });
+    }).then(function(r) { return r.json(); }).then(function(result) {
       if (result.content) {
-        policies = allPoliciesRaw.filter(function (p) { return p.approved; });
-        renderPolicies();
-        renderDashboard();
+        policySubmissionsSha = result.content.sha;
+
+        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'token ' + CONFIG.ghToken
+          },
+          body: JSON.stringify({
+            title: 'Policy Suggestion: ' + submission.name,
+            body: '**Policy:** ' + submission.name + '\n' +
+              '**Sponsor:** ' + submission.sponsor + '\n' +
+              '**Description:** ' + submission.description + '\n' +
+              '**Submitted by:** ' + (submission.submitterEmail || 'Anonymous') + '\n' +
+              '**Date:** ' + submission.submittedAt + '\n\n' +
+              'Review this in the [Admin Panel](https://azvlc.org/admin.html).',
+            labels: ['policy-suggestion']
+          })
+        }).catch(function() {});
+
         var successEl = document.getElementById('policySuccess');
         if (successEl) {
-          successEl.textContent = 'Thank you! Your policy suggestion has been added to the Public Suggestions tab.';
+          successEl.textContent = 'Thank you! Your policy suggestion has been submitted for review.';
           successEl.classList.add('show');
         }
         form.reset();
-        setTimeout(function () { if (successEl) successEl.classList.remove('show'); }, 5000);
+        setTimeout(function() { if (successEl) successEl.classList.remove('show'); }, 5000);
       } else {
-        allPoliciesRaw.pop();
         throw new Error(result.message || 'Save failed');
       }
-    }).catch(function (err) {
-      allPoliciesRaw.pop();
+    }).catch(function(err) {
       console.error('Policy submission error:', err);
       alert('There was an issue submitting your suggestion. Please try again.');
-    }).finally(function () {
+    }).finally(function() {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit Policy Suggestion';
-      loadPoliciesWithSha();
+      loadPolicySubmissionsWithSha();
     });
 
     if (CONFIG.ghlWebhookPolicy) {
