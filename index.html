@@ -328,6 +328,42 @@
       </div>
     </section>
 
+    <!-- EMAIL POLITICIANS ABOUT POLICY MODAL -->
+    <div id="emailPolModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto">
+      <div style="background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.2);width:100%;max-width:650px;padding:32px">
+        <button onclick="AZVLC.closeEmailPolModal()" style="float:right;background:none;border:none;font-size:1.5em;cursor:pointer;color:#666">&times;</button>
+        <h3 style="color:var(--navy);margin-bottom:8px">Email Politicians About This Policy</h3>
+        <p id="emailPolPolicyName" style="color:var(--blue);font-weight:600;margin-bottom:16px"></p>
+
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+          <input type="text" id="pubEmailPolSearch" placeholder="Search by name..." oninput="AZVLC.searchEmailPol(this.value)" style="flex:1;min-width:150px;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.9em">
+          <button class="btn btn-sm btn-blue" onclick="AZVLC.selectAllPubEmailPol()">Select All</button>
+          <button class="btn btn-sm" style="background:#eee;color:var(--text)" onclick="AZVLC.deselectAllPubEmailPol()">Deselect All</button>
+          <span id="pubEmailPolCount" style="font-weight:600;color:var(--blue);font-size:0.85em">0 selected</span>
+        </div>
+
+        <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap" id="pubEmailPolFilters">
+          <button class="filter-btn active" onclick="AZVLC.filterPubEmailPol('all', this)">All</button>
+          <button class="filter-btn" onclick="AZVLC.filterPubEmailPol('house', this)">House</button>
+          <button class="filter-btn" onclick="AZVLC.filterPubEmailPol('senate', this)">Senate</button>
+          <button class="filter-btn" onclick="AZVLC.filterPubEmailPol('republican', this)">Republican</button>
+          <button class="filter-btn" onclick="AZVLC.filterPubEmailPol('democrat', this)">Democrat</button>
+        </div>
+
+        <div id="pubEmailPolList" style="max-height:250px;overflow-y:auto;border:1px solid var(--border);border-radius:6px;margin-bottom:16px"></div>
+
+        <div class="form-group">
+          <label for="pubEmailSubject">Subject</label>
+          <input type="text" id="pubEmailSubject">
+        </div>
+        <div class="form-group">
+          <label for="pubEmailBody">Your Message</label>
+          <textarea id="pubEmailBody" style="min-height:120px"></textarea>
+        </div>
+        <button class="btn btn-blue" onclick="AZVLC.sendPubEmailToPol()" style="width:100%">Open Email with Selected Politicians</button>
+      </div>
+    </div>
+
     <!-- VOB SUBMISSION MODAL -->
     <div id="vobSubmitModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto">
       <div style="background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.2);width:100%;max-width:650px;padding:32px">

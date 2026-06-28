@@ -640,29 +640,12 @@
           '<button class="btn btn-sm" style="background:#000;color:#fff;font-size:0.8em;margin-left:auto" onclick="AZVLC.sharePolicyX(' + p.id + ')">𝕏</button>' +
           '<button class="btn btn-sm" style="background:#1877f2;color:#fff;font-size:0.8em" onclick="AZVLC.sharePolicyFB(' + p.id + ')">FB</button>' +
         '</div>' +
-        '<div style="margin-top:12px;padding-top:12px;border-top:1px solid #eee;display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
-          '<label style="font-weight:600;font-size:0.85em;color:var(--text-muted);margin:0">Send to Politician:</label>' +
-          '<select id="sendTo-' + p.id + '" style="flex:1;min-width:200px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85em">' +
-            '<option value="">-- Select a politician --</option>' +
-          '</select>' +
-          '<button class="btn btn-sm btn-blue" style="font-size:0.8em" onclick="AZVLC.sendSuggestionTo(' + p.id + ')">Send Email</button>' +
+        '<div style="margin-top:12px;padding-top:12px;border-top:1px solid #eee">' +
+          '<button class="btn btn-sm btn-blue" style="font-size:0.85em;width:100%" onclick="AZVLC.openEmailPolModal(' + p.id + ')">Email Politicians About This Policy</button>' +
         '</div>' +
         '</div>';
     }).join('');
 
-    // populate send-to dropdowns for all policies
-    var sorted = politicians.slice().sort(function(a, b) { return a.name.localeCompare(b.name); });
-    list.forEach(function(p) {
-      var sel = document.getElementById('sendTo-' + p.id);
-      if (!sel) return;
-      sorted.forEach(function(pol) {
-        if (!pol.email) return;
-        var opt = document.createElement('option');
-        opt.value = pol.id;
-        opt.textContent = pol.name + ' — ' + pol.position + (pol.district ? ' (' + pol.district + ')' : '');
-        sel.appendChild(opt);
-      });
-    });
   }
 
   // ── Politicians ──
@@ -1299,6 +1282,156 @@
 
     var donateForm = document.getElementById('donateForm');
     if (donateForm) donateForm.addEventListener('submit', submitDonateForm);
+  }
+
+  // ── Public Email Politicians Modal ──
+  var pubEmailPolSelected = {};
+  var pubEmailPolSearch = '';
+  var pubEmailPolFilter = 'all';
+  var pubEmailPolicyId = null;
+
+  function openEmailPolModal(policyId) {
+    pubEmailPolicyId = policyId;
+    pubEmailPolSelected = {};
+    pubEmailPolSearch = '';
+    pubEmailPolFilter = 'all';
+
+    var policy = policies.find(function(p) { return p.id === policyId; });
+    if (!policy) return;
+
+    document.getElementById('emailPolPolicyName').textContent = policy.name;
+    document.getElementById('pubEmailSubject').value = 'Support for ' + policy.name;
+    document.getElementById('pubEmailBody').value = 'Dear Legislator,\n\nAs an Arizona Veteran, I am writing to ask for your support on ' + policy.name + '.\n\n' + policy.description + '\n\nThank you for your service to our Veterans.\n\nSincerely,';
+    document.getElementById('pubEmailPolSearch').value = '';
+    document.getElementById('emailPolModal').style.display = 'flex';
+
+    document.querySelectorAll('#pubEmailPolFilters .filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelector('#pubEmailPolFilters .filter-btn').classList.add('active');
+
+    renderPubEmailPolList();
+  }
+
+  function closeEmailPolModal() {
+    document.getElementById('emailPolModal').style.display = 'none';
+  }
+
+  function renderPubEmailPolList() {
+    var el = document.getElementById('pubEmailPolList');
+    if (!el) return;
+
+    var filtered = politicians.filter(function(p) { return p.email; });
+
+    if (pubEmailPolFilter !== 'all') {
+      filtered = filtered.filter(function(p) {
+        switch (pubEmailPolFilter) {
+          case 'house': return p.position.toLowerCase().indexOf('representative') !== -1;
+          case 'senate': return p.position.toLowerCase().indexOf('senator') !== -1;
+          case 'republican': return (p.party || '').toLowerCase() === 'republican';
+          case 'democrat': return (p.party || '').toLowerCase() === 'democrat';
+          default: return true;
+        }
+      });
+    }
+
+    if (pubEmailPolSearch) {
+      filtered = filtered.filter(function(p) {
+        return p.name.toLowerCase().indexOf(pubEmailPolSearch) !== -1;
+      });
+    }
+
+    filtered.sort(function(a, b) { return a.name.localeCompare(b.name); });
+
+    el.innerHTML = filtered.map(function(p) {
+      var checked = pubEmailPolSelected[p.id] ? ' checked' : '';
+      return '<label style="display:flex;align-items:center;gap:10px;padding:6px 10px;border-bottom:1px solid #f0f0f0;cursor:pointer;font-size:0.85em' + (checked ? ';background:#e3f2fd' : '') + '">' +
+        '<input type="checkbox" onchange="AZVLC.togglePubEmailPol(' + p.id + ', this.checked)"' + checked + ' style="width:16px;height:16px">' +
+        '<span style="flex:1"><strong>' + esc(p.name) + '</strong>' +
+          ' <span style="color:var(--text-muted);font-size:0.85em">' + esc(p.position) +
+          (p.party ? ' · ' + esc(p.party) : '') +
+          (p.district ? ' · ' + esc(p.district) : '') + '</span></span>' +
+      '</label>';
+    }).join('');
+
+    var count = Object.keys(pubEmailPolSelected).length;
+    document.getElementById('pubEmailPolCount').textContent = count + ' selected';
+  }
+
+  function togglePubEmailPol(id, checked) {
+    if (checked) pubEmailPolSelected[id] = true;
+    else delete pubEmailPolSelected[id];
+    renderPubEmailPolList();
+  }
+
+  function selectAllPubEmailPol() {
+    var filtered = politicians.filter(function(p) { return p.email; });
+    if (pubEmailPolFilter !== 'all') {
+      filtered = filtered.filter(function(p) {
+        switch (pubEmailPolFilter) {
+          case 'house': return p.position.toLowerCase().indexOf('representative') !== -1;
+          case 'senate': return p.position.toLowerCase().indexOf('senator') !== -1;
+          case 'republican': return (p.party || '').toLowerCase() === 'republican';
+          case 'democrat': return (p.party || '').toLowerCase() === 'democrat';
+          default: return true;
+        }
+      });
+    }
+    if (pubEmailPolSearch) {
+      filtered = filtered.filter(function(p) {
+        return p.name.toLowerCase().indexOf(pubEmailPolSearch) !== -1;
+      });
+    }
+    filtered.forEach(function(p) { pubEmailPolSelected[p.id] = true; });
+    renderPubEmailPolList();
+  }
+
+  function deselectAllPubEmailPol() {
+    pubEmailPolSelected = {};
+    renderPubEmailPolList();
+  }
+
+  function searchEmailPol(query) {
+    pubEmailPolSearch = query.toLowerCase().trim();
+    renderPubEmailPolList();
+  }
+
+  function filterPubEmailPol(filter, btn) {
+    pubEmailPolFilter = filter;
+    document.querySelectorAll('#pubEmailPolFilters .filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    renderPubEmailPolList();
+  }
+
+  function sendPubEmailToPol() {
+    var selectedIds = Object.keys(pubEmailPolSelected).map(Number);
+    if (selectedIds.length === 0) {
+      alert('Please select at least one politician.');
+      return;
+    }
+
+    var emails = [];
+    selectedIds.forEach(function(id) {
+      var p = politicians.find(function(x) { return x.id === id; });
+      if (p && p.email) emails.push(p.email);
+    });
+
+    if (emails.length === 0) {
+      alert('None of the selected politicians have email addresses.');
+      return;
+    }
+
+    var toEmail = emails[0];
+    var bccEmails = emails.slice(1);
+    var subject = encodeURIComponent(document.getElementById('pubEmailSubject').value || '');
+    var body = encodeURIComponent(document.getElementById('pubEmailBody').value || '');
+
+    var mailto = 'mailto:' + toEmail;
+    var params = [];
+    if (bccEmails.length > 0) params.push('bcc=' + bccEmails.join(','));
+    if (subject) params.push('subject=' + subject);
+    if (body) params.push('body=' + body);
+    if (params.length > 0) mailto += '?' + params.join('&');
+
+    window.location.href = mailto;
   }
 
   // ── VOB Directory ──
@@ -2006,6 +2139,14 @@
     closeModifyPoliticianModal: closeModifyPoliticianModal,
     populateModifyFields: populateModifyFields,
     submitModifyPolitician: submitModifyPolitician,
+    openEmailPolModal: openEmailPolModal,
+    closeEmailPolModal: closeEmailPolModal,
+    togglePubEmailPol: togglePubEmailPol,
+    selectAllPubEmailPol: selectAllPubEmailPol,
+    deselectAllPubEmailPol: deselectAllPubEmailPol,
+    searchEmailPol: searchEmailPol,
+    filterPubEmailPol: filterPubEmailPol,
+    sendPubEmailToPol: sendPubEmailToPol,
     searchVOB: searchVOB,
     filterVOB: filterVOB,
     sortVOB: sortVOB,
