@@ -16,5 +16,20 @@
     "name": "Anonymous",
     "source": "Rated: Stacey Travers (A)",
     "date": "2026-06-27"
+  },
+  {
+    "email": "triggs@needthese.com",
+    "name": "Tony Riggs",
+    "source": "Rated: Anna Abeytia (D)",
+    "date": "2026-06-28",
+    "type": "politician-rating",
+    "politician": "Anna Abeytia",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "C",
+    "reason": "dsfdsa kpodfk ;ds asd;flkdsa k asdf;dlskf p;dsalksda;flkds f;pfdsk ;dsakf ;pkdsa;fkdsap;fk sdkfksd p;fkds ;kfpdkjjdfogmdfjgo;dfsgofdjg o;djg gopdgjk opdsfjgoi fdj",
+    "zip": "85045",
+    "anonymous": false,
+    "timestamp": "2026-06-28T01:49:42.849Z"
   }
 ]
