@@ -12,14 +12,14 @@
   },
   {
     "id": 11,
-    "name": "HB 2230 - Property Tax; Exemption; Veterans",
-    "sponsor": "",
+    "name": "HB 2120 - Property Tax; Exemption; Veterans",
+    "sponsor": "David Gowen",
     "category": "housing",
     "description": "Provides property tax exemptions for Veterans in Arizona.",
-    "status": "proposed",
-    "kudos": 24,
-    "link": "https://apps.azleg.gov/BillStatus/BillOverview/83959",
-    "approved": true
+    "link": "https://www.azleg.gov/legtext/57leg/2R/bills/hb2120s.htm",
+    "status": "passed",
+    "approved": true,
+    "kudos": 24
   },
   {
     "id": 12,
