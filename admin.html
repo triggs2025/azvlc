@@ -1385,24 +1385,26 @@
               '<th style="padding:10px;text-align:center">Delete</th>' +
             '</tr></thead><tbody>' +
             data.map(function(c, i) {
-              var hasDetails = c.type || c.politician || c.policyName || c.grade || c.zip;
+              var hasDetails = c.type || c.politician || c.policyName || c.grade || c.zip || c.reason || c.position;
               var detailRows = '';
               if (hasDetails) {
                 var details = [];
                 if (c.type) details.push('<strong>Type:</strong> ' + esc(c.type));
                 if (c.politician) details.push('<strong>Politician:</strong> ' + esc(c.politician));
+                if (c.position) details.push('<strong>Position:</strong> ' + esc(c.position));
                 if (c.grade) details.push('<strong>Grade:</strong> ' + esc(c.grade));
                 if (c.previousGrade) details.push('<strong>Previous Grade:</strong> ' + esc(c.previousGrade));
+                if (c.reason) details.push('<strong>Reason:</strong> ' + esc(c.reason));
                 if (c.zip) details.push('<strong>Zip:</strong> ' + esc(c.zip));
+                if (c.anonymous) details.push('<strong>Anonymous:</strong> Yes');
                 if (c.policyName) details.push('<strong>Policy:</strong> ' + esc(c.policyName));
                 if (c.policySponsor) details.push('<strong>Sponsor:</strong> ' + esc(c.policySponsor));
                 if (c.policyDescription) details.push('<strong>Description:</strong> ' + esc(c.policyDescription));
                 if (c.policyLink) details.push('<strong>Link:</strong> <a href="' + esc(c.policyLink) + '" target="_blank">' + esc(c.policyLink) + '</a>');
                 if (c.correctedName) details.push('<strong>Corrected Name:</strong> ' + esc(c.correctedName));
-                if (c.reason) details.push('<strong>Reason:</strong> ' + esc(c.reason));
                 if (c.timestamp) details.push('<strong>Timestamp:</strong> ' + esc(c.timestamp));
                 detailRows = '<tr id="contact-details-' + i + '" style="display:none;background:#f0f4f8">' +
-                  '<td colspan="6" style="padding:12px 20px;font-size:0.9em;line-height:1.8">' + details.join(' &nbsp;|&nbsp; ') + '</td></tr>';
+                  '<td colspan="6" style="padding:12px 20px;font-size:0.9em;line-height:1.8">' + details.join('<br>') + '</td></tr>';
               }
               return '<tr style="border-bottom:1px solid #eee;background:' + (i % 2 ? '#f9f9f9' : '#fff') + '">' +
                 '<td style="padding:8px 10px">' + esc(c.email) + '</td>' +

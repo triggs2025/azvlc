@@ -1413,9 +1413,12 @@
         setTimeout(function () { saveContact(raterEmail, raterName, 'Rated: ' + politicianName + ' (' + newGrade + ')', {
           type: 'politician-rating',
           politician: politicianName,
+          position: form.politicianPosition.value || '',
           grade: newGrade,
           previousGrade: prevGrade || '',
+          reason: form.ratingReason.value || '',
           zip: zip,
+          anonymous: form.raterAnonymous.checked,
           timestamp: new Date().toISOString()
         }); }, 2000);
       } else {
