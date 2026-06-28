@@ -1268,6 +1268,36 @@
       ratingForm.addEventListener('submit', submitRatingForm);
       ratingForm.addEventListener('focusin', onRatingFormFocus);
     }
+
+    var donateForm = document.getElementById('donateForm');
+    if (donateForm) donateForm.addEventListener('submit', submitDonateForm);
+  }
+
+  function submitDonateForm(e) {
+    e.preventDefault();
+    var form = e.target;
+    var name = form.donateName.value;
+    var email = form.donateEmail.value;
+    var phone = form.donatePhone.value;
+
+    var submitBtn = form.querySelector('.form-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    saveContact(email, name, 'Donate Interest', {
+      type: 'donate-interest',
+      phone: phone,
+      timestamp: new Date().toISOString()
+    });
+
+    setTimeout(function() {
+      var successEl = document.getElementById('donateSuccess');
+      if (successEl) successEl.classList.add('show');
+      form.reset();
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Notify Me When Donations Open';
+      setTimeout(function() { if (successEl) successEl.classList.remove('show'); }, 5000);
+    }, 2500);
   }
 
   function submitPolicyForm(e) {

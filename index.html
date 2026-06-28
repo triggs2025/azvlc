@@ -28,7 +28,7 @@
         <a href="#politicians" data-nav="politicians">Politicians</a>
         <a href="#suggest" data-nav="suggest" style="text-align:center;line-height:1.2">Suggest<br>Policy</a>
         <a href="#rate" data-nav="rate" style="text-align:center;line-height:1.2">Rate<br>Politician</a>
-        <a href="#donate" class="btn btn-primary" style="color:#fff;padding:6px 18px;font-size:0.9em">Donate</a>
+        <a href="#donate" data-nav="donate" class="btn btn-primary" style="color:#fff;padding:6px 18px;font-size:0.9em">Donate</a>
       </div>
     </div>
   </nav>
@@ -300,6 +300,37 @@
             Thank you! Your rating has been submitted. Your feedback helps hold leaders accountable.
           </div>
           <button type="submit" class="form-submit">Submit Rating</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ══ DONATE ══ -->
+    <section id="section-donate" class="page-section">
+      <div style="text-align:center"><h2 class="section-header">Support AZVLC</h2></div>
+
+      <div class="form-container" style="max-width:550px;margin:0 auto">
+        <div class="alert alert-info show" style="display:block">
+          We're setting up the ability to accept donations. There is no commitment — just leave your info and we'll notify you when donations are open.
+        </div>
+
+        <div class="alert alert-success" id="donateSuccess">
+          Thank you for your interest! We'll reach out when donations are open.
+        </div>
+
+        <form id="donateForm">
+          <div class="form-group">
+            <label for="donateName">Your Name *</label>
+            <input type="text" id="donateName" name="donateName" required placeholder="Full name">
+          </div>
+          <div class="form-group">
+            <label for="donateEmail">Email Address *</label>
+            <input type="email" id="donateEmail" name="donateEmail" required placeholder="your@email.com">
+          </div>
+          <div class="form-group">
+            <label for="donatePhone">Phone Number *</label>
+            <input type="tel" id="donatePhone" name="donatePhone" required placeholder="(555) 123-4567">
+          </div>
+          <button type="submit" class="form-submit" style="width:100%">Notify Me When Donations Open</button>
         </form>
       </div>
     </section>

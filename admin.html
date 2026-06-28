@@ -1511,7 +1511,7 @@
               '<th style="padding:10px;text-align:center">Delete</th>' +
             '</tr></thead><tbody>' +
             data.map(function(c, i) {
-              var hasDetails = c.type || c.politician || c.policyName || c.grade || c.zip || c.reason || c.position;
+              var hasDetails = c.type || c.politician || c.policyName || c.grade || c.zip || c.reason || c.position || c.phone;
               var detailRows = '';
               if (hasDetails) {
                 var details = [];
@@ -1529,6 +1529,7 @@
                 if (c.policySponsor) details.push('<strong>Sponsor:</strong> ' + esc(c.policySponsor));
                 if (c.policyDescription) details.push('<strong>Description:</strong> ' + esc(c.policyDescription));
                 if (c.policyLink) details.push('<strong>Link:</strong> <a href="' + esc(c.policyLink) + '" target="_blank">' + esc(c.policyLink) + '</a>');
+                if (c.phone) details.push('<strong>Phone:</strong> ' + esc(c.phone));
                 if (c.correctedName) details.push('<strong>Corrected Name:</strong> ' + esc(c.correctedName));
                 if (c.timestamp) details.push('<strong>Timestamp:</strong> ' + esc(c.timestamp));
                 detailRows = '<tr id="contact-details-' + i + '" style="display:none;background:#f0f4f8">' +
