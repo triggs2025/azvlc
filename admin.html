@@ -1430,33 +1430,55 @@
     function deleteContact(idx) {
       if (!confirm('Are you sure you want to delete this contact?')) return;
 
+      var contactToDelete = adminContacts[idx];
+      if (!contactToDelete) return;
+
       var row = document.querySelector('#adminContactsList tbody tr:nth-child(' + (idx * 2 + 1) + ')');
       var detailRow = document.getElementById('contact-details-' + idx);
       if (row) row.style.opacity = '0.4';
       if (detailRow) detailRow.style.opacity = '0.4';
 
       showStatus('Deleting contact...', '');
+      doDeleteContact(contactToDelete, row, detailRow, 0);
+    }
+
+    function doDeleteContact(contactToDelete, row, detailRow, attempt) {
       ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/contacts.json?ref=master')
         .then(function(result) {
           var freshSha = result.sha;
           var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
           var freshContacts = JSON.parse(decoded);
-          freshContacts.splice(idx, 1);
+
+          var matchIdx = freshContacts.findIndex(function(c) {
+            return c.email === contactToDelete.email &&
+                   c.source === contactToDelete.source &&
+                   c.date === contactToDelete.date;
+          });
+          if (matchIdx === -1) {
+            loadContacts();
+            showStatus('Contact already deleted.', 'success');
+            return;
+          }
+          freshContacts.splice(matchIdx, 1);
           var content = btoa(unescape(encodeURIComponent(JSON.stringify(freshContacts, null, 2) + '\n')));
           return ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/contacts.json', {
-            message: 'Delete contact',
+            message: 'Delete contact: ' + contactToDelete.email,
             content: content,
             sha: freshSha,
             branch: 'master'
           });
         }).then(function(result) {
-          if (result.content) contactsShaAdmin = result.content.sha;
+          if (result && result.content) contactsShaAdmin = result.content.sha;
           loadContacts();
           showStatus('Contact deleted.', 'success');
         }).catch(function(err) {
-          if (row) row.style.opacity = '1';
-          if (detailRow) detailRow.style.opacity = '1';
-          showStatus('Error deleting: ' + err.message + '. Try refreshing the page.', 'error');
+          if (attempt < 2) {
+            setTimeout(function() { doDeleteContact(contactToDelete, row, detailRow, attempt + 1); }, 1000);
+          } else {
+            if (row) row.style.opacity = '1';
+            if (detailRow) detailRow.style.opacity = '1';
+            showStatus('Error deleting: ' + err.message + '. Try refreshing the page.', 'error');
+          }
         });
     }
 
