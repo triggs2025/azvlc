@@ -49,5 +49,20 @@
     "category": "Finance",
     "phone": "2165343198",
     "timestamp": "2026-06-29T14:46:24.612Z"
+  },
+  {
+    "email": "jaacson2014@gmail.com",
+    "name": "Anonymous",
+    "source": "Rated: Sally Ann Gonzales (D)",
+    "date": "2026-06-29",
+    "type": "politician-rating",
+    "politician": "Sally Ann Gonzales",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Only senator who opposed property tax exemption ",
+    "zip": "85251",
+    "anonymous": false,
+    "timestamp": "2026-06-29T19:01:27.781Z"
   }
 ]
