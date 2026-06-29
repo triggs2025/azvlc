@@ -1557,6 +1557,7 @@
             (voted ? 'Thanked' : 'Give Kudos') +
           '</button>' +
           '<span class="kudos-count" id="kudos-vob-' + b.id + '">' + (b.kudos || 0) + '</span>' +
+          '<button class="btn btn-sm" style="background:#eee;color:var(--text-muted);font-size:0.8em;margin-left:auto" onclick="AZVLC.requestVOBEdit(' + b.id + ')">Request Edit</button>' +
         '</div>' +
       '</div>';
     }).join('');
@@ -1576,6 +1577,48 @@
     renderVOB();
   }
 
+  function requestVOBEdit(id) {
+    var b = vobData.find(function(x) { return x.id === id; });
+    if (!b) return;
+
+    var details = [];
+    details.push('Business: ' + b.businessName);
+    details.push('Category: ' + b.category);
+    details.push('Description: ' + b.description);
+    if (b.address) details.push('Address: ' + b.address);
+    if (b.zip) details.push('Zip: ' + b.zip);
+    if (b.phone) details.push('Phone: ' + b.phone);
+    if (b.hours) details.push('Hours: ' + b.hours);
+    if (b.website) details.push('Website: ' + b.website);
+    if (b.discount) details.push('Veteran Discount: ' + b.discount);
+
+    var subject = encodeURIComponent('EDIT VOB - ' + b.businessName);
+    var body = encodeURIComponent('Please update the following information for my VOB listing:\n\n' +
+      '--- CURRENT LISTING ---\n' +
+      details.join('\n') +
+      '\n\n--- CHANGES REQUESTED ---\n' +
+      '(Please edit the fields above that need changing)\n\n' +
+      'Name: \nEmail: \nPhone: \n');
+
+    window.location.href = 'mailto:admin@azvlc.org?subject=' + subject + '&body=' + body;
+  }
+
+  // ── Math Captcha ──
+  var captchaA = 0, captchaB = 0;
+
+  function generateCaptcha() {
+    captchaA = Math.floor(Math.random() * 10) + 1;
+    captchaB = Math.floor(Math.random() * 10) + 1;
+    var label = document.getElementById('vobCaptchaLabel');
+    if (label) label.textContent = 'What is ' + captchaA + ' + ' + captchaB + '?';
+  }
+
+  function verifyCaptcha() {
+    var input = document.getElementById('vobCaptchaAnswer');
+    if (!input) return false;
+    return parseInt(input.value) === (captchaA + captchaB);
+  }
+
   function sortVOB(sortBy) {
     vobCurrentSort = sortBy;
     renderVOB();
@@ -1585,6 +1628,7 @@
     document.getElementById('vobSubmitModal').style.display = 'flex';
     document.getElementById('vobSubmitForm').reset();
     document.getElementById('vobSubmitSuccess').classList.remove('show');
+    generateCaptcha();
   }
 
   function closeVOBSubmitModal() {
@@ -1594,6 +1638,12 @@
   function submitVOB(e) {
     e.preventDefault();
     var form = e.target;
+
+    if (!verifyCaptcha()) {
+      alert('Incorrect answer. Please solve the math problem to verify you are human.');
+      generateCaptcha();
+      return;
+    }
 
     var ownerEmail = document.getElementById('vobOwnerEmail').value.trim();
     var ownerPhone = document.getElementById('vobOwnerPhone').value.trim();
@@ -2150,6 +2200,7 @@
     searchVOB: searchVOB,
     filterVOB: filterVOB,
     sortVOB: sortVOB,
+    requestVOBEdit: requestVOBEdit,
     openVOBSubmitModal: openVOBSubmitModal,
     closeVOBSubmitModal: closeVOBSubmitModal,
     submitVOB: submitVOB

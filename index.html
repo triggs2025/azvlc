@@ -443,6 +443,11 @@
           </div>
           <p style="font-size:0.8em;color:var(--text-muted);margin-bottom:16px">* At least one contact method (email or phone) is required for verification.</p>
 
+          <div class="form-group" style="background:#f8f9fa;padding:12px;border-radius:6px;border:1px solid var(--border)">
+            <label id="vobCaptchaLabel" style="font-weight:700;color:var(--navy)">What is 0 + 0?</label>
+            <input type="number" id="vobCaptchaAnswer" required placeholder="Your answer" style="max-width:150px">
+          </div>
+
           <div style="display:flex;gap:8px">
             <button type="submit" class="form-submit" style="flex:1">Submit for Review</button>
             <button type="button" class="btn" style="background:#eee;color:var(--text)" onclick="AZVLC.closeVOBSubmitModal()">Cancel</button>
