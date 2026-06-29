@@ -1538,13 +1538,19 @@
 
     el.innerHTML = filtered.map(function(b) {
       var voted = hasVotedKudo('vob', b.id);
+      var desc = b.description || '';
+      var truncLen = 120;
+      var needsMore = desc.length > truncLen;
       return '<div class="card">' +
         '<h3>' + esc(b.businessName) + '</h3>' +
         '<div class="card-meta">' +
           '<span class="badge badge-category">' + esc(b.category) + '</span>' +
           (b.discount ? '<span class="badge badge-passed" style="background:#fff3e0;color:#e65100">🎖 ' + esc(b.discount) + '</span>' : '') +
         '</div>' +
-        '<p>' + esc(b.description) + '</p>' +
+        (needsMore
+          ? '<p><span id="vob-desc-short-' + b.id + '">' + esc(desc.substring(0, truncLen)) + '... <a href="#" onclick="AZVLC.toggleVOBDesc(' + b.id + ');return false" style="color:var(--blue);font-weight:600">Read More</a></span>' +
+            '<span id="vob-desc-full-' + b.id + '" style="display:none">' + esc(desc) + ' <a href="#" onclick="AZVLC.toggleVOBDesc(' + b.id + ');return false" style="color:var(--blue);font-weight:600">Show Less</a></span></p>'
+          : '<p>' + esc(desc) + '</p>') +
         '<div style="margin-top:12px;font-size:0.9em;color:var(--text-muted);line-height:1.8">' +
           (b.address ? '<div>📍 ' + esc(b.address) + '</div>' : '') +
           (b.phone ? '<div>📞 ' + esc(b.phone) + '</div>' : '') +
@@ -1575,6 +1581,19 @@
       btn.classList.add('active');
     }
     renderVOB();
+  }
+
+  function toggleVOBDesc(id) {
+    var short = document.getElementById('vob-desc-short-' + id);
+    var full = document.getElementById('vob-desc-full-' + id);
+    if (!short || !full) return;
+    if (full.style.display === 'none') {
+      short.style.display = 'none';
+      full.style.display = '';
+    } else {
+      short.style.display = '';
+      full.style.display = 'none';
+    }
   }
 
   function requestVOBEdit(id) {
@@ -2200,6 +2219,7 @@
     searchVOB: searchVOB,
     filterVOB: filterVOB,
     sortVOB: sortVOB,
+    toggleVOBDesc: toggleVOBDesc,
     requestVOBEdit: requestVOBEdit,
     openVOBSubmitModal: openVOBSubmitModal,
     closeVOBSubmitModal: closeVOBSubmitModal,

@@ -400,8 +400,9 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="vobDescription">About Your Business *</label>
-            <textarea id="vobDescription" required placeholder="Tell us about your business, what you do, and what makes it special..."></textarea>
+            <label for="vobDescription">About Your Business * <span style="font-weight:400;font-size:0.85em;color:var(--text-muted)">(max 500 characters)</span></label>
+            <textarea id="vobDescription" required maxlength="500" placeholder="Tell us about your business, what you do, and what makes it special..." oninput="document.getElementById('vobDescCount').textContent=this.value.length+'/500'"></textarea>
+            <p id="vobDescCount" style="font-size:0.8em;color:var(--text-muted);text-align:right;margin-top:4px">0/500</p>
           </div>
           <div class="form-group">
             <label for="vobWebsite">Business Website</label>
