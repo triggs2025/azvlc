@@ -21,6 +21,7 @@
   var currentPoliticianFilter = 'all';
   var currentPoliticianSort = 'name';
   var currentPoliticianSearch = '';
+  var GH_API_BASE = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/';
 
   // ── Init ──
   document.addEventListener('DOMContentLoaded', function () {
@@ -300,7 +301,6 @@
 
   // ── Data loading ──
   var RAW_BASE = 'https://raw.githubusercontent.com/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/' + CONFIG.branch + '/data/';
-  var GH_API_BASE = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/';
 
   function fetchGHData(file) {
     return fetch(GH_API_BASE + file + '?ref=' + CONFIG.branch, {
