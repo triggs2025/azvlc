@@ -1258,6 +1258,7 @@
               '<p><span class="badge badge-category">' + esc(b.category) + '</span></p>' +
             '</div>' +
             '<div class="admin-item-actions">' +
+              '<button class="btn btn-sm btn-success" onclick="notifyVOBLive(' + idx + ')">Send Live Email</button>' +
               '<button class="btn btn-sm btn-blue" onclick="editVOB(' + idx + ')">Edit</button>' +
               '<button class="btn btn-sm btn-danger" onclick="deleteVOB(' + idx + ')">Delete</button>' +
             '</div>' +
@@ -1357,6 +1358,23 @@
         updateVOBBadge();
         showStatus('VOB submission dismissed.', 'success');
       }).catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
+    }
+
+    function notifyVOBLive(idx) {
+      var b = adminVOBs[idx];
+      if (!b) return;
+      var toEmail = b.ownerEmail || '';
+      if (!toEmail) {
+        alert('No email address on file for this business.');
+        return;
+      }
+      var subject = encodeURIComponent('VOB posting on AZVLC.org');
+      var body = encodeURIComponent('Hello ' + b.ownerName + ',\n\n' +
+        'Great news! Your Veteran Owned Business listing for "' + b.businessName + '" has been approved and is now live on AZVLC.org.\n\n' +
+        'Your listing will be visible at https://azvlc.org within 5 minutes or less.\n\n' +
+        'Thank you for being part of the Arizona Veteran community!\n\n' +
+        'Best regards,\nAZVLC Admin Team');
+      window.location.href = 'mailto:' + toEmail + '?from=admin@azvlc.org&subject=' + subject + '&body=' + body;
     }
 
     function editVOB(idx) {
