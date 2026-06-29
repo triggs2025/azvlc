@@ -64,5 +64,20 @@
     "zip": "85251",
     "anonymous": false,
     "timestamp": "2026-06-29T19:01:27.781Z"
+  },
+  {
+    "email": "triggs@needthese.com",
+    "name": "Tony Riggs",
+    "source": "Rated: Neal Carter (A)",
+    "date": "2026-06-29",
+    "type": "politician-rating",
+    "politician": "Neal Carter",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "jaslfdj sadlfj ds;ofj ;oasdjf o;dsjf;o osdjf;odsjf",
+    "zip": "85048",
+    "anonymous": false,
+    "timestamp": "2026-06-29T22:02:04.165Z"
   }
 ]
