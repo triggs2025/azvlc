@@ -64,20 +64,5 @@
     "zip": "85251",
     "anonymous": false,
     "timestamp": "2026-06-29T19:01:27.781Z"
-  },
-  {
-    "email": "triggs@skilledvets.com",
-    "name": "Tony Riggs",
-    "source": "Rated: Neal Carter (C)",
-    "date": "2026-06-29",
-    "type": "politician-rating",
-    "politician": "Neal Carter",
-    "position": "State Representative",
-    "grade": "C",
-    "previousGrade": "A",
-    "reason": "sdfgsda dsfsdaf  sdf",
-    "zip": "85045",
-    "anonymous": false,
-    "timestamp": "2026-06-29T22:37:33.566Z"
   }
 ]
