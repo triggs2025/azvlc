@@ -404,8 +404,9 @@
     "position": "State Representative",
     "party": "Republican",
     "district": "District 30",
+    "email": "JGILLETTE@azleg.gov",
     "website": "https://www.azleg.gov/House/House-member/?legislature=57&session=130&legislator=2306",
-    "veteran": false,
+    "veteran": true,
     "photo": "",
     "grades": {
       "A": 0,
@@ -414,8 +415,7 @@
       "D": 0,
       "F": 0
     },
-    "kudos": 0,
-    "email": "JGILLETTE@azleg.gov"
+    "kudos": 0
   },
   {
     "id": 122,
