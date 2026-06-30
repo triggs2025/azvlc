@@ -978,6 +978,7 @@
               (p.party ? ' &middot; ' + esc(p.party) : '') +
               (p.district ? ' &middot; ' + esc(p.district) : '') +
             '</p>' +
+            (p.website ? '<p style="margin-top:4px"><a href="' + esc(p.website) + '" target="_blank" rel="noopener">Legislative Profile &rarr;</a></p>' : '') +
             '<div style="margin-top:8px">' +
               '<span class="grade grade-' + avg.toLowerCase() + '" style="font-size:1.2em">' + avg + '</span>' +
               '<span style="color:var(--text-muted);font-size:0.85em;margin-left:8px">' + (p.kudos || 0) + ' kudos</span> ' +
