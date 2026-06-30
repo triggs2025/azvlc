@@ -92,8 +92,16 @@
           .map(function(m) { return m.text; })
           .filter(Boolean);
 
-        if (msgs.length === 0) {
-          msgs = (data.permanentMessages || []).filter(Boolean);
+        // Ensure both ticker lines have content: fill in permanent messages
+        // (rotating every other day) whenever fewer than 2 temporary messages are active.
+        var permanent = (data.permanentMessages || []).filter(Boolean);
+        var needed = Math.max(0, 2 - msgs.length);
+        if (needed > 0 && permanent.length > 0) {
+          var epochDays = Math.floor(Date.now() / 86400000);
+          var rotationIndex = Math.floor(epochDays / 2);
+          for (var k = 0; k < needed; k++) {
+            msgs.push(permanent[(rotationIndex + k) % permanent.length]);
+          }
         }
         if (msgs.length === 0) return;
 
