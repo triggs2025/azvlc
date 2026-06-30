@@ -378,7 +378,7 @@
       <!-- TICKER PANEL -->
       <div id="panel-ticker" class="admin-panel">
         <h3 style="color:var(--navy);margin-bottom:20px">Manage Ticker Messages</h3>
-        <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">These messages scroll below the hero image on the public site. Add, edit, or remove messages. Hover pauses the ticker for visitors.</p>
+        <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">These messages scroll below the hero image on the public site. Set an optional expiration date so a message automatically stops showing. Hover pauses the ticker for visitors.</p>
 
         <div class="form-group checkbox-row" style="margin-bottom:20px">
           <input type="checkbox" id="tickerEnabled" checked>
@@ -395,6 +395,13 @@
 
         <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn btn-blue btn-sm" onclick="addTickerMessage()">+ Add Message</button>
+        </div>
+
+        <h3 style="color:var(--navy);margin:28px 0 8px">Permanent Rotating Messages</h3>
+        <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">These 4 messages never expire. They only appear on the ticker when there are no active (non-expired) messages above.</p>
+        <div id="tickerPermanentList"></div>
+
+        <div style="margin-top:16px">
           <button class="btn btn-success btn-sm" onclick="saveTicker()">Save Changes</button>
         </div>
         <div class="saving-indicator" id="tickerSaveStatus" style="margin-top:12px"></div>
@@ -2188,7 +2195,7 @@
     }
 
     // ── Ticker ──
-    var tickerData = { enabled: true, messages: [] };
+    var tickerData = { enabled: true, messages: [], permanentMessages: ['', '', '', ''] };
     var tickerSha = '';
 
     function loadTicker() {
@@ -2197,11 +2204,18 @@
           tickerSha = result.sha;
           var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
           tickerData = JSON.parse(decoded);
+          tickerData.messages = (tickerData.messages || []).map(function(m) {
+            return (typeof m === 'string') ? { text: m, expires: '' } : m;
+          });
+          var perm = tickerData.permanentMessages || [];
+          while (perm.length < 4) perm.push('');
+          tickerData.permanentMessages = perm.slice(0, 4);
           document.getElementById('tickerEnabled').checked = tickerData.enabled !== false;
           var speedSlider = document.getElementById('tickerSpeed');
           speedSlider.value = tickerData.speed || 1;
           document.getElementById('speedLabel').textContent = speedSlider.value + 'x';
           renderTickerMessages();
+          renderPermanentMessages();
         })
         .catch(function() {});
     }
@@ -2213,15 +2227,29 @@
         return;
       }
       el.innerHTML = tickerData.messages.map(function(msg, i) {
-        return '<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:10px">' +
-          '<textarea style="flex:1;padding:10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:0.9em;min-height:50px;resize:vertical" id="tickerMsg-' + i + '">' + esc(msg) + '</textarea>' +
+        return '<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap">' +
+          '<textarea style="flex:1;min-width:200px;padding:10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:0.9em;min-height:50px;resize:vertical" id="tickerMsg-' + i + '">' + esc(msg.text || '') + '</textarea>' +
+          '<div style="display:flex;flex-direction:column;gap:4px">' +
+            '<label style="font-size:0.75em;color:var(--text-muted)">Expires (optional)</label>' +
+            '<input type="date" id="tickerExp-' + i + '" value="' + esc(msg.expires || '') + '" style="padding:8px;border:1px solid var(--border);border-radius:6px;font-size:0.85em">' +
+          '</div>' +
           '<button class="btn btn-sm btn-danger" onclick="removeTickerMessage(' + i + ')">Remove</button>' +
         '</div>';
       }).join('');
     }
 
+    function renderPermanentMessages() {
+      var el = document.getElementById('tickerPermanentList');
+      el.innerHTML = tickerData.permanentMessages.map(function(msg, i) {
+        return '<div style="margin-bottom:10px">' +
+          '<label style="font-size:0.8em;color:var(--text-muted)">Permanent Message ' + (i + 1) + '</label>' +
+          '<textarea style="width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:0.9em;min-height:50px;resize:vertical" id="tickerPerm-' + i + '">' + esc(msg || '') + '</textarea>' +
+        '</div>';
+      }).join('');
+    }
+
     function addTickerMessage() {
-      tickerData.messages.push('New message here...');
+      tickerData.messages.push({ text: 'New message here...', expires: '' });
       renderTickerMessages();
       var last = document.getElementById('tickerMsg-' + (tickerData.messages.length - 1));
       if (last) { last.focus(); last.select(); }
@@ -2233,16 +2261,24 @@
     }
 
     function saveTicker() {
-      // read current values from textareas
+      // read current values from textareas/date inputs
       tickerData.messages = [];
       var i = 0;
       while (true) {
         var el = document.getElementById('tickerMsg-' + i);
         if (!el) break;
+        var expEl = document.getElementById('tickerExp-' + i);
         var val = el.value.trim();
-        if (val) tickerData.messages.push(val);
+        if (val) tickerData.messages.push({ text: val, expires: expEl ? expEl.value : '' });
         i++;
       }
+
+      tickerData.permanentMessages = [];
+      for (var p = 0; p < 4; p++) {
+        var permEl = document.getElementById('tickerPerm-' + p);
+        tickerData.permanentMessages.push(permEl ? permEl.value.trim() : '');
+      }
+
       tickerData.enabled = document.getElementById('tickerEnabled').checked;
       tickerData.speed = parseFloat(document.getElementById('tickerSpeed').value) || 1;
 

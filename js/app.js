@@ -81,14 +81,28 @@
       })
       .then(function(data) {
         if (!data) return;
-        if (!data.enabled || !data.messages || data.messages.length === 0) return;
+        if (!data.enabled) return;
+
+        var today = new Date().toISOString().split('T')[0];
+        var raw = data.messages || [];
+        var msgs = raw.map(function(m) {
+            return (typeof m === 'string') ? { text: m, expires: '' } : m;
+          })
+          .filter(function(m) { return !m.expires || m.expires >= today; })
+          .map(function(m) { return m.text; })
+          .filter(Boolean);
+
+        if (msgs.length === 0) {
+          msgs = (data.permanentMessages || []).filter(Boolean);
+        }
+        if (msgs.length === 0) return;
+
         var bar = document.getElementById('tickerBar');
         var line1 = document.getElementById('tickerLine1');
         var line2 = document.getElementById('tickerLine2');
         if (!bar || !line1 || !line2) return;
 
         var separator = '  ★  ';
-        var msgs = data.messages;
         var half = Math.ceil(msgs.length / 2);
         var text1 = msgs.slice(0, half).join(separator) + separator;
         var text2 = msgs.slice(half).join(separator) + separator;
