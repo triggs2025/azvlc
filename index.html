@@ -89,7 +89,9 @@
         </div>
       </div>
 
-      <h3 style="color:var(--navy);margin-bottom:20px;cursor:pointer" onclick="AZVLC.nav('politicians')">Top Performing Leaders</h3>
+      <h3 style="color:var(--navy);margin-bottom:20px;cursor:pointer" onclick="AZVLC.nav('politicians')">Top Performing Leaders
+        <span onclick="event.stopPropagation();AZVLC.openGradingInfoModal()" title="How are leaders graded?" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--navy);font-size:0.6em;font-weight:700;vertical-align:middle;margin-left:8px;cursor:pointer">?</span>
+      </h3>
       <div class="card-grid" id="topPoliticians">
         <div class="empty-state"><p>No ratings yet</p></div>
       </div>
@@ -507,6 +509,22 @@
   </footer>
 
   <!-- CORRECTION MODAL -->
+  <div id="gradingInfoModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto">
+    <div style="background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.2);width:100%;max-width:520px;padding:32px">
+      <button onclick="AZVLC.closeGradingInfoModal()" style="float:right;background:none;border:none;font-size:1.5em;cursor:pointer;color:#666">&times;</button>
+      <h3 style="color:var(--navy);margin-bottom:16px">How Are Leaders Graded?</h3>
+      <p style="color:var(--text-muted);margin-bottom:16px">Each Veteran rating (A, B, C, D, or F) is converted to points: A = 4, B = 3, C = 2, D = 1, F = 0. A politician's average score is the total points divided by the number of ratings, which then maps back to a letter grade:</p>
+      <ul style="color:var(--text-muted);margin-bottom:16px;padding-left:20px;line-height:1.8">
+        <li>3.5 and above &rarr; <strong>A</strong></li>
+        <li>2.5 to 3.49 &rarr; <strong>B</strong></li>
+        <li>1.5 to 2.49 &rarr; <strong>C</strong></li>
+        <li>0.5 to 1.49 &rarr; <strong>D</strong></li>
+        <li>Below 0.5 &rarr; <strong>F</strong></li>
+      </ul>
+      <p style="color:var(--text-muted)">Top Performing Leaders are ranked by this average grade first, then by total kudos as a tiebreaker.</p>
+    </div>
+  </div>
+
   <div id="correctionModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto">
     <div style="background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.2);width:100%;max-width:600px;padding:32px">
       <button onclick="AZVLC.closeCorrectionModal()" style="float:right;background:none;border:none;font-size:1.5em;cursor:pointer;color:#666">&times;</button>
