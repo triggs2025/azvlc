@@ -179,7 +179,7 @@
         <button class="admin-tab active" onclick="showTab('analytics', this)">Analytics</button>
         <button class="admin-tab" onclick="showTab('policies', this)">Policies</button>
         <button class="admin-tab" onclick="showTab('politicians', this)">Politicians</button>
-        <button class="admin-tab" onclick="showTab('corrections', this)">Corrections <span id="correctionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
+        <button class="admin-tab" onclick="showTab('corrections', this)">Corrections Records <span id="correctionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('policysubmissions', this)">Policy Submissions <span id="policySubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('polsubmissions', this)">Politician Submissions <span id="polSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('vob', this)">VOB <span id="vobSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
@@ -273,7 +273,7 @@
 
       <!-- CORRECTIONS PANEL -->
       <div id="panel-corrections" class="admin-panel">
-        <h3 style="color:var(--navy);margin-bottom:20px">Policy Corrections</h3>
+        <h3 style="color:var(--navy);margin-bottom:20px">Corrections Records</h3>
         <div id="adminCorrectionsList"></div>
       </div>
 
@@ -1104,12 +1104,25 @@
         el.innerHTML = '<div class="admin-empty"><p>No corrections submitted.</p></div>';
         return;
       }
+      var statusColor = { approved: 'var(--green)', dismissed: '#999', pending: 'var(--orange)' };
+      var statusLabel = { approved: 'Approved', dismissed: 'Dismissed', pending: 'Pending' };
       el.innerHTML = corrections.map(function(c, idx) {
         var date = new Date(c.submittedAt).toLocaleDateString();
-        return '<div class="admin-item" style="border-left-color:var(--orange);flex-direction:column">' +
-          '<h4>Correction for: ' + esc(c.originalName) + '</h4>' +
+        var status = c.status || 'pending';
+        var borderColor = statusColor[status] || statusColor.pending;
+        var badge = '<span style="background:' + borderColor + ';color:#fff;font-size:0.75em;padding:2px 8px;border-radius:10px;margin-left:8px">' + statusLabel[status] + '</span>';
+        var actionedLine = c.actionedAt ? '<p><strong>Actioned:</strong> ' + new Date(c.actionedAt).toLocaleDateString() + '</p>' : '';
+        var buttons = status === 'pending'
+          ? '<div style="margin-top:12px;display:flex;gap:8px">' +
+              '<button class="btn btn-sm btn-success" onclick="applyCorrection(' + idx + ')">Apply Correction</button>' +
+              '<button class="btn btn-sm btn-danger" onclick="dismissCorrection(' + idx + ')">Dismiss</button>' +
+            '</div>'
+          : '';
+        return '<div class="admin-item" style="border-left-color:' + borderColor + ';flex-direction:column">' +
+          '<h4>Correction for: ' + esc(c.originalName) + badge + '</h4>' +
           '<p style="margin-top:4px"><strong>Reason:</strong> ' + esc(c.reason) + '</p>' +
           '<p><strong>Submitted:</strong> ' + date + (c.submitterEmail ? ' by ' + esc(c.submitterEmail) : ' (Anonymous)') + '</p>' +
+          actionedLine +
           '<div style="margin-top:12px;background:#f8f9fa;padding:12px;border-radius:6px;font-size:0.85em">' +
             '<p><strong>Name:</strong> ' + esc(c.correctedName) + '</p>' +
             '<p><strong>Sponsor:</strong> ' + esc(c.correctedSponsor) + '</p>' +
@@ -1118,10 +1131,7 @@
             '<p><strong>Description:</strong> ' + esc(c.correctedDescription) + '</p>' +
             (c.correctedLink ? '<p><strong>Link:</strong> <a href="' + esc(c.correctedLink) + '" target="_blank">' + esc(c.correctedLink) + '</a></p>' : '') +
           '</div>' +
-          '<div style="margin-top:12px;display:flex;gap:8px">' +
-            '<button class="btn btn-sm btn-success" onclick="applyCorrection(' + idx + ')">Apply Correction</button>' +
-            '<button class="btn btn-sm btn-danger" onclick="dismissCorrection(' + idx + ')">Dismiss</button>' +
-          '</div>' +
+          buttons +
         '</div>';
       }).join('');
     }
@@ -1139,11 +1149,11 @@
         policy.status = c.correctedStatus;
       }
 
-      corrections.splice(idx, 1);
+      corrections[idx].status = 'approved';
+      corrections[idx].actionedAt = new Date().toISOString();
 
       showStatus('Applying correction...', '');
 
-      // save both files
       saveFileToGitHub('data/policies.json', policies, policiesSha)
         .then(function(result) {
           policiesSha = result.content.sha;
@@ -1159,7 +1169,8 @@
     }
 
     function dismissCorrection(idx) {
-      corrections.splice(idx, 1);
+      corrections[idx].status = 'dismissed';
+      corrections[idx].actionedAt = new Date().toISOString();
       showStatus('Dismissing correction...', '');
       saveCorrectionsList().then(function() {
         renderAdminCorrections();
@@ -1182,8 +1193,9 @@
 
     function updateCorrectionBadge() {
       var badge = document.getElementById('correctionBadge');
-      if (corrections.length > 0) {
-        badge.textContent = corrections.length;
+      var pending = corrections.filter(function(c) { return !c.status || c.status === 'pending'; }).length;
+      if (pending > 0) {
+        badge.textContent = pending;
         badge.style.display = 'inline';
       } else {
         badge.style.display = 'none';
