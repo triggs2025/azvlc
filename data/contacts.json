@@ -94,5 +94,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-06-30T02:52:04.620Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Steve Montenegro (A)",
+    "date": "2026-06-30",
+    "type": "politician-rating",
+    "politician": "Steve Montenegro",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Supported Veterans bills ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-06-30T02:54:28.519Z"
   }
 ]
