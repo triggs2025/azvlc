@@ -1,10 +1,24 @@
 {
   "enabled": true,
   "messages": [
-    { "text": "Welcome to Arizona Veterans Leadership Council Tracker - Rate your leaders and make your voice heard!", "expires": "" },
-    { "text": "<a href=\"https://azsos.gov/elections/calendar-dates\" target=\"_blank\">Primary Election Day</a> is coming - July 21, 2026", "expires": "2026-07-21" },
-    { "text": "Veteran Property Tax - Bill Presentation July 1st, 2026 10am 1700 West Washington St, Phoenix", "expires": "2026-07-01" }
+    {
+      "text": "Welcome to Arizona Veterans Leadership Council Tracker - Rate your leaders and make your voice heard!",
+      "expires": "2026-07-30"
+    },
+    {
+      "text": "<a href=\"https://azsos.gov/elections/calendar-dates\" target=\"_blank\">Primary Election Day</a> is coming - July 21, 2026",
+      "expires": "2026-07-22"
+    },
+    {
+      "text": "Veteran Property Tax - Bill Presentation July 1st, 2026 10am 1700 West Washington St, Phoenix",
+      "expires": "2026-07-02"
+    }
   ],
-  "permanentMessages": ["", "", "", ""],
+  "permanentMessages": [
+    "",
+    "",
+    "",
+    ""
+  ],
   "speed": 1
 }
