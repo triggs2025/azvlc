@@ -99,7 +99,9 @@
         <a href="#politicians" data-nav="politicians" class="btn btn-outline" style="font-size:0.95em">Show All Politicians &rarr;</a>
       </div>
 
-      <h3 style="color:var(--navy);margin:30px 0 20px;cursor:pointer" onclick="AZVLC.nav('policies')">Most Popular Policies</h3>
+      <h3 style="color:var(--navy);margin:30px 0 20px;cursor:pointer" onclick="AZVLC.nav('policies')">Most Popular Policies
+        <span onclick="event.stopPropagation();AZVLC.openPopularInfoModal()" title="How is this ranked?" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--navy);font-size:0.6em;font-weight:700;vertical-align:middle;margin-left:8px;cursor:pointer">?</span>
+      </h3>
       <div class="card-grid" id="topPolicies">
         <div class="empty-state"><p>No kudos yet</p></div>
       </div>
@@ -107,7 +109,9 @@
         <a href="#policies" data-nav="policies" class="btn btn-outline" style="font-size:0.95em">Show All Policies &rarr;</a>
       </div>
 
-      <h3 style="color:var(--navy);margin:30px 0 20px;cursor:pointer" onclick="AZVLC.nav('policies')">Recently Passed Policies</h3>
+      <h3 style="color:var(--navy);margin:30px 0 20px;cursor:pointer" onclick="AZVLC.nav('policies')">Recently Passed Policies
+        <span onclick="event.stopPropagation();AZVLC.openPassedInfoModal()" title="What does 'passed' mean?" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--navy);font-size:0.6em;font-weight:700;vertical-align:middle;margin-left:8px;cursor:pointer">?</span>
+      </h3>
       <div class="card-grid" id="passedPolicies">
         <div class="empty-state"><p>No passed policies yet</p></div>
       </div>
@@ -522,6 +526,24 @@
         <li><strong>Below 0.5 &rarr; F</strong> &mdash; e.g., votes against key Veteran legislation like property tax exemptions</li>
       </ul>
       <p style="color:var(--text-muted)">Top Performing Leaders are ranked by this average grade first, then by total kudos as a tiebreaker.</p>
+    </div>
+  </div>
+
+  <!-- MOST POPULAR POLICIES INFO MODAL -->
+  <div id="popularInfoModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto">
+    <div style="background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.2);width:100%;max-width:520px;padding:32px">
+      <button onclick="AZVLC.closePopularInfoModal()" style="float:right;background:none;border:none;font-size:1.5em;cursor:pointer;color:#666">&times;</button>
+      <h3 style="color:var(--navy);margin-bottom:16px">How Are Popular Policies Ranked?</h3>
+      <p style="color:var(--text-muted)">This section shows the top 3 policies with the most Veteran kudos, ranked highest to lowest. Give kudos to any policy you support to help it rise in the rankings &mdash; e.g., a bill expanding Veteran healthcare access with 78 kudos will outrank one with 12 kudos, regardless of its current status (proposed, in progress, or passed).</p>
+    </div>
+  </div>
+
+  <!-- RECENTLY PASSED POLICIES INFO MODAL -->
+  <div id="passedInfoModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto">
+    <div style="background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.2);width:100%;max-width:520px;padding:32px">
+      <button onclick="AZVLC.closePassedInfoModal()" style="float:right;background:none;border:none;font-size:1.5em;cursor:pointer;color:#666">&times;</button>
+      <h3 style="color:var(--navy);margin-bottom:16px">What Does "Passed" Mean?</h3>
+      <p style="color:var(--text-muted)">A policy is listed here once it has been signed into law &mdash; e.g., HB 2120 (Veteran property tax exemption), which cleared both the Arizona House and Senate and was signed by the Governor. Bills still working through committee or awaiting a vote are labeled "Proposed" or "In Progress" instead, and won't appear in this section until they officially become law.</p>
     </div>
   </div>
 

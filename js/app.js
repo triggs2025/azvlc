@@ -973,6 +973,22 @@
     document.getElementById('gradingInfoModal').style.display = 'none';
   }
 
+  function openPopularInfoModal() {
+    document.getElementById('popularInfoModal').style.display = 'flex';
+  }
+
+  function closePopularInfoModal() {
+    document.getElementById('popularInfoModal').style.display = 'none';
+  }
+
+  function openPassedInfoModal() {
+    document.getElementById('passedInfoModal').style.display = 'flex';
+  }
+
+  function closePassedInfoModal() {
+    document.getElementById('passedInfoModal').style.display = 'none';
+  }
+
   function submitCorrection(e) {
     e.preventDefault();
     var form = e.target;
@@ -2237,6 +2253,10 @@
     closeCorrectionModal: closeCorrectionModal,
     openGradingInfoModal: openGradingInfoModal,
     closeGradingInfoModal: closeGradingInfoModal,
+    openPopularInfoModal: openPopularInfoModal,
+    closePopularInfoModal: closePopularInfoModal,
+    openPassedInfoModal: openPassedInfoModal,
+    closePassedInfoModal: closePassedInfoModal,
     submitCorrection: submitCorrection,
     openAddPoliticianModal: openAddPoliticianModal,
     closeAddPoliticianModal: closeAddPoliticianModal,
