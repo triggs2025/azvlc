@@ -49,5 +49,21 @@
     "ownerPhone": "2165343198",
     "approvedAt": "2026-06-29T15:07:46.537Z",
     "kudos": 1
+  },
+  {
+    "id": 4,
+    "businessName": "The Husband & Wife Home Team - FindHappyAZ.com",
+    "category": "Real Estate",
+    "description": "The Husband & Wife Home Team is a Veteran-led Arizona real estate team serving buyers and sellers with clear guidance, strong negotiation, and trusted market expertise. Veterans benefit from our VA Loan Certification, military-minded service, and understanding of VA financing, appraisals, concessions, and offer strategy—helping them buy or sell with confidence. Agent: Elizabeth Dine - Keller Williams Realty Phoenix",
+    "website": "https://FindHappyAZ.com",
+    "address": "6400 East McDowell Rd. Scottsdale, AZ",
+    "zip": "85257",
+    "phone": "520.878.7180",
+    "hours": "7am - 10pm Mon-Sat",
+    "discount": "Complimentary 2-Year Home Warranty with Purchase/Sale",
+    "ownerName": "Charles Dine",
+    "ownerEmail": "Charles@HWHTAZ.com",
+    "ownerPhone": "520.878.7180",
+    "approvedAt": "2026-06-30T22:13:49.955Z"
   }
 ]
