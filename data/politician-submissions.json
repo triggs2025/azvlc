@@ -1,18 +1,18 @@
 [
   {
-    "id": 1782793413457,
+    "id": 1782793728857,
     "type": "modify",
-    "politicianId": 222,
-    "originalName": "Kevin Payne",
-    "name": "Kevin Payne",
+    "politicianId": 218,
+    "originalName": "Venden Leach",
+    "name": "Venden Leach",
     "position": "State Senator",
     "party": "Republican",
-    "district": "District 27",
-    "email": "KPAYNE@azleg.gov",
-    "website": "https://www.azleg.gov/Senate/Senate-member/?legislature=57&session=130&legislator=2387",
+    "district": "District 17",
+    "email": "VLEACH@azleg.gov",
+    "website": "https://www.azleg.gov/Senate/Senate-member/?legislature=57&session=130&legislator=2398",
     "veteran": true,
-    "reason": "He served in the U.S. Navy from 1978 to 1986 and was honorably discharged. ",
+    "reason": "He served in the U.S. Army from 1970 to 1972.",
     "submitterEmail": "",
-    "submittedAt": "2026-06-30T04:23:33.457Z"
+    "submittedAt": "2026-06-30T04:28:48.857Z"
   }
 ]
