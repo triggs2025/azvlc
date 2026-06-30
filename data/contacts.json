@@ -109,5 +109,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-06-30T02:54:28.519Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Thomas Shope (D)",
+    "date": "2026-06-30",
+    "type": "politician-rating",
+    "politician": "Thomas Shope",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not Sponsor nor Co-Sponsor a Veteran bill",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-06-30T02:59:42.787Z"
   }
 ]
