@@ -1,18 +1,18 @@
 [
   {
-    "id": 1782793728857,
+    "id": 1782793850416,
     "type": "modify",
-    "politicianId": 218,
-    "originalName": "Venden Leach",
-    "name": "Venden Leach",
+    "politicianId": 216,
+    "originalName": "John Kavanagh",
+    "name": "John Kavanagh",
     "position": "State Senator",
     "party": "Republican",
-    "district": "District 17",
-    "email": "VLEACH@azleg.gov",
-    "website": "https://www.azleg.gov/Senate/Senate-member/?legislature=57&session=130&legislator=2398",
+    "district": "District 3",
+    "email": "JKAVANAGH@azleg.gov",
+    "website": "https://www.azleg.gov/Senate/Senate-member/?legislature=57&session=130&legislator=2386",
     "veteran": true,
-    "reason": "He served in the U.S. Army from 1970 to 1972.",
+    "reason": "Kavanagh served in the U.S. Army National Guard from 1971 to 1976. ",
     "submitterEmail": "",
-    "submittedAt": "2026-06-30T04:28:48.857Z"
+    "submittedAt": "2026-06-30T04:30:50.416Z"
   }
 ]
