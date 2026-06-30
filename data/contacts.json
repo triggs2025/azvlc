@@ -79,5 +79,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-06-30T02:46:31.636Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Priya Sundareshan (D)",
+    "date": "2026-06-30",
+    "type": "politician-rating",
+    "politician": "Priya Sundareshan",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Didn't sponsor nor co-sponsor a Veterans Bill",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-06-30T02:52:04.620Z"
   }
 ]
