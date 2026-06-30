@@ -19,7 +19,7 @@
   var currentFilter = 'all';
   var currentPolicySearch = '';
   var currentPoliticianFilter = 'all';
-  var currentPoliticianSort = 'name';
+  var currentPoliticianSort = 'grade';
   var currentPoliticianSearch = '';
   var GH_API_BASE = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/';
 
