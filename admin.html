@@ -2241,6 +2241,7 @@
 
     function renderPermanentMessages() {
       var el = document.getElementById('tickerPermanentList');
+      if (!el) return;
       el.innerHTML = tickerData.permanentMessages.map(function(msg, i) {
         return '<div style="margin-bottom:10px">' +
           '<label style="font-size:0.8em;color:var(--text-muted)">Permanent Message ' + (i + 1) + '</label>' +
@@ -2294,6 +2295,7 @@
       }).then(function(result) {
         if (result.content) tickerSha = result.content.sha;
         renderTickerMessages();
+        renderPermanentMessages();
         statusEl.textContent = 'Ticker saved!';
         statusEl.className = 'saving-indicator show success';
         setTimeout(function() { statusEl.className = 'saving-indicator'; }, 3000);
