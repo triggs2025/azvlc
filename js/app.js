@@ -1967,7 +1967,12 @@
     submitBtn.textContent = 'Submitting...';
 
     // need all politicians (including unapproved) for the save
-    fetch('data/politicians.json').then(function(r) { return r.json(); }).then(function(allPoliticians) {
+    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/politicians.json?ref=' + CONFIG.branch, {
+      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
+    }).then(function(r) { return r.json(); }).then(function(result) {
+      politiciansSha = result.sha;
+      return JSON.parse(atob(result.content.replace(/\n/g,'')));
+    }).then(function(allPoliticians) {
       var target = allPoliticians.find(function(p) { return p.id === politician.id; });
       if (target) {
         target.grades = politician.grades;
