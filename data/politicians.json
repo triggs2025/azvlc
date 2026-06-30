@@ -1488,7 +1488,7 @@
     "party": "Republican",
     "district": "District 3",
     "website": "https://www.azleg.gov/Senate/Senate-member/?legislature=57&session=130&legislator=2386",
-    "veteran": false,
+    "veteran": true,
     "photo": "",
     "grades": {
       "A": 0,
