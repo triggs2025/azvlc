@@ -157,5 +157,20 @@
     "category": "Real Estate",
     "phone": "9288487510",
     "timestamp": "2026-07-01T07:32:16.112Z"
+  },
+  {
+    "email": "charles.t.dine@gmail.com",
+    "name": "Charles Dine",
+    "source": "Rated: David Livingston (B)",
+    "date": "2026-07-01",
+    "type": "politician-rating",
+    "politician": "David Livingston",
+    "position": "State Representative",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "Representative David Livingston has demonstrated veteran-friendly leadership through his support for policies that directly benefit Arizona’s veteran community, particularly disabled veterans and surviving spouses. As Chairman of the House Appropriations Committee and Joint Legislative Budget Committee, he holds key influence over state funding priorities, including veteran services. His record includes support for property-tax relief for 100% service-connected disabled veterans, protections for surviving spouses, and budget language supporting nonprofit veteran service organizations and trauma treatment services for Arizona’s military and veteran population. While his public profile is not centered on military service, his legislative actions show meaningful support for veteran-focused policy and resources.",
+    "zip": "85233",
+    "anonymous": false,
+    "timestamp": "2026-07-01T14:00:09.712Z"
   }
 ]
