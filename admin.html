@@ -1029,6 +1029,7 @@
         // Always fetch fresh SHA + data immediately before writing to avoid stale SHA errors
         return ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/policy-facts.json?ref=master')
           .then(function(freshResult) {
+            if (!freshResult.sha) throw new Error('Could not fetch current file — try again in a moment.');
             var freshSha = freshResult.sha;
             var freshData = {};
             try { freshData = JSON.parse(decodeURIComponent(escape(atob(freshResult.content.replace(/\n/g,''))))); } catch(e) {}
