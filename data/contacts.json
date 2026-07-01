@@ -172,5 +172,20 @@
     "zip": "85233",
     "anonymous": false,
     "timestamp": "2026-07-01T14:00:09.712Z"
+  },
+  {
+    "email": "charles.t.dine@gmail.com",
+    "name": "Charles Dine",
+    "source": "Rated: David Livingston (A)",
+    "date": "2026-07-01",
+    "type": "politician-rating",
+    "politician": "David Livingston",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "B",
+    "reason": "Former Representative David Marshall, Sr. demonstrated strong veteran-friendly leadership during his service in the Arizona Legislature. As an honorably discharged United States Air Force veteran, Marshall brought direct military experience and personal understanding to his public service. His legislative record included support for veteran-focused policy, including co-sponsorship of the Veterans’ Court Fund and Grant Program, which supports rehabilitation and reintegration services for justice-involved veterans, and support for legislation allowing taxpayers to direct refund contributions to qualified veterans’ service organizations. Marshall resigned from the Arizona House in April 2026 after being appointed Navajo County Recorder, continuing his public service in a new role.",
+    "zip": "85233",
+    "anonymous": false,
+    "timestamp": "2026-07-01T14:05:54.899Z"
   }
 ]
