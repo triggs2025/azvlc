@@ -135,5 +135,16 @@
     "category": "Real Estate",
     "phone": "520.878.7180",
     "timestamp": "2026-06-30T21:58:52.613Z"
+  },
+  {
+    "email": "triggs@nscshirts.com",
+    "name": "Tony Riggs",
+    "source": "VOB: #NotServiceConnected",
+    "date": "2026-07-01",
+    "type": "vob-submission",
+    "businessName": "#NotServiceConnected",
+    "category": "Retail",
+    "phone": "6025245299",
+    "timestamp": "2026-07-01T04:26:50.450Z"
   }
 ]
