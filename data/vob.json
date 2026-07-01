@@ -83,5 +83,21 @@
     "ownerPhone": "6025245299",
     "approvedAt": "2026-07-01T04:27:30.691Z",
     "kudos": 1
+  },
+  {
+    "id": 6,
+    "businessName": "Whitney Brown PLLC",
+    "category": "Real Estate",
+    "description": "I am a realtor, who works for Keller Williams Arizona Realty, and I provide services regarding real estate with buying, selling and investing.",
+    "website": "https://thebarkerteam.com",
+    "address": "",
+    "zip": "85924",
+    "phone": "9288487510",
+    "hours": "24 hours",
+    "discount": "",
+    "ownerName": "Whitney Brown",
+    "ownerEmail": "whitney.danielson@yahoo.com",
+    "ownerPhone": "9288487510",
+    "approvedAt": "2026-07-01T14:46:15.767Z"
   }
 ]
