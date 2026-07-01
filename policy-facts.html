@@ -32,6 +32,12 @@
     .facts-card-top h2 { font-size: 1.4em; margin-bottom: 8px; }
     .facts-card-top .meta { font-size: 0.9em; opacity: 0.85; }
     .facts-card-body { padding: 28px 30px; }
+    .share-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 24px 0 8px; }
+    .share-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border: none; border-radius: 6px; font-size: 0.9em; font-weight: 600; cursor: pointer; text-decoration: none; color: #fff; transition: opacity 0.2s; }
+    .share-btn:hover { opacity: 0.85; }
+    .share-btn-x { background: #000; }
+    .share-btn-fb { background: #1877f2; }
+    .share-btn-copy { background: var(--gold); color: var(--navy); }
     .facts-images {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -151,6 +157,12 @@
               imagesHtml +
               contentHtml +
               (policy.link ? '<p style="margin-top:20px"><a href="' + esc(policy.link) + '" target="_blank" rel="noopener" class="btn btn-blue" style="display:inline-flex;text-decoration:none">View Official Bill &rarr;</a></p>' : '') +
+              '<p style="text-align:center;color:var(--text-muted);font-size:0.9em;margin-top:24px">Share this policy with fellow Veterans</p>' +
+              '<div class="share-buttons">' +
+                '<a class="share-btn share-btn-x" href="https://x.com/intent/tweet?text=' + encodeURIComponent('As a Veteran I support this - check it out! ' + policy.name) + '&url=' + encodeURIComponent('https://azvlc.org/policy-facts.html?id=' + policyId) + '" target="_blank">&#120143; Share on X</a>' +
+                '<button class="share-btn share-btn-fb" onclick="shareFB()">Share on Facebook</button>' +
+                '<button class="share-btn share-btn-copy" onclick="copyLink()">Copy Link</button>' +
+              '</div>' +
             '</div>' +
           '</div>';
       })
@@ -165,6 +177,26 @@
 
     function closeLightbox() {
       document.getElementById('lightbox').style.display = 'none';
+    }
+
+    function shareFB() {
+      var url = 'https://azvlc.org/policy-facts.html?id=' + policyId;
+      var text = 'As a Veteran I support this - check it out!';
+      navigator.clipboard.writeText(text + ' ' + url).then(function() {
+        alert('Text and link copied! Facebook will open — just paste into your post.');
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank');
+      }).catch(function() {
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank');
+      });
+    }
+
+    function copyLink() {
+      var url = 'https://azvlc.org/policy-facts.html?id=' + policyId;
+      navigator.clipboard.writeText(url).then(function() {
+        alert('Link copied to clipboard!');
+      }).catch(function() {
+        prompt('Copy this link:', url);
+      });
     }
   </script>
 </body>
