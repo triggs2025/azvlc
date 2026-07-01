@@ -995,6 +995,33 @@
       renderFactsImagePreviews();
     }
 
+    function writeFactsWithRetry(policyId, html, allImages, attempt) {
+      return ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/policy-facts.json?ref=master')
+        .then(function(freshResult) {
+          if (!freshResult.sha) throw new Error('Could not read policy-facts.json — try again.');
+          var freshData = {};
+          try { freshData = JSON.parse(decodeURIComponent(escape(atob(freshResult.content.replace(/\n/g,''))))); } catch(e) {}
+          freshData[policyId] = { html: html, images: allImages };
+          policyFactsData = freshData;
+          return ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/policy-facts.json', {
+            message: 'Update policy facts for policy ' + policyId,
+            content: btoa(unescape(encodeURIComponent(JSON.stringify(freshData, null, 2) + '\n'))),
+            sha: freshResult.sha,
+            branch: 'master'
+          });
+        })
+        .then(function(result) {
+          if (result && result.content) policyFactsSha = result.content.sha;
+        })
+        .catch(function(err) {
+          if (attempt < 3 && err.message && err.message.indexOf('but expected') !== -1) {
+            return new Promise(function(resolve) { setTimeout(resolve, 1500); })
+              .then(function() { return writeFactsWithRetry(policyId, html, allImages, attempt + 1); });
+          }
+          throw err;
+        });
+    }
+
     function savePolicyFacts() {
       var policyId = String(document.getElementById('factsPolicyId').value);
       var html = document.getElementById('factsHtmlContent').value.trim();
@@ -1027,23 +1054,8 @@
         var allImages = factsCurrentImages.concat(newUrls).slice(0, 4);
         statusEl.textContent = 'Saving facts...';
         // Always fetch fresh SHA + data immediately before writing to avoid stale SHA errors
-        return ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/policy-facts.json?ref=master')
-          .then(function(freshResult) {
-            if (!freshResult.sha) throw new Error('Could not fetch current file — try again in a moment.');
-            var freshSha = freshResult.sha;
-            var freshData = {};
-            try { freshData = JSON.parse(decodeURIComponent(escape(atob(freshResult.content.replace(/\n/g,''))))); } catch(e) {}
-            freshData[policyId] = { html: html, images: allImages };
-            policyFactsData = freshData;
-            return ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/policy-facts.json', {
-              message: 'Update policy facts for policy ' + policyId,
-              content: btoa(unescape(encodeURIComponent(JSON.stringify(freshData, null, 2) + '\n'))),
-              sha: freshSha,
-              branch: 'master'
-            });
-          })
-          .then(function(result) {
-            if (result && result.content) policyFactsSha = result.content.sha;
+        return writeFactsWithRetry(policyId, html, allImages, 0)
+          .then(function() {
             statusEl.textContent = 'Saved!';
             statusEl.style.color = 'var(--green)';
             document.getElementById('factsImageUpload').value = '';
