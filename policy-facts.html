@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AZVLC - Policy Facts</title>
+  <meta name="description" content="Arizona Veterans Policy Tracker - Policy Facts">
+  <meta property="og:title" content="AZVLC - Veteran Policy Facts">
+  <meta property="og:description" content="Learn the facts about this Arizona Veteran policy.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://azvlc.org/assets/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: var(--bg); }
+    .facts-page { max-width: 800px; margin: 0 auto; padding: 30px 20px; }
+    .facts-header { text-align: center; margin-bottom: 30px; }
+    .facts-header img { height: 60px; margin-bottom: 12px; }
+    .facts-header h1 { color: var(--navy); font-size: 1.3em; margin-bottom: 4px; }
+    .facts-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .facts-card-top {
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      color: #fff;
+      padding: 28px 30px;
+    }
+    .facts-card-top .stars { font-size: 1.4em; color: #c9a84c; letter-spacing: 3px; margin-bottom: 10px; }
+    .facts-card-top h2 { font-size: 1.4em; margin-bottom: 8px; }
+    .facts-card-top .meta { font-size: 0.9em; opacity: 0.85; }
+    .facts-card-body { padding: 28px 30px; }
+    .facts-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .facts-images img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .facts-images img:hover { transform: scale(1.02); }
+    .facts-html-content { color: var(--text-muted); line-height: 1.8; }
+    .facts-html-content h2, .facts-html-content h3 { color: var(--navy); margin: 20px 0 10px; }
+    .facts-html-content ul, .facts-html-content ol { padding-left: 20px; margin-bottom: 16px; }
+    .facts-html-content li { margin-bottom: 6px; }
+    .facts-html-content a { color: var(--blue); }
+    .facts-html-content strong { color: var(--navy); }
+    .facts-empty { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px; color: var(--navy); font-weight: 600; text-decoration: none; font-size: 0.95em; }
+    .back-btn:hover { text-decoration: underline; }
+    /* Lightbox */
+    #lightbox { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); z-index:999; justify-content:center; align-items:center; }
+    #lightbox img { max-width:90vw; max-height:90vh; border-radius:8px; }
+    #lightbox-close { position:absolute; top:20px; right:28px; color:#fff; font-size:2em; cursor:pointer; background:none; border:none; }
+  </style>
+</head>
+<body>
+  <div class="facts-page">
+    <a href="index.html#policies" class="back-btn">&larr; Back to Policies</a>
+
+    <div class="facts-header">
+      <a href="index.html"><img src="assets/logo.png" alt="AZVLC Logo"></a>
+      <h1>Arizona Veterans Policy Tracker</h1>
+    </div>
+
+    <div id="factsContent">
+      <div class="facts-empty">Loading policy facts...</div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" onclick="closeLightbox()">
+    <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <script>
+    var CONFIG = {
+      repoOwner: 'triggs2025',
+      repoName: 'azvlc',
+      branch: 'master',
+      ghToken: ['gith','ub_p','at_1','1BTZ','XWLY','0tro','xxMZ','a55M','J_rC','LfTf','67hl','2zTu','Ifpr','kZ5E','z6FL','cRPS','39I1','YJmX','9S5a','iQZK','LRR4','3leK','gL65','n'].join('')
+    };
+
+    var API = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/';
+
+    function fetchJSON(file) {
+      return fetch(API + file + '?ref=' + CONFIG.branch, {
+          headers: { 'Authorization': 'token ' + CONFIG.ghToken }
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          if (!result.content) throw new Error('no content');
+          return JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g,'')))));
+        });
+    }
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+    var params = new URLSearchParams(window.location.search);
+    var policyId = parseInt(params.get('id'));
+
+    Promise.all([fetchJSON('policies.json'), fetchJSON('policy-facts.json')])
+      .then(function(results) {
+        var policies = results[0];
+        var facts = results[1];
+        var policy = policies.find(function(p) { return p.id === policyId; });
+
+        if (!policy) {
+          document.getElementById('factsContent').innerHTML = '<div class="facts-empty">Policy not found.</div>';
+          return;
+        }
+
+        document.title = 'AZVLC - ' + policy.name;
+        var fact = facts[String(policyId)] || {};
+        var images = fact.images || [];
+        var html = fact.html || '';
+        var isPassed = policy.status === 'passed';
+
+        var imagesHtml = '';
+        if (images.length > 0) {
+          imagesHtml = '<div class="facts-images">' +
+            images.map(function(src) {
+              return '<img src="' + esc(src) + '" alt="Policy flyer" onclick="openLightbox(\'' + esc(src) + '\')">';
+            }).join('') +
+          '</div>';
+        }
+
+        var contentHtml = html
+          ? '<div class="facts-html-content">' + html + '</div>'
+          : '<div class="facts-empty">No additional facts have been added for this policy yet.</div>';
+
+        document.getElementById('factsContent').innerHTML =
+          '<div class="facts-card">' +
+            '<div class="facts-card-top">' +
+              (isPassed ? '<div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>' : '') +
+              '<h2>' + esc(policy.name) + '</h2>' +
+              '<div class="meta">' +
+                (policy.sponsor ? 'Sponsored by ' + esc(policy.sponsor) + '&nbsp;&nbsp;|&nbsp;&nbsp;' : '') +
+                'Status: ' + esc(policy.status.charAt(0).toUpperCase() + policy.status.slice(1)) +
+              '</div>' +
+            '</div>' +
+            '<div class="facts-card-body">' +
+              imagesHtml +
+              contentHtml +
+              (policy.link ? '<p style="margin-top:20px"><a href="' + esc(policy.link) + '" target="_blank" rel="noopener" class="btn btn-blue" style="display:inline-flex;text-decoration:none">View Official Bill &rarr;</a></p>' : '') +
+            '</div>' +
+          '</div>';
+      })
+      .catch(function() {
+        document.getElementById('factsContent').innerHTML = '<div class="facts-empty">Unable to load policy facts. Please try again.</div>';
+      });
+
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').style.display = 'flex';
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

@@ -650,7 +650,9 @@
 
     el.innerHTML = list.map(function (p) {
       var voted = hasVotedKudo('policy', p.id);
+      var passedStars = p.status === 'passed' ? '<div style="color:#c9a84c;font-size:1.3em;letter-spacing:2px;margin-bottom:6px">&#9733;&#9733;&#9733;&#9733;&#9733;</div>' : '';
       return '<div class="card" id="policy-card-' + p.id + '">' +
+        passedStars +
         '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<div class="card-meta">' +
           '<span class="badge badge-category">' + capitalize(p.category) + '</span>' +
@@ -667,6 +669,7 @@
           '<span class="kudos-count" id="kudos-policy-' + p.id + '">' + (p.kudos || 0) + '</span>' +
           '<button class="btn btn-sm" style="background:#eee;color:var(--text-muted);font-size:0.8em" onclick="AZVLC.openCorrectionModal(' + p.id + ')">Correction</button>' +
           '<button class="btn btn-sm btn-blue" style="font-size:0.8em" onclick="AZVLC.openEmailPolModal(' + p.id + ')">Email Politicians</button>' +
+          '<a href="policy-facts.html?id=' + p.id + '" class="btn btn-sm" style="background:var(--gold);color:var(--navy);font-size:0.8em;font-weight:700">Facts</a>' +
           '<button class="btn btn-sm" style="background:#000;color:#fff;font-size:0.8em;margin-left:auto" onclick="AZVLC.sharePolicyX(' + p.id + ')">𝕏</button>' +
           '<button class="btn btn-sm" style="background:#1877f2;color:#fff;font-size:0.8em" onclick="AZVLC.sharePolicyFB(' + p.id + ')">FB</button>' +
         '</div>' +
