@@ -996,7 +996,7 @@
     }
 
     function writeFactsWithRetry(policyId, html, allImages, attempt) {
-      return ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/policy-facts.json?ref=master')
+      return ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/policy-facts.json?ref=master&_=' + Date.now())
         .then(function(freshResult) {
           if (!freshResult.sha) throw new Error('Could not read policy-facts.json — try again.');
           var freshData = {};
