@@ -66,5 +66,21 @@
     "ownerPhone": "520.878.7180",
     "approvedAt": "2026-06-30T22:13:49.955Z",
     "kudos": 2
+  },
+  {
+    "id": 5,
+    "businessName": "#NotServiceConnected",
+    "category": "Retail",
+    "description": "NotServiceConnected is a Veteran-owned apparel brand that gives Veterans, service members, and supporters a voice through meaningful, military-inspired designs. Our shirts reflect the challenges, humor, pride, and realities of military service while raising awareness of the VA disability claims process. Every design tells a story, sparks conversation, and honors those who served, whether their injuries are visible, invisible, or deemed \"Not Service Connected.\"",
+    "website": "https://nscshirts.com/",
+    "address": "",
+    "zip": "85070",
+    "phone": "",
+    "hours": "24/7 M-S",
+    "discount": "20% off use coupon code - ArizonaVets",
+    "ownerName": "Tony Riggs",
+    "ownerEmail": "triggs@nscshirts.com",
+    "ownerPhone": "6025245299",
+    "approvedAt": "2026-07-01T04:27:30.691Z"
   }
 ]
