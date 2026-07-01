@@ -17,7 +17,7 @@
     "category": "housing",
     "description": "Provides property tax exemptions for Veterans in Arizona.",
     "link": "https://www.azleg.gov/legtext/57leg/2R/bills/hb2120s.htm",
-    "status": "passed",
+    "status": "proposed",
     "approved": true,
     "kudos": 25
   },
@@ -243,5 +243,16 @@
     "submittedBy": "",
     "submittedEmail": "triggs@nscshirts.com",
     "submittedAt": "2026-06-26T00:15:43.854Z"
+  },
+  {
+    "id": 38,
+    "name": "HB 4168 - taxation; omnibus; 2026-2027 (Veteran Property Tax Exemption)",
+    "sponsor": "Michael Carbone / David Gowen",
+    "category": "housing",
+    "description": "Arizona's new veteran property tax program, beginning with tax year 2027 (payments due in October 2027), expands eligibility to disabled veterans with ratings from 10% to 100%, removes income and home value limits, and provides a full property tax exemption for veterans rated 100% service-connected or receiving TDIU. Veterans with lower disability ratings receive a proportional property tax reduction, and surviving spouses can continue to receive the benefit under qualifying conditions.",
+    "link": "https://www.azleg.gov/legtext/57leg/2R/laws/0140.htm",
+    "status": "passed",
+    "approved": true,
+    "kudos": 0
   }
 ]
