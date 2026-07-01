@@ -633,6 +633,13 @@
       });
     }
 
+    // passed policies always first
+    list = list.slice().sort(function(a, b) {
+      var aP = a.status === 'passed' ? 0 : 1;
+      var bP = b.status === 'passed' ? 0 : 1;
+      return aP - bP;
+    });
+
     var el = document.getElementById('policiesList');
     if (!el) return;
 
