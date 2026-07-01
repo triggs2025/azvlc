@@ -317,8 +317,15 @@
       <!-- CONTACTS PANEL -->
       <div id="panel-contacts" class="admin-panel">
         <h3 style="color:var(--navy);margin-bottom:8px">Collected Contacts</h3>
-        <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">Emails collected from rating and policy suggestion forms.</p>
-        <button class="btn btn-sm btn-blue" onclick="exportContacts()" style="margin-bottom:16px">Export as CSV</button>
+        <p style="color:var(--text-muted);margin-bottom:12px;font-size:0.9em">Emails collected from all forms on the site.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
+          <button class="filter-btn active" id="cfBtn-all" onclick="setContactFilter('all',this)">All <span id="cfCount-all" style="font-size:0.8em;opacity:0.8"></span></button>
+          <button class="filter-btn" id="cfBtn-rating" onclick="setContactFilter('rating',this)">Ratings <span id="cfCount-rating" style="font-size:0.8em;opacity:0.8"></span></button>
+          <button class="filter-btn" id="cfBtn-vob" onclick="setContactFilter('vob',this)">VOB <span id="cfCount-vob" style="font-size:0.8em;opacity:0.8"></span></button>
+          <button class="filter-btn" id="cfBtn-suggestion" onclick="setContactFilter('suggestion',this)">Suggestions <span id="cfCount-suggestion" style="font-size:0.8em;opacity:0.8"></span></button>
+          <button class="filter-btn" id="cfBtn-other" onclick="setContactFilter('other',this)">Other <span id="cfCount-other" style="font-size:0.8em;opacity:0.8"></span></button>
+          <button class="btn btn-sm btn-blue" onclick="exportContacts()" style="margin-left:auto">Export CSV</button>
+        </div>
         <div id="adminContactsList"></div>
       </div>
 
@@ -1944,96 +1951,129 @@
     // ── Contacts ──
     var adminContacts = [];
     var contactsShaAdmin = '';
+    var adminContactFilter = 'all';
+
+    function contactType(c) {
+      if (c.type === 'vob-submission' || (c.source || '').indexOf('VOB:') === 0) return 'vob';
+      if (c.type === 'politician-rating' || (c.source || '').indexOf('Rated:') === 0) return 'rating';
+      if (c.type === 'policy-suggestion' || (c.source || '').indexOf('Suggested Policy:') === 0) return 'suggestion';
+      return 'other';
+    }
+
+    function setContactFilter(type, btn) {
+      adminContactFilter = type;
+      document.querySelectorAll('#panel-contacts .filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      if (btn) btn.classList.add('active');
+      renderContactsTable();
+    }
 
     function loadContacts() {
       ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/contacts.json?ref=master')
         .then(function(result) {
           contactsShaAdmin = result.sha;
           var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
-          return JSON.parse(decoded);
-        })
-        .then(function(data) {
-          var el = document.getElementById('adminContactsList');
+          adminContacts = JSON.parse(decoded);
           var badge = document.getElementById('contactsBadge');
-          if (data.length > 0) {
-            badge.textContent = data.length;
+          if (adminContacts.length > 0) {
+            badge.textContent = adminContacts.length;
             badge.style.display = 'inline';
           } else {
             badge.style.display = 'none';
           }
-          if (data.length === 0) {
-            el.innerHTML = '<div class="admin-empty"><p>No contacts collected yet.</p></div>';
-            return;
-          }
-          adminContacts = data;
-          el.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:0.9em">' +
-            '<thead><tr style="background:var(--navy);color:#fff">' +
-              '<th style="padding:10px;text-align:left">Email</th>' +
-              '<th style="padding:10px;text-align:left">Name</th>' +
-              '<th style="padding:10px;text-align:left">Action</th>' +
-              '<th style="padding:10px;text-align:left">Date</th>' +
-              '<th style="padding:10px;text-align:center">Details</th>' +
-              '<th style="padding:10px;text-align:center">Delete</th>' +
-            '</tr></thead><tbody>' +
-            data.map(function(c, i) {
-              var hasDetails = c.type || c.politician || c.policyName || c.grade || c.zip || c.reason || c.position || c.phone;
-              var detailRows = '';
-              if (hasDetails) {
-                var details = [];
-                details.push('<strong>Name:</strong> ' + esc(c.name || 'Anonymous'));
-                details.push('<strong>Email:</strong> ' + esc(c.email));
-                if (c.type) details.push('<strong>Type:</strong> ' + esc(c.type));
-                if (c.politician) details.push('<strong>Politician:</strong> ' + esc(c.politician));
-                if (c.position) details.push('<strong>Position:</strong> ' + esc(c.position));
-                if (c.grade) details.push('<strong>Grade:</strong> ' + esc(c.grade));
-                if (c.previousGrade) details.push('<strong>Previous Grade:</strong> ' + esc(c.previousGrade));
-                if (c.reason) details.push('<strong>Reason:</strong> ' + esc(c.reason));
-                if (c.zip) details.push('<strong>Zip:</strong> ' + esc(c.zip));
-                if (c.anonymous) details.push('<strong>Anonymous:</strong> Yes');
-                if (c.policyName) details.push('<strong>Policy:</strong> ' + esc(c.policyName));
-                if (c.policySponsor) details.push('<strong>Sponsor:</strong> ' + esc(c.policySponsor));
-                if (c.policyDescription) details.push('<strong>Description:</strong> ' + esc(c.policyDescription));
-                if (c.policyLink) details.push('<strong>Link:</strong> <a href="' + esc(c.policyLink) + '" target="_blank">' + esc(c.policyLink) + '</a>');
-                if (c.phone) details.push('<strong>Phone:</strong> ' + esc(c.phone));
-                if (c.correctedName) details.push('<strong>Corrected Name:</strong> ' + esc(c.correctedName));
-                if (c.timestamp) details.push('<strong>Timestamp:</strong> ' + esc(c.timestamp));
-                detailRows = '<tr id="contact-details-' + i + '" style="display:none;background:#f0f4f8">' +
-                  '<td colspan="6" style="padding:12px 20px;font-size:0.9em;line-height:1.8">' + details.join('<br>') + '</td></tr>';
-              }
-              return '<tr style="border-bottom:1px solid #eee;background:' + (i % 2 ? '#f9f9f9' : '#fff') + '">' +
-                '<td style="padding:8px 10px">' + esc(c.email) + '</td>' +
-                '<td style="padding:8px 10px">' + esc(c.name || 'Anonymous') + '</td>' +
-                '<td style="padding:8px 10px">' + esc(c.source || '') + '</td>' +
-                '<td style="padding:8px 10px">' + esc(c.date || '') + '</td>' +
-                '<td style="padding:8px 10px;text-align:center">' +
-                  (hasDetails ? '<button class="btn btn-sm btn-blue" style="padding:3px 8px;font-size:0.75em" onclick="toggleContactDetails(' + i + ')">View</button>' : '—') +
-                '</td>' +
-                '<td style="padding:8px 10px;text-align:center"><button class="btn btn-sm btn-danger" style="padding:3px 8px;font-size:0.75em" onclick="deleteContact(' + i + ')">✕</button></td>' +
-              '</tr>' + detailRows;
-            }).join('') +
-            '</tbody></table>';
+          // update counts on filter buttons
+          var counts = { all: adminContacts.length, vob: 0, rating: 0, suggestion: 0, other: 0 };
+          adminContacts.forEach(function(c) { counts[contactType(c)]++; });
+          ['all','vob','rating','suggestion','other'].forEach(function(k) {
+            var el = document.getElementById('cfCount-' + k);
+            if (el) el.textContent = '(' + counts[k] + ')';
+          });
+          renderContactsTable();
         })
         .catch(function() {});
     }
 
+    function renderContactsTable() {
+      var el = document.getElementById('adminContactsList');
+      var filtered = adminContactFilter === 'all'
+        ? adminContacts
+        : adminContacts.filter(function(c) { return contactType(c) === adminContactFilter; });
+
+      if (filtered.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No contacts in this group yet.</p></div>';
+        return;
+      }
+
+      el.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:0.9em">' +
+        '<thead><tr style="background:var(--navy);color:#fff">' +
+          '<th style="padding:10px;text-align:left">Email</th>' +
+          '<th style="padding:10px;text-align:left">Name</th>' +
+          '<th style="padding:10px;text-align:left">Source</th>' +
+          '<th style="padding:10px;text-align:left">Date</th>' +
+          '<th style="padding:10px;text-align:center">View</th>' +
+          '<th style="padding:10px;text-align:center">Delete</th>' +
+        '</tr></thead><tbody>' +
+        filtered.map(function(c, i) {
+          var key = encodeURIComponent(c.email + '|' + (c.source || '') + '|' + (c.date || '') + '|' + (c.timestamp || i));
+          var hasDetails = c.type || c.politician || c.policyName || c.grade || c.zip || c.reason || c.position || c.phone || c.businessName || c.category;
+          var details = [];
+          details.push('<strong>Name:</strong> ' + esc(c.name || 'Anonymous'));
+          details.push('<strong>Email:</strong> ' + esc(c.email));
+          if (c.type) details.push('<strong>Type:</strong> ' + esc(c.type));
+          if (c.businessName) details.push('<strong>Business:</strong> ' + esc(c.businessName));
+          if (c.category) details.push('<strong>Category:</strong> ' + esc(c.category));
+          if (c.phone) details.push('<strong>Phone:</strong> ' + esc(c.phone));
+          if (c.politician) details.push('<strong>Politician:</strong> ' + esc(c.politician));
+          if (c.position) details.push('<strong>Position:</strong> ' + esc(c.position));
+          if (c.grade) details.push('<strong>Grade:</strong> ' + esc(c.grade));
+          if (c.previousGrade) details.push('<strong>Previous Grade:</strong> ' + esc(c.previousGrade));
+          if (c.reason) details.push('<strong>Reason:</strong> ' + esc(c.reason));
+          if (c.zip) details.push('<strong>Zip:</strong> ' + esc(c.zip));
+          if (c.anonymous) details.push('<strong>Anonymous:</strong> Yes');
+          if (c.policyName) details.push('<strong>Policy:</strong> ' + esc(c.policyName));
+          if (c.policySponsor) details.push('<strong>Sponsor:</strong> ' + esc(c.policySponsor));
+          if (c.policyDescription) details.push('<strong>Description:</strong> ' + esc(c.policyDescription));
+          if (c.policyLink) details.push('<strong>Link:</strong> <a href="' + esc(c.policyLink) + '" target="_blank">' + esc(c.policyLink) + '</a>');
+          if (c.correctedName) details.push('<strong>Corrected Name:</strong> ' + esc(c.correctedName));
+          if (c.timestamp) details.push('<strong>Timestamp:</strong> ' + esc(c.timestamp));
+          var detailRow = '<tr id="cdet-' + i + '" style="display:none;background:#f0f4f8">' +
+            '<td colspan="6" style="padding:12px 20px;font-size:0.9em;line-height:1.8">' + details.join('<br>') + '</td></tr>';
+          return '<tr style="border-bottom:1px solid #eee;background:' + (i % 2 ? '#f9f9f9' : '#fff') + '">' +
+            '<td style="padding:8px 10px">' + esc(c.email) + '</td>' +
+            '<td style="padding:8px 10px">' + esc(c.name || 'Anonymous') + '</td>' +
+            '<td style="padding:8px 10px">' + esc(c.source || '') + '</td>' +
+            '<td style="padding:8px 10px">' + esc(c.date || '') + '</td>' +
+            '<td style="padding:8px 10px;text-align:center">' +
+              (hasDetails ? '<button class="btn btn-sm btn-blue" style="padding:3px 8px;font-size:0.75em" onclick="toggleContactDetails(' + i + ')">View</button>' : '&mdash;') +
+            '</td>' +
+            '<td style="padding:8px 10px;text-align:center"><button class="btn btn-sm btn-danger" style="padding:3px 8px;font-size:0.75em" onclick="deleteContactByKey(\'' + key + '\')">&#10005;</button></td>' +
+          '</tr>' + detailRow;
+        }).join('') +
+        '</tbody></table>';
+    }
+
     function toggleContactDetails(idx) {
-      var row = document.getElementById('contact-details-' + idx);
+      var row = document.getElementById('cdet-' + idx);
       if (row) row.style.display = row.style.display === 'none' ? '' : 'none';
+    }
+
+    function deleteContactByKey(encodedKey) {
+      if (!confirm('Are you sure you want to delete this contact?')) return;
+      var key = decodeURIComponent(encodedKey);
+      var parts = key.split('|');
+      var contactToDelete = adminContacts.find(function(c) {
+        return (c.email + '|' + (c.source || '') + '|' + (c.date || '') + '|' + (c.timestamp || adminContacts.indexOf(c))).indexOf(parts[0] + '|' + parts[1] + '|' + parts[2]) === 0;
+      });
+      if (!contactToDelete) { showStatus('Contact not found.', 'error'); return; }
+      showStatus('Deleting contact...', '');
+      doDeleteContact(contactToDelete, null, null, 0);
     }
 
     function deleteContact(idx) {
       if (!confirm('Are you sure you want to delete this contact?')) return;
-
       var contactToDelete = adminContacts[idx];
       if (!contactToDelete) return;
-
-      var row = document.querySelector('#adminContactsList tbody tr:nth-child(' + (idx * 2 + 1) + ')');
-      var detailRow = document.getElementById('contact-details-' + idx);
-      if (row) row.style.opacity = '0.4';
-      if (detailRow) detailRow.style.opacity = '0.4';
-
       showStatus('Deleting contact...', '');
-      doDeleteContact(contactToDelete, row, detailRow, 0);
+      doDeleteContact(contactToDelete, null, null, 0);
     }
 
     function doDeleteContact(contactToDelete, row, detailRow, attempt) {
@@ -2077,20 +2117,35 @@
     }
 
     function exportContacts() {
-      fetch('data/contacts.json?t=' + Date.now())
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          var csv = 'Email,Name,Source,Date\n';
-          data.forEach(function(c) {
-            csv += '"' + (c.email || '') + '","' + (c.name || '') + '","' + (c.source || '') + '","' + (c.date || '') + '"\n';
-          });
-          var blob = new Blob([csv], { type: 'text/csv' });
-          var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = 'azvlc_contacts.csv';
-          a.click();
-          URL.revokeObjectURL(a.href);
-        });
+      var data = adminContactFilter === 'all'
+        ? adminContacts
+        : adminContacts.filter(function(c) { return contactType(c) === adminContactFilter; });
+
+      var q = function(v) { return '"' + String(v || '').replace(/"/g, '""') + '"'; };
+      var csv = [
+        'Email','Name','Source','Date','Type','Business Name','Category',
+        'Phone','Politician','Position','Grade','Previous Grade','Reason',
+        'Zip','Policy Name','Policy Sponsor','Policy Description','Policy Link',
+        'Timestamp'
+      ].map(q).join(',') + '\n';
+
+      data.forEach(function(c) {
+        csv += [
+          c.email, c.name, c.source, c.date, c.type,
+          c.businessName, c.category, c.phone,
+          c.politician, c.position, c.grade, c.previousGrade, c.reason, c.zip,
+          c.policyName, c.policySponsor, c.policyDescription, c.policyLink,
+          c.timestamp
+        ].map(q).join(',') + '\n';
+      });
+
+      var label = adminContactFilter === 'all' ? 'all' : adminContactFilter;
+      var blob = new Blob([csv], { type: 'text/csv' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'azvlc_contacts_' + label + '.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
     }
 
     // ── Sponsor ──
