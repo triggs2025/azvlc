@@ -1009,7 +1009,7 @@
           reader.onload = function(e) {
             var base64 = e.target.result.split(',')[1];
             var ext = file.name.split('.').pop().toLowerCase() || 'jpg';
-            var path = 'assets/policy-facts/' + policyId + '-' + (factsCurrentImages.length + i + 1) + '.' + ext;
+            var path = 'assets/policy-facts/' + policyId + '-' + Date.now() + '-' + i + '.' + ext;
             ghAPI('PUT', '/repos/triggs2025/azvlc/contents/' + path, {
               message: 'Upload policy facts image for policy ' + policyId,
               content: base64,
