@@ -146,5 +146,16 @@
     "category": "Retail",
     "phone": "6025245299",
     "timestamp": "2026-07-01T04:26:50.450Z"
+  },
+  {
+    "email": "whitney.danielson@yahoo.com",
+    "name": "Whitney Brown",
+    "source": "VOB: Whitney Brown PLLC",
+    "date": "2026-07-01",
+    "type": "vob-submission",
+    "businessName": "Whitney Brown PLLC",
+    "category": "Real Estate",
+    "phone": "9288487510",
+    "timestamp": "2026-07-01T07:32:16.112Z"
   }
 ]
