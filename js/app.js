@@ -605,6 +605,7 @@
 
     passedEl.innerHTML = passed.map(function (p) {
       return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.navToItem(\'policies\',\'policy-card-' + p.id + '\')">' +
+        '<div style="color:#c9a84c;font-size:1.2em;letter-spacing:2px;margin-bottom:6px">&#9733;&#9733;&#9733;&#9733;&#9733;</div>' +
         '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
         '<p>' + esc(p.description) + '</p>' +
         '<span class="badge badge-passed">Passed</span>' +
