@@ -1025,25 +1025,31 @@
 
       Promise.all(uploadPromises).then(function(newUrls) {
         var allImages = factsCurrentImages.concat(newUrls).slice(0, 4);
-        policyFactsData[policyId] = { html: html, images: allImages };
-
-        return loadPolicyFacts().then(function() {
-          policyFactsData[policyId] = { html: html, images: allImages };
-          return ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/policy-facts.json', {
-            message: 'Update policy facts for policy ' + policyId,
-            content: btoa(unescape(encodeURIComponent(JSON.stringify(policyFactsData, null, 2) + '\n'))),
-            sha: policyFactsSha,
-            branch: 'master'
+        statusEl.textContent = 'Saving facts...';
+        // Always fetch fresh SHA + data immediately before writing to avoid stale SHA errors
+        return ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/policy-facts.json?ref=master')
+          .then(function(freshResult) {
+            var freshSha = freshResult.sha;
+            var freshData = {};
+            try { freshData = JSON.parse(decodeURIComponent(escape(atob(freshResult.content.replace(/\n/g,''))))); } catch(e) {}
+            freshData[policyId] = { html: html, images: allImages };
+            policyFactsData = freshData;
+            return ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/policy-facts.json', {
+              message: 'Update policy facts for policy ' + policyId,
+              content: btoa(unescape(encodeURIComponent(JSON.stringify(freshData, null, 2) + '\n'))),
+              sha: freshSha,
+              branch: 'master'
+            });
+          })
+          .then(function(result) {
+            if (result && result.content) policyFactsSha = result.content.sha;
+            statusEl.textContent = 'Saved!';
+            statusEl.style.color = 'var(--green)';
+            document.getElementById('factsImageUpload').value = '';
+            factsCurrentImages = allImages;
+            renderFactsImagePreviews();
+            setTimeout(function() { statusEl.textContent = ''; statusEl.style.color = ''; }, 3000);
           });
-        });
-      }).then(function(result) {
-        if (result && result.content) policyFactsSha = result.content.sha;
-        statusEl.textContent = 'Saved!';
-        statusEl.style.color = 'var(--green)';
-        document.getElementById('factsImageUpload').value = '';
-        factsCurrentImages = policyFactsData[policyId].images || [];
-        renderFactsImagePreviews();
-        setTimeout(function() { statusEl.textContent = ''; }, 3000);
       }).catch(function(err) {
         statusEl.textContent = 'Error: ' + err.message;
         statusEl.style.color = 'var(--red)';
