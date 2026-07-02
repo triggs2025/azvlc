@@ -277,5 +277,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-02T04:20:01.566Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Walt Blackman (A)",
+    "date": "2026-07-02",
+    "type": "politician-rating",
+    "politician": "Walt Blackman",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Strong supporter of Veteran bills and actively sponsors and co-sponsors bills",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-02T04:23:37.836Z"
   }
 ]
