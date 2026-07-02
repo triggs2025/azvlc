@@ -247,5 +247,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-02T04:10:56.652Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lorena Austin (D)",
+    "date": "2026-07-02",
+    "type": "politician-rating",
+    "politician": "Lorena Austin",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Does not support, sponsor or co-sponsor Veterans bills",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-02T04:15:16.070Z"
   }
 ]
