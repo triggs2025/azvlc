@@ -217,5 +217,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-02T03:59:56.810Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Cesar Aguilar (D)",
+    "date": "2026-07-02",
+    "type": "politician-rating",
+    "politician": "Cesar Aguilar",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Does not support, sponsor or co-sponsor Veteran bills",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-02T04:07:01.727Z"
   }
 ]
