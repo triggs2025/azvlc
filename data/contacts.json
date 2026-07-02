@@ -232,5 +232,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-02T04:07:01.727Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Sylvia Allen (D)",
+    "date": "2026-07-02",
+    "type": "politician-rating",
+    "politician": "Sylvia Allen",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Does not support. Sponsor or co-sponsor Veterans bills",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-02T04:10:56.652Z"
   }
 ]
