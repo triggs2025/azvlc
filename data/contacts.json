@@ -262,5 +262,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-02T04:15:16.070Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Leo Biasiucci (A)",
+    "date": "2026-07-02",
+    "type": "politician-rating",
+    "politician": "Leo Biasiucci",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Co-sponsored HB2960\tveterans' court fund; grant program and supported other Veterans bills\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-02T04:20:01.566Z"
   }
 ]
