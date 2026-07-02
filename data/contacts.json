@@ -202,5 +202,20 @@
     "zip": "85233",
     "anonymous": false,
     "timestamp": "2026-07-01T14:06:53.983Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Anna Abeytia (D)",
+    "date": "2026-07-02",
+    "type": "politician-rating",
+    "politician": "Anna Abeytia",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Does not support, sponsor nor co-sponsor a Veterans bill ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-02T03:59:56.810Z"
   }
 ]
