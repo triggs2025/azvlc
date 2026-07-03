@@ -337,5 +337,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-03T00:56:03.327Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Pamela Carter (D)",
+    "date": "2026-07-03",
+    "type": "politician-rating",
+    "politician": "Pamela Carter",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor nor co sponsor Veterans bills. Is not affiliated with any Veteran organizations",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-03T01:07:56.053Z"
   }
 ]
