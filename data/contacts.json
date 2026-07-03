@@ -352,5 +352,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-03T01:07:56.053Z"
+  },
+  {
+    "email": "brandonwinkel@gmail.com",
+    "name": "Brandon",
+    "source": "Rated: Cesar Aguilar (A)",
+    "date": "2026-07-03",
+    "type": "politician-rating",
+    "politician": "Cesar Aguilar",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Primary sponsor on 12 different legislation pieces with several dealing with easier access to higher education including cost capping. Co-sponsor on many more (works well with others).",
+    "zip": "85029",
+    "anonymous": false,
+    "timestamp": "2026-07-03T13:02:50.094Z"
   }
 ]
