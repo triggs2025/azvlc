@@ -292,5 +292,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-02T04:23:37.836Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Seth Blattman (D)",
+    "date": "2026-07-03",
+    "type": "politician-rating",
+    "politician": "Seth Blattman",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor nor co-sponsor Veteran legislation, supports no Veteran organization",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-03T00:47:04.784Z"
   }
 ]
