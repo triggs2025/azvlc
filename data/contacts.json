@@ -322,5 +322,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-03T00:51:39.345Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Neal Carter (A)",
+    "date": "2026-07-03",
+    "type": "politician-rating",
+    "politician": "Neal Carter",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Sponsor of:\nHB2127 bronze star medal license plates\nHB2120 property tax exemption; disability; determination",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-03T00:56:03.327Z"
   }
 ]
