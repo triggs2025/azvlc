@@ -307,5 +307,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-03T00:47:04.784Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Selina Bliss (D)",
+    "date": "2026-07-03",
+    "type": "politician-rating",
+    "politician": "Selina Bliss",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor nor co-sponsor Veteran bills and is not affiliated with any Veteran organizations",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-03T00:51:39.345Z"
   }
 ]
