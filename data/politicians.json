@@ -227,7 +227,7 @@
     "grades": {
       "A": 0,
       "B": 0,
-      "C": 0,
+      "C": 1,
       "D": 0,
       "F": 0
     },
@@ -312,7 +312,7 @@
   },
   {
     "id": 116,
-    "name": "Quantá Crews",
+    "name": "QuantÃ¡ Crews",
     "position": "State Representative",
     "party": "Democrat",
     "district": "District 26",
@@ -692,7 +692,7 @@
   },
   {
     "id": 136,
-    "name": "Elda Luna-Nájera",
+    "name": "Elda Luna-NÃ¡jera",
     "position": "State Representative",
     "party": "Democrat",
     "district": "District 22",
@@ -711,7 +711,7 @@
   },
   {
     "id": 137,
-    "name": "Aaron Márquez",
+    "name": "Aaron MÃ¡rquez",
     "position": "State Representative",
     "party": "Democrat",
     "district": "District 5",
@@ -844,7 +844,7 @@
   },
   {
     "id": 144,
-    "name": "Michele Peña",
+    "name": "Michele PeÃ±a",
     "position": "State Representative",
     "party": "Republican",
     "district": "District 23",
@@ -1395,7 +1395,7 @@
   },
   {
     "id": 211,
-    "name": "Rosanna Gabaldón",
+    "name": "Rosanna GabaldÃ³n",
     "position": "State Senator",
     "party": "Democrat",
     "district": "District 21",
