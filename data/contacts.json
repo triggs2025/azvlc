@@ -367,5 +367,20 @@
     "zip": "85029",
     "anonymous": false,
     "timestamp": "2026-07-03T13:02:50.094Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Junelle Cavero (C)",
+    "date": "2026-07-05",
+    "type": "politician-rating",
+    "politician": "Junelle Cavero",
+    "position": "State Representative",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Sponsor HB2817 technical correction; veterans; conservatorship\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-05T23:32:09.658Z"
   }
 ]
