@@ -343,7 +343,7 @@
             '</div>' +
             '<div class="scorecard-actions">' +
               '<a href="index.html#rate" class="btn btn-blue btn-sm">Rate this Politician</a>' +
-              (p.email ? '<a href="mailto:' + esc(p.email) + '" class="btn btn-sm" style="background:var(--gold);color:var(--navy);font-weight:700">Email Politician</a>' : '') +
+              (p.email ? '<a href="mailto:' + esc(p.email) + '?subject=' + encodeURIComponent('Your Scorecard from AZVLC.org') + '&body=' + encodeURIComponent('You have a scorecard on AZVLC.org. Check it out: https://azvlc.org/scorecard.html?id=' + p.id + '\n\nThe Arizona Veteran Leadership Council is designed for Veterans in Arizona to rate and track politicians and their policies to better inform Veterans of what is going on in Arizona. This is all Veteran driven and we are happy that Arizona is becoming the most Veteran friendly state in the United States of America!') + '" class="btn btn-sm" style="background:var(--gold);color:var(--navy);font-weight:700">Email this to Politician</a>' : '') +
               '<a href="index.html#politicians" class="btn btn-sm" style="background:#eee;color:var(--text)">View All Politicians</a>' +
             '</div>' +
           '</div>' +
