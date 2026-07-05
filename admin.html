@@ -577,6 +577,42 @@
           <input type="number" id="gradeF" min="0" style="width:100%;padding:8px;text-align:center;border:1px solid var(--border);border-radius:6px">
         </div>
       </div>
+      <div style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:20px">
+        <p style="font-weight:600;color:var(--navy);margin-bottom:6px;font-size:0.95em">Grade Weights <span style="font-weight:400;color:var(--text-muted);font-size:0.85em">(reduce impact of politically-motivated ratings)</span></p>
+        <p style="color:var(--text-muted);font-size:0.82em;margin-bottom:12px">1 = full weight &nbsp;|&nbsp; 0 = excluded from grade calculation</p>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">
+          <div style="text-align:center">
+            <label style="font-weight:700;color:#27ae60;font-size:1.1em;display:block;margin-bottom:4px">A</label>
+            <select id="weightA" style="width:100%;padding:6px 2px;border:1px solid var(--border);border-radius:6px;text-align:center;font-size:0.9em">
+              <option value="1">1</option><option value="0.75">0.75</option><option value="0.5">0.5</option><option value="0.25">0.25</option><option value="0">0</option>
+            </select>
+          </div>
+          <div style="text-align:center">
+            <label style="font-weight:700;color:#3498db;font-size:1.1em;display:block;margin-bottom:4px">B</label>
+            <select id="weightB" style="width:100%;padding:6px 2px;border:1px solid var(--border);border-radius:6px;text-align:center;font-size:0.9em">
+              <option value="1">1</option><option value="0.75">0.75</option><option value="0.5">0.5</option><option value="0.25">0.25</option><option value="0">0</option>
+            </select>
+          </div>
+          <div style="text-align:center">
+            <label style="font-weight:700;color:#f39c12;font-size:1.1em;display:block;margin-bottom:4px">C</label>
+            <select id="weightC" style="width:100%;padding:6px 2px;border:1px solid var(--border);border-radius:6px;text-align:center;font-size:0.9em">
+              <option value="1">1</option><option value="0.75">0.75</option><option value="0.5">0.5</option><option value="0.25">0.25</option><option value="0">0</option>
+            </select>
+          </div>
+          <div style="text-align:center">
+            <label style="font-weight:700;color:#e67e22;font-size:1.1em;display:block;margin-bottom:4px">D</label>
+            <select id="weightD" style="width:100%;padding:6px 2px;border:1px solid var(--border);border-radius:6px;text-align:center;font-size:0.9em">
+              <option value="1">1</option><option value="0.75">0.75</option><option value="0.5">0.5</option><option value="0.25">0.25</option><option value="0">0</option>
+            </select>
+          </div>
+          <div style="text-align:center">
+            <label style="font-weight:700;color:#e74c3c;font-size:1.1em;display:block;margin-bottom:4px">F</label>
+            <select id="weightF" style="width:100%;padding:6px 2px;border:1px solid var(--border);border-radius:6px;text-align:center;font-size:0.9em">
+              <option value="1">1</option><option value="0.75">0.75</option><option value="0.5">0.5</option><option value="0.25">0.25</option><option value="0">0</option>
+            </select>
+          </div>
+        </div>
+      </div>
       <div style="display:flex;gap:8px">
         <button class="form-submit" style="flex:1" onclick="saveGrades()">Save Grades</button>
         <button class="btn" style="background:#eee;color:var(--text)" onclick="closeModal('gradesModal')">Cancel</button>
@@ -1145,7 +1181,7 @@
             var db = parseInt((b.district || '').replace(/\D/g, '')) || 999;
             return da - db;
           case 'grade':
-            var ga = calcGradeValue(a.grades), gb = calcGradeValue(b.grades);
+            var ga = calcGradeValue(a.grades, a.gradeWeights), gb = calcGradeValue(b.grades, b.gradeWeights);
             return gb - ga;
           case 'kudos': return (b.kudos || 0) - (a.kudos || 0);
           default: return 0;
@@ -1157,7 +1193,7 @@
         return;
       }
       el.innerHTML = filtered.map(function(p) {
-        var avg = calcGrade(p.grades);
+        var avg = calcGrade(p.grades, p.gradeWeights);
         return '<div class="admin-item">' +
           '<div class="admin-item-info">' +
             '<h4>' + esc(p.name) + (p.veteran ? ' <span style="background:#2e7d32;color:#fff;font-size:0.6em;padding:2px 6px;border-radius:3px;margin-left:6px;vertical-align:middle">VET</span>' : '') + '</h4>' +
@@ -2066,6 +2102,11 @@
       document.getElementById('gradeC').value = (p.grades && p.grades.C) || 0;
       document.getElementById('gradeD').value = (p.grades && p.grades.D) || 0;
       document.getElementById('gradeF').value = (p.grades && p.grades.F) || 0;
+      var w = p.gradeWeights || {};
+      ['A','B','C','D','F'].forEach(function(g) {
+        var sel = document.getElementById('weight' + g);
+        sel.value = (w[g] !== undefined) ? String(w[g]) : '1';
+      });
       openModal('gradesModal');
     }
 
@@ -2080,6 +2121,13 @@
         C: parseInt(document.getElementById('gradeC').value) || 0,
         D: parseInt(document.getElementById('gradeD').value) || 0,
         F: parseInt(document.getElementById('gradeF').value) || 0
+      };
+      p.gradeWeights = {
+        A: parseFloat(document.getElementById('weightA').value),
+        B: parseFloat(document.getElementById('weightB').value),
+        C: parseFloat(document.getElementById('weightC').value),
+        D: parseFloat(document.getElementById('weightD').value),
+        F: parseFloat(document.getElementById('weightF').value)
       };
 
       closeModal('gradesModal');
@@ -2707,11 +2755,16 @@
     function nextId(arr) {
       return arr.reduce(function(max, item) { return Math.max(max, item.id || 0); }, 0) + 1;
     }
-    function calcGrade(grades) {
+    function calcGrade(grades, weights) {
       if (!grades) return 'N/A';
       var vals = { A: 4, B: 3, C: 2, D: 1, F: 0 };
+      var w = weights || {};
       var total = 0, count = 0;
-      for (var g in vals) { total += vals[g] * (grades[g] || 0); count += (grades[g] || 0); }
+      for (var g in vals) {
+        var wt = (w[g] !== undefined) ? w[g] : 1;
+        total += vals[g] * (grades[g] || 0) * wt;
+        count += (grades[g] || 0) * wt;
+      }
       if (count === 0) return 'N/A';
       var avg = total / count;
       if (avg >= 3.5) return 'A';
@@ -2720,11 +2773,16 @@
       if (avg >= 0.5) return 'D';
       return 'F';
     }
-    function calcGradeValue(grades) {
+    function calcGradeValue(grades, weights) {
       if (!grades) return -1;
       var vals = { A: 4, B: 3, C: 2, D: 1, F: 0 };
+      var w = weights || {};
       var total = 0, count = 0;
-      for (var g in vals) { total += vals[g] * (grades[g] || 0); count += (grades[g] || 0); }
+      for (var g in vals) {
+        var wt = (w[g] !== undefined) ? w[g] : 1;
+        total += vals[g] * (grades[g] || 0) * wt;
+        count += (grades[g] || 0) * wt;
+      }
       return count === 0 ? -1 : total / count;
     }
     function formatStatus(s) { return s === 'in-progress' ? 'In Progress' : capitalize(s); }

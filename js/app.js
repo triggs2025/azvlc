@@ -168,7 +168,7 @@
 
     titleEl.textContent = 'Your Legislators — ' + distLabel;
     cardsEl.innerHTML = reps.map(function(p) {
-      var avg = calcGrade(p.grades);
+      var avg = calcGrade(p.grades, p.gradeWeights);
       var total = gradeTotal(p.grades);
       var voted = hasVotedKudo('politician', p.id);
 
@@ -556,7 +556,7 @@
     }
 
     topEl.innerHTML = sorted.map(function (p) {
-      var avg = calcGrade(p.grades);
+      var avg = calcGrade(p.grades, p.gradeWeights);
       var total = gradeTotal(p.grades);
       return '<div class="card clickable" style="cursor:pointer" onclick="AZVLC.navToItem(\'politicians\',\'politician-card-' + p.id + '\')">' +
         '<h3>' + esc(p.name) + (p.veteran ? ' <span class="vet-badge">VET</span>' : '') + '</h3>' +
@@ -763,7 +763,7 @@
     }
 
     el.innerHTML = filtered.map(function (p) {
-      var avg = calcGrade(p.grades);
+      var avg = calcGrade(p.grades, p.gradeWeights);
       var total = gradeTotal(p.grades);
       var voted = hasVotedKudo('politician', p.id);
 
@@ -2143,13 +2143,15 @@
   }
 
   // ── Helpers ──
-  function calcGrade(grades) {
+  function calcGrade(grades, weights) {
     if (!grades) return 'N/A';
     var vals = { A: 4, B: 3, C: 2, D: 1, F: 0 };
+    var w = weights || {};
     var total = 0, count = 0;
     for (var g in vals) {
-      total += vals[g] * (grades[g] || 0);
-      count += (grades[g] || 0);
+      var wt = (w[g] !== undefined) ? w[g] : 1;
+      total += vals[g] * (grades[g] || 0) * wt;
+      count += (grades[g] || 0) * wt;
     }
     if (count === 0) return 'N/A';
     var avg = total / count;

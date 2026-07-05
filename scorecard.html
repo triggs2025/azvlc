@@ -279,7 +279,7 @@
     function renderScorecard(p) {
       var grades = p.grades || {};
       var total = (grades.A || 0) + (grades.B || 0) + (grades.C || 0) + (grades.D || 0) + (grades.F || 0);
-      var avg = calcGrade(grades);
+      var avg = calcGrade(grades, p.gradeWeights);
       var gradeClass = avg === 'N/A' ? '' : 'grade-' + avg.toLowerCase();
       var maxCount = Math.max(grades.A || 0, grades.B || 0, grades.C || 0, grades.D || 0, grades.F || 0, 1);
 
@@ -359,11 +359,16 @@
         '</div>';
     }
 
-    function calcGrade(grades) {
+    function calcGrade(grades, weights) {
       if (!grades) return 'N/A';
       var vals = { A: 4, B: 3, C: 2, D: 1, F: 0 };
+      var w = weights || {};
       var total = 0, count = 0;
-      for (var g in vals) { total += vals[g] * (grades[g] || 0); count += (grades[g] || 0); }
+      for (var g in vals) {
+        var wt = (w[g] !== undefined) ? w[g] : 1;
+        total += vals[g] * (grades[g] || 0) * wt;
+        count += (grades[g] || 0) * wt;
+      }
       if (count === 0) return 'N/A';
       var avg = total / count;
       if (avg >= 3.5) return 'A';
