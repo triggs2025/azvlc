@@ -35,7 +35,14 @@
       "F": 0
     },
     "kudos": 2,
-    "email": "CAGUILAR@azleg.gov"
+    "email": "CAGUILAR@azleg.gov",
+    "gradeWeights": {
+      "A": 0.5,
+      "B": 1,
+      "C": 1,
+      "D": 1,
+      "F": 1
+    }
   },
   {
     "id": 102,
