@@ -781,7 +781,7 @@
     }
 
     function base64ToJson(b64) {
-      return JSON.parse(atob(b64.replace(/\n/g, '')));
+      return JSON.parse(decodeURIComponent(escape(atob(b64.replace(/\n/g, '')))));
     }
 
     function saveFileToGitHub(filePath, data, sha) {
