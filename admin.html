@@ -771,11 +771,23 @@
       });
     }
 
+    function jsonToBase64(data) {
+      var json = JSON.stringify(data, null, 2) + '\n';
+      // Escape non-ASCII as \uXXXX so btoa never sees high bytes
+      var ascii = json.replace(/[^\x00-\x7F]/g, function(c) {
+        return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
+      });
+      return btoa(ascii);
+    }
+
+    function base64ToJson(b64) {
+      return JSON.parse(atob(b64.replace(/\n/g, '')));
+    }
+
     function saveFileToGitHub(filePath, data, sha) {
-      var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2) + '\n')));
       var body = {
         message: 'Update ' + filePath + ' via admin panel',
-        content: content,
+        content: jsonToBase64(data),
         branch: BRANCH
       };
       if (sha) body.sha = sha;
@@ -786,8 +798,7 @@
     function loadFileFromGitHub(filePath) {
       return ghAPI('GET', '/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + filePath + '?ref=' + BRANCH)
         .then(function(result) {
-          var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
-          return { data: JSON.parse(decoded), sha: result.sha };
+          return { data: base64ToJson(result.content), sha: result.sha };
         });
     }
 
