@@ -343,6 +343,7 @@
             '</div>' +
             '<div class="scorecard-actions">' +
               '<a href="index.html#rate" class="btn btn-blue btn-sm">Rate this Politician</a>' +
+              (p.email ? '<a href="mailto:' + esc(p.email) + '" class="btn btn-sm" style="background:var(--gold);color:var(--navy);font-weight:700">Email Politician</a>' : '') +
               '<a href="index.html#politicians" class="btn btn-sm" style="background:#eee;color:var(--text)">View All Politicians</a>' +
             '</div>' +
           '</div>' +
