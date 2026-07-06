@@ -743,7 +743,6 @@
         '</svg>' +
         '<div>' +
           '<div style="font-weight:700;color:var(--navy);margin-bottom:10px;font-size:1em">Policy Outcomes</div>' +
-          '<div style="font-size:0.82em;color:var(--text-muted);margin-bottom:10px">Tracked policies only &mdash; excludes public suggestions</div>' +
           legend +
         '</div>' +
       '</div>';
