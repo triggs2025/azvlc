@@ -483,5 +483,20 @@
     "category": "Consulting",
     "phone": "602.456.2453",
     "timestamp": "2026-07-06T18:45:56.283Z"
+  },
+  {
+    "email": "joeboyle1221@gmail.com",
+    "name": "Joe boyle",
+    "source": "Rated: Joseph Chaplik (A)",
+    "date": "2026-07-06",
+    "type": "politician-rating",
+    "politician": "Joseph Chaplik",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Strong supporter of the armed forces and veterans. ",
+    "zip": "85207",
+    "anonymous": false,
+    "timestamp": "2026-07-06T18:49:32.513Z"
   }
 ]
