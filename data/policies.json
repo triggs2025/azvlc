@@ -134,13 +134,13 @@
   {
     "id": 22,
     "name": "HB 2599 - Law Enforcement; Military Protective Orders",
-    "sponsor": "",
+    "sponsor": "Aaron M\u00e1rquez",
     "category": "benefits",
     "description": "Requires law enforcement to recognize and enforce military protective orders in Arizona.",
-    "status": "proposed",
-    "kudos": 0,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84389",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 0
   },
   {
     "id": 23,
