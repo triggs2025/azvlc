@@ -156,12 +156,20 @@
             '<div class="facts-card-body">' +
               imagesHtml +
               contentHtml +
-              (policy.link ? '<p style="margin-top:20px"><a href="' + esc(policy.link) + '" target="_blank" rel="noopener" class="btn btn-blue" style="display:inline-flex;text-decoration:none">View Official Bill &rarr;</a></p>' : '') +
+              (policy.link ? '<p style="margin-top:20px"><a href="' + esc(policy.link) + '" target="_blank" rel="noopener" class="btn btn-blue" style="display:inline-flex;text-decoration:none">View Bill on azleg.gov &rarr;</a></p>' : '') +
+              '<div style="background:#f8f9fa;border-radius:8px;padding:16px 20px;margin-top:20px;display:flex;align-items:center;gap:14px">' +
+                '<span style="background:var(--blue);color:#fff;font-size:1.3em;font-weight:700;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + (policy.kudos || 0) + '</span>' +
+                '<span style="color:var(--text-muted);font-size:0.95em">Veterans support this policy</span>' +
+              '</div>' +
               '<p style="text-align:center;color:var(--text-muted);font-size:0.9em;margin-top:24px">Share this policy with fellow Veterans</p>' +
               '<div class="share-buttons">' +
-                '<a class="share-btn share-btn-x" href="https://x.com/intent/tweet?text=' + encodeURIComponent('As a Veteran I support this - check it out! ' + policy.name) + '&url=' + encodeURIComponent('https://azvlc.org/policy-facts.html?id=' + policyId) + '" target="_blank">&#120143; Share on X</a>' +
-                '<button class="share-btn share-btn-fb" onclick="shareFB()">Share on Facebook</button>' +
+                '<a class="share-btn share-btn-x" href="https://x.com/intent/tweet?text=' + encodeURIComponent('As a Veteran I support this - check it out! ' + policy.name) + '&url=' + encodeURIComponent('https://azvlc.org/policy-facts.html?id=' + policyId) + '" target="_blank">&#120143; Share</a>' +
+                '<button class="share-btn share-btn-fb" onclick="shareFB()">Facebook</button>' +
+                '<button class="share-btn" style="background:#555" onclick="shareEmail()">Email</button>' +
                 '<button class="share-btn share-btn-copy" onclick="copyLink()">Copy Link</button>' +
+              '</div>' +
+              '<div style="text-align:center;margin-top:20px">' +
+                '<a href="index.html#policies" class="btn" style="background:#eee;color:var(--navy);font-size:0.9em">View All Policies</a>' +
               '</div>' +
             '</div>' +
           '</div>';
@@ -188,6 +196,11 @@
       }).catch(function() {
         window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank');
       });
+    }
+
+    function shareEmail() {
+      var url = 'https://azvlc.org/policy-facts.html?id=' + policyId;
+      window.location.href = 'mailto:?subject=' + encodeURIComponent('Veteran Policy: ' + policy.name) + '&body=' + encodeURIComponent('As a Veteran I support this policy — check it out!\n\n' + url);
     }
 
     function copyLink() {
