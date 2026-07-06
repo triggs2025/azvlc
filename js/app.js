@@ -288,8 +288,10 @@
   }
 
   // ── Page view + hit tracking ──
-  var _hitQueue = [];   // { isLoad, firstSection }
+  var _hitQueue = [];
   var _hitRunning = false;
+  var _analyticsSha = null;    // stored from last PUT — avoids stale GET
+  var _analyticsCache = null;  // stored data from last successful read
 
   function trackPageView() {
     if (sessionStorage.getItem('azvlc_viewed')) return;
@@ -303,47 +305,76 @@
     if (!_hitRunning) _flushHits();
   }
 
+  function _applyHits(data, pending) {
+    var today = new Date().toISOString().split('T')[0];
+    if (!data.daily) data.daily = {};
+    if (!data.dailyHits) data.dailyHits = {};
+    if (!data.firstClicks) data.firstClicks = {};
+    if (!data.startDate) data.startDate = today;
+    pending.forEach(function(h) {
+      if (h.isLoad) data.daily[today] = (data.daily[today] || 0) + 1;
+      data.dailyHits[today] = (data.dailyHits[today] || 0) + 1;
+      if (h.firstSection) data.firstClicks[h.firstSection] = (data.firstClicks[h.firstSection] || 0) + 1;
+    });
+    return data;
+  }
+
+  function _doWrite(data, sha, pending) {
+    var apiBase = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json';
+    var json = JSON.stringify(data) + '\n';
+    var ascii = json.replace(/[^\x00-\x7F]/g, function(c) { return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4); });
+    return fetch(apiBase, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
+      body: JSON.stringify({ message: 'Track hit', content: btoa(ascii), sha: sha, branch: CONFIG.branch })
+    }).then(function(r) { return r.json(); }).then(function(result) {
+      if (result.content && result.content.sha) {
+        // Store fresh SHA and data from PUT response — no GET needed next time
+        _analyticsSha = result.content.sha;
+        _analyticsCache = JSON.parse(JSON.stringify(data));
+        _flushHits();
+      } else {
+        // 409 or other error — clear cache and retry with fresh GET
+        _analyticsSha = null;
+        _analyticsCache = null;
+        _hitQueue = pending.concat(_hitQueue);
+        setTimeout(function() { _hitRunning = false; _flushHits(); }, 1500);
+      }
+    }).catch(function() {
+      _analyticsSha = null;
+      _analyticsCache = null;
+      _hitQueue = pending.concat(_hitQueue);
+      setTimeout(function() { _hitRunning = false; _flushHits(); }, 1500);
+    });
+  }
+
   function _flushHits() {
     if (_hitQueue.length === 0) { _hitRunning = false; return; }
     _hitRunning = true;
 
     var pending = _hitQueue.splice(0, _hitQueue.length);
-    var today = new Date().toISOString().split('T')[0];
     var apiBase = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json';
 
-    var retry = function() {
-      _hitQueue = pending.concat(_hitQueue);
-      setTimeout(function() { _hitRunning = false; _flushHits(); }, 2000);
-    };
-
-    fetch(apiBase + '?ref=' + CONFIG.branch + '&t=' + Date.now(), {
-      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
-    })
-      .then(function(r) { return r.json(); })
-      .then(function(result) {
-        var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
-        var data = JSON.parse(decoded);
-        if (!data.daily) data.daily = {};
-        if (!data.dailyHits) data.dailyHits = {};
-        if (!data.firstClicks) data.firstClicks = {};
-        if (!data.startDate) data.startDate = today;
-        pending.forEach(function(h) {
-          if (h.isLoad) data.daily[today] = (data.daily[today] || 0) + 1;
-          data.dailyHits[today] = (data.dailyHits[today] || 0) + 1;
-          if (h.firstSection) data.firstClicks[h.firstSection] = (data.firstClicks[h.firstSection] || 0) + 1;
-        });
-        var json = JSON.stringify(data) + '\n';
-        var ascii = json.replace(/[^\x00-\x7F]/g, function(c) { return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4); });
-        return fetch(apiBase, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
-          body: JSON.stringify({ message: 'Track hit', content: btoa(ascii), sha: result.sha, branch: CONFIG.branch })
-        });
+    if (_analyticsSha && _analyticsCache) {
+      // Use cached SHA+data from last PUT — no GET needed, no 409 possible
+      var data = JSON.parse(JSON.stringify(_analyticsCache));
+      _applyHits(data, pending);
+      _doWrite(data, _analyticsSha, pending);
+    } else {
+      fetch(apiBase + '?ref=' + CONFIG.branch + '&t=' + Date.now(), {
+        headers: { 'Authorization': 'token ' + CONFIG.ghToken }
       })
-      .then(function(putResp) {
-        if (!putResp || putResp.status === 409) { retry(); } else { _flushHits(); }
-      })
-      .catch(function() { retry(); });
+        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          var data = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
+          _applyHits(data, pending);
+          _doWrite(data, result.sha, pending);
+        })
+        .catch(function() {
+          _hitQueue = pending.concat(_hitQueue);
+          setTimeout(function() { _hitRunning = false; _flushHits(); }, 1500);
+        });
+    }
   }
 
   // ── Data loading ──
