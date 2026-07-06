@@ -123,13 +123,13 @@
   {
     "id": 21,
     "name": "HB 2619 - Technical Correction; Military Affairs",
-    "sponsor": "",
+    "sponsor": "Walt Blackman",
     "category": "benefits",
     "description": "Technical corrections to military affairs statutes in Arizona.",
-    "status": "proposed",
-    "kudos": 6,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84430",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 6
   },
   {
     "id": 22,
