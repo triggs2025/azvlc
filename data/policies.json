@@ -101,7 +101,7 @@
   {
     "id": 19,
     "name": "HB 2663 - Leaves of Absence; Military Training",
-    "sponsor": "Michele Peña",
+    "sponsor": "Michele Pe\u00f1a",
     "category": "employment",
     "description": "Ensures employees receive leaves of absence for military training without penalty.",
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84470",
@@ -134,7 +134,7 @@
   {
     "id": 22,
     "name": "HB 2599 - Law Enforcement; Military Protective Orders",
-    "sponsor": "Aaron Márquez",
+    "sponsor": "Aaron M\u00e1rquez",
     "category": "benefits",
     "description": "Requires law enforcement to recognize and enforce military protective orders in Arizona.",
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84389",
@@ -206,7 +206,7 @@
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84790",
     "status": "passed",
     "approved": true,
-    "kudos": 0
+    "kudos": 34
   },
   {
     "id": 35,
