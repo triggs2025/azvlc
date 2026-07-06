@@ -404,6 +404,7 @@
         applySavedKudos();
         renderDashboard();
         renderPolicies();
+        renderPolicyOutcomeChart();
         renderPoliticians();
         populatePoliticianSelect();
         populateDistrictDropdown();
@@ -690,6 +691,62 @@
     document.querySelectorAll('#policyStatusFilterBar .filter-btn').forEach(function(b) { b.classList.remove('active'); });
     if (btn) btn.classList.add('active');
     renderPolicies();
+  }
+
+  function renderPolicyOutcomeChart() {
+    var el = document.getElementById('policyOutcomeChart');
+    if (!el) return;
+    var tracked = policies.filter(function(p) { return p.category !== 'suggestion'; });
+    var counts = { passed: 0, 'in-progress': 0, proposed: 0, failed: 0 };
+    tracked.forEach(function(p) { if (counts[p.status] !== undefined) counts[p.status]++; });
+    var total = tracked.length;
+    if (total === 0) { el.innerHTML = ''; return; }
+
+    var slices = [
+      { label: 'Passed', count: counts['passed'],      color: '#27ae60' },
+      { label: 'In Progress', count: counts['in-progress'], color: '#3498db' },
+      { label: 'Proposed',    count: counts['proposed'],    color: '#f39c12' },
+      { label: 'Failed',      count: counts['failed'],      color: '#e74c3c' }
+    ].filter(function(s) { return s.count > 0; });
+
+    var cx = 70, cy = 70, r = 55, hole = 32;
+    var startAngle = -Math.PI / 2;
+    var paths = '';
+    slices.forEach(function(s) {
+      var angle = (s.count / total) * 2 * Math.PI;
+      var endAngle = startAngle + angle;
+      var x1 = cx + r * Math.cos(startAngle), y1 = cy + r * Math.sin(startAngle);
+      var x2 = cx + r * Math.cos(endAngle),   y2 = cy + r * Math.sin(endAngle);
+      var ix1 = cx + hole * Math.cos(startAngle), iy1 = cy + hole * Math.sin(startAngle);
+      var ix2 = cx + hole * Math.cos(endAngle),   iy2 = cy + hole * Math.sin(endAngle);
+      var large = angle > Math.PI ? 1 : 0;
+      paths += '<path d="M ' + ix1 + ' ' + iy1 + ' L ' + x1 + ' ' + y1 +
+        ' A ' + r + ' ' + r + ' 0 ' + large + ' 1 ' + x2 + ' ' + y2 +
+        ' L ' + ix2 + ' ' + iy2 +
+        ' A ' + hole + ' ' + hole + ' 0 ' + large + ' 0 ' + ix1 + ' ' + iy1 + ' Z"' +
+        ' fill="' + s.color + '" stroke="#fff" stroke-width="2"/>';
+      startAngle = endAngle;
+    });
+
+    var legend = slices.map(function(s) {
+      return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">' +
+        '<div style="width:12px;height:12px;border-radius:2px;background:' + s.color + ';flex-shrink:0"></div>' +
+        '<span style="font-size:0.9em;color:var(--text-muted)">' + s.label + ' <strong style="color:var(--text)">' + s.count + '</strong></span>' +
+        '</div>';
+    }).join('');
+
+    el.innerHTML =
+      '<div style="background:#fff;border-radius:12px;box-shadow:var(--shadow);padding:20px 24px;display:flex;align-items:center;gap:24px;flex-wrap:wrap">' +
+        '<svg width="140" height="140" viewBox="0 0 140 140">' + paths +
+          '<text x="70" y="65" text-anchor="middle" font-size="18" font-weight="700" fill="var(--navy)">' + counts['passed'] + '</text>' +
+          '<text x="70" y="80" text-anchor="middle" font-size="10" fill="var(--text-muted)">of ' + total + ' passed</text>' +
+        '</svg>' +
+        '<div>' +
+          '<div style="font-weight:700;color:var(--navy);margin-bottom:10px;font-size:1em">Policy Outcomes</div>' +
+          '<div style="font-size:0.82em;color:var(--text-muted);margin-bottom:10px">Tracked policies only &mdash; excludes public suggestions</div>' +
+          legend +
+        '</div>' +
+      '</div>';
   }
 
   function renderPolicies(filter) {
