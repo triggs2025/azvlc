@@ -288,22 +288,31 @@
   }
 
   // ── Page view + hit tracking ──
-  var _hitPending = false;
+  var _hitQueue = [];   // { isLoad, firstSection }
+  var _hitRunning = false;
 
   function trackPageView() {
-    if (sessionStorage.getItem('azvlc_viewed')) {
-      trackHit('nav');
-      return;
-    }
+    if (sessionStorage.getItem('azvlc_viewed')) return;
     sessionStorage.setItem('azvlc_viewed', '1');
-    trackHit('load');
+    _enqueueHit(true, null);
   }
 
   function trackHit(type, firstSection) {
-    if (!CONFIG.ghToken) return;
-    if (_hitPending) return;
-    _hitPending = true;
+    _enqueueHit(false, firstSection || null);
+  }
 
+  function _enqueueHit(isLoad, firstSection) {
+    if (!CONFIG.ghToken) return;
+    _hitQueue.push({ isLoad: isLoad, firstSection: firstSection });
+    if (!_hitRunning) _flushHits();
+  }
+
+  function _flushHits() {
+    if (_hitQueue.length === 0) { _hitRunning = false; return; }
+    _hitRunning = true;
+
+    // Drain the entire queue into one write
+    var pending = _hitQueue.splice(0, _hitQueue.length);
     var today = new Date().toISOString().split('T')[0];
 
     fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json?ref=' + CONFIG.branch)
@@ -315,20 +324,21 @@
         if (!data.dailyHits) data.dailyHits = {};
         if (!data.firstClicks) data.firstClicks = {};
         if (!data.startDate) data.startDate = today;
-        if (type === 'load') data.daily[today] = (data.daily[today] || 0) + 1;
-        data.dailyHits[today] = (data.dailyHits[today] || 0) + 1;
-        if (firstSection) data.firstClicks[firstSection] = (data.firstClicks[firstSection] || 0) + 1;
+        pending.forEach(function(h) {
+          if (h.isLoad) data.daily[today] = (data.daily[today] || 0) + 1;
+          data.dailyHits[today] = (data.dailyHits[today] || 0) + 1;
+          if (h.firstSection) data.firstClicks[h.firstSection] = (data.firstClicks[h.firstSection] || 0) + 1;
+        });
         var json = JSON.stringify(data) + '\n';
         var ascii = json.replace(/[^\x00-\x7F]/g, function(c) { return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4); });
-        var content = btoa(ascii);
         return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
-          body: JSON.stringify({ message: 'Track hit', content: content, sha: result.sha, branch: CONFIG.branch })
+          body: JSON.stringify({ message: 'Track hit', content: btoa(ascii), sha: result.sha, branch: CONFIG.branch })
         });
       })
       .catch(function() {})
-      .then(function() { _hitPending = false; });
+      .then(function() { _flushHits(); });
   }
 
   // ── Data loading ──
