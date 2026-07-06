@@ -145,13 +145,13 @@
   {
     "id": 23,
     "name": "HB 2441 - Special Plate; Adaptive Sports; Recreation",
-    "sponsor": "",
+    "sponsor": "Selina Bliss",
     "category": "benefits",
     "description": "Creates special license plates supporting adaptive sports and recreation programs for Veterans.",
-    "status": "proposed",
-    "kudos": 0,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84213",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 0
   },
   {
     "id": 30,
