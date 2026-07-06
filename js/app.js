@@ -510,7 +510,13 @@
     document.querySelectorAll('[data-nav]').forEach(function (el) {
       el.addEventListener('click', function (e) {
         e.preventDefault();
-        navigate(el.getAttribute('data-nav'));
+        var section = el.getAttribute('data-nav');
+        var isFirstNav = !sessionStorage.getItem('azvlc_first_nav');
+        if (isFirstNav) {
+          sessionStorage.setItem('azvlc_first_nav', section);
+          _enqueueHit(false, section);
+        }
+        navigate(section);
       });
     });
 
@@ -543,9 +549,7 @@
 
     window.scrollTo(0, 0);
     if (!skipHash) window.location.hash = section;
-    var isFirstNav = !sessionStorage.getItem('azvlc_first_nav');
-    if (isFirstNav) sessionStorage.setItem('azvlc_first_nav', section);
-    trackHit('nav', isFirstNav ? section : null);
+    trackHit('nav', null);
   }
 
   function bindMobileMenu() {
