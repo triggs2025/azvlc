@@ -35,13 +35,13 @@
   {
     "id": 13,
     "name": "HB 2245 - Veterans Claims Pilot Program",
-    "sponsor": "",
+    "sponsor": "Walt Blackman",
     "category": "benefits",
     "description": "Establishes a pilot program to assist Veterans with filing VA claims in Arizona.",
-    "status": "proposed",
-    "kudos": 8,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/83966",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 8
   },
   {
     "id": 14,
