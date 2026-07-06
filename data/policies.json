@@ -90,13 +90,13 @@
   {
     "id": 18,
     "name": "HB 2620 - Appropriation; Homeless Veterans; Shelter Services",
-    "sponsor": "",
+    "sponsor": "Walt Blackman",
     "category": "housing",
     "description": "Appropriates funding for shelter services for homeless Veterans in Arizona.",
-    "status": "proposed",
-    "kudos": 34,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84431",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 34
   },
   {
     "id": 19,
