@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": 1783363556283,
+    "businessName": "EPIC Policy Group",
+    "category": "Consulting",
+    "description": "EPIC Policy Group is a government affairs and public policy firm serving businesses, nonprofit organizations, trade associations, and advocacy groups. The firm provides legislative monitoring, policy analysis, regulatory review, strategic advocacy, coalition support, and fractional government affairs services. EPIC helps clients identify risks, shape policy solutions, communicate with decision-makers, and protect their interests before legislative and regulatory decisions affect their operations",
+    "website": "https://epicpolicygroup.com/",
+    "address": "PO Box 282 Glendale, AZ",
+    "zip": "85301",
+    "phone": "602.613.8105",
+    "hours": "Mon-Fri 8a-5p",
+    "discount": "",
+    "ownerName": "Michael Infanzon",
+    "ownerEmail": "minfanzon@epicpolicygroup.com",
+    "ownerPhone": "602.456.2453",
+    "submittedAt": "2026-07-06T18:45:56.283Z"
+  }
+]
