@@ -2230,9 +2230,10 @@
 
     function renderContactsTable() {
       var el = document.getElementById('adminContactsList');
-      var filtered = adminContactFilter === 'all'
-        ? adminContacts
-        : adminContacts.filter(function(c) { return contactType(c) === adminContactFilter; });
+      var filtered = (adminContactFilter === 'all'
+        ? adminContacts.slice()
+        : adminContacts.filter(function(c) { return contactType(c) === adminContactFilter; }))
+        .sort(function(a, b) { return new Date(b.date || b.timestamp || 0) - new Date(a.date || a.timestamp || 0); });
 
       if (filtered.length === 0) {
         el.innerHTML = '<div class="admin-empty"><p>No contacts in this group yet.</p></div>';
