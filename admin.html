@@ -206,6 +206,7 @@
           <div class="stat-card">
             <h3>Page Views</h3>
             <div class="number" id="analViews">—</div>
+            <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Unique sessions</p>
             <select id="viewsPeriod" onchange="updateViewsPeriod()" style="margin-top:8px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:0.75em">
               <option value="today">Today</option>
               <option value="7days">Last 7 Days</option>
@@ -215,6 +216,18 @@
             </select>
             <button onclick="loadPageViews()" style="margin-top:6px;background:none;border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:0.7em;cursor:pointer;color:var(--text-muted)">&#x21bb; Refresh</button>
             <p id="viewsStartDate" style="font-size:0.65em;color:var(--text-muted);margin-top:4px"></p>
+          </div>
+          <div class="stat-card">
+            <h3>Total Hits</h3>
+            <div class="number" id="analHits">—</div>
+            <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Every page &amp; section load</p>
+            <select id="hitsPeriod" onchange="updateHitsPeriod()" style="margin-top:8px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:0.75em">
+              <option value="today">Today</option>
+              <option value="7days">Last 7 Days</option>
+              <option value="month">This Month</option>
+              <option value="year">Year to Date</option>
+              <option value="all" selected>All Time</option>
+            </select>
           </div>
         </div>
 
@@ -2799,6 +2812,7 @@
           var startEl = document.getElementById('viewsStartDate');
           if (startEl && data.startDate) startEl.textContent = 'Tracking since ' + data.startDate;
           updateViewsPeriod();
+          updateHitsPeriod();
         })
         .catch(function() {
           setText2('analViews', '—');
@@ -2841,6 +2855,27 @@
       }
 
       setText2('analViews', total);
+    }
+
+    function updateHitsPeriod() {
+      if (!analyticsData || !analyticsData.dailyHits) { setText2('analHits', '—'); return; }
+      var period = document.getElementById('hitsPeriod').value;
+      var daily = analyticsData.dailyHits;
+      var now = new Date();
+      var total = 0;
+      for (var dateStr in daily) {
+        var d = new Date(dateStr + 'T00:00:00');
+        var include = false;
+        switch (period) {
+          case 'today': include = dateStr === now.toISOString().split('T')[0]; break;
+          case '7days': var wa = new Date(now); wa.setDate(wa.getDate() - 7); include = d >= wa; break;
+          case 'month': include = d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth(); break;
+          case 'year': include = d.getFullYear() === now.getFullYear(); break;
+          case 'all': include = true; break;
+        }
+        if (include) total += daily[dateStr];
+      }
+      setText2('analHits', total);
     }
 
     function setText2(id, val) { var e = document.getElementById(id); if (e) e.textContent = val; }

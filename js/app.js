@@ -287,12 +287,22 @@
     });
   }
 
-  // ── Page view tracking ──
-  function trackPageView() {
-    if (sessionStorage.getItem('azvlc_viewed')) return;
-    sessionStorage.setItem('azvlc_viewed', '1');
+  // ── Page view + hit tracking ──
+  var _hitPending = false;
 
+  function trackPageView() {
+    if (sessionStorage.getItem('azvlc_viewed')) {
+      trackHit('nav');
+      return;
+    }
+    sessionStorage.setItem('azvlc_viewed', '1');
+    trackHit('load');
+  }
+
+  function trackHit(type) {
     if (!CONFIG.ghToken) return;
+    if (_hitPending) return;
+    _hitPending = true;
 
     var today = new Date().toISOString().split('T')[0];
 
@@ -302,24 +312,21 @@
         var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
         var data = JSON.parse(decoded);
         if (!data.daily) data.daily = {};
+        if (!data.dailyHits) data.dailyHits = {};
         if (!data.startDate) data.startDate = today;
-        data.daily[today] = (data.daily[today] || 0) + 1;
-        var content = btoa(unescape(encodeURIComponent(JSON.stringify(data) + '\n')));
+        if (type === 'load') data.daily[today] = (data.daily[today] || 0) + 1;
+        data.dailyHits[today] = (data.dailyHits[today] || 0) + 1;
+        var json = JSON.stringify(data) + '\n';
+        var ascii = json.replace(/[^\x00-\x7F]/g, function(c) { return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4); });
+        var content = btoa(ascii);
         return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json', {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'token ' + CONFIG.ghToken
-          },
-          body: JSON.stringify({
-            message: 'Track page view',
-            content: content,
-            sha: result.sha,
-            branch: CONFIG.branch
-          })
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
+          body: JSON.stringify({ message: 'Track hit', content: content, sha: result.sha, branch: CONFIG.branch })
         });
       })
-      .catch(function() {});
+      .catch(function() {})
+      .then(function() { _hitPending = false; });
   }
 
   // ── Data loading ──
@@ -524,6 +531,7 @@
 
     window.scrollTo(0, 0);
     if (!skipHash) window.location.hash = section;
+    trackHit('nav');
   }
 
   function bindMobileMenu() {
