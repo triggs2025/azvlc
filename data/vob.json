@@ -99,5 +99,22 @@
     "ownerEmail": "whitney.danielson@yahoo.com",
     "ownerPhone": "9288487510",
     "approvedAt": "2026-07-01T14:46:15.767Z"
+  },
+  {
+    "id": 7,
+    "businessName": "EPIC Policy Group",
+    "category": "Consulting",
+    "description": "EPIC Policy Group is a government affairs and public policy firm serving businesses, nonprofit organizations, trade associations, and advocacy groups. The firm provides legislative monitoring, policy analysis, regulatory review, strategic advocacy, coalition support, and fractional government affairs services. EPIC helps clients identify risks, shape policy solutions, communicate with decision-makers, and protect their interests before legislative and regulatory decisions affect their operations",
+    "website": "https://epicpolicygroup.com/",
+    "address": "PO Box 282 Glendale, AZ",
+    "zip": "85301",
+    "phone": "602.613.8105",
+    "hours": "Mon-Fri 8a-5p",
+    "discount": "",
+    "ownerName": "Michael Infanzon",
+    "ownerEmail": "minfanzon@epicpolicygroup.com",
+    "ownerPhone": "602.456.2453",
+    "approvedAt": "2026-07-06T21:13:28.976Z",
+    "kudos": 1
   }
 ]
