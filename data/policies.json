@@ -24,13 +24,13 @@
   {
     "id": 12,
     "name": "HB 2240 - Tuition Waiver; Children; Veterans; Disabilities",
-    "sponsor": "",
+    "sponsor": "Walt Blackman",
     "category": "education",
     "description": "Waives tuition for children of Veterans with disabilities at Arizona universities.",
-    "status": "proposed",
-    "kudos": 13,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/83957",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 13
   },
   {
     "id": 13,
