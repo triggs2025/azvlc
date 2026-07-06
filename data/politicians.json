@@ -312,7 +312,7 @@
   },
   {
     "id": 116,
-    "name": "QuantÃÂ¡ Crews",
+    "name": "QuantÃÂÃÂ¡ Crews",
     "position": "State Representative",
     "party": "Democrat",
     "district": "District 26",
@@ -320,7 +320,7 @@
     "veteran": false,
     "photo": "",
     "grades": {
-      "A": 0,
+      "A": 1,
       "B": 0,
       "C": 0,
       "D": 0,
@@ -692,7 +692,7 @@
   },
   {
     "id": 136,
-    "name": "Elda Luna-NÃÂ¡jera",
+    "name": "Elda Luna-NÃÂÃÂ¡jera",
     "position": "State Representative",
     "party": "Democrat",
     "district": "District 22",
@@ -711,7 +711,7 @@
   },
   {
     "id": 137,
-    "name": "Aaron MÃÂ¡rquez",
+    "name": "Aaron MÃÂÃÂ¡rquez",
     "position": "State Representative",
     "party": "Democrat",
     "district": "District 5",
@@ -844,7 +844,7 @@
   },
   {
     "id": 144,
-    "name": "Michele PeÃÂ±a",
+    "name": "Michele PeÃÂÃÂ±a",
     "position": "State Representative",
     "party": "Republican",
     "district": "District 23",
@@ -1395,7 +1395,7 @@
   },
   {
     "id": 211,
-    "name": "Rosanna GabaldÃÂ³n",
+    "name": "Rosanna GabaldÃÂÃÂ³n",
     "position": "State Senator",
     "party": "Democrat",
     "district": "District 21",
