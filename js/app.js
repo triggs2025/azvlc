@@ -307,11 +307,18 @@
     if (_hitQueue.length === 0) { _hitRunning = false; return; }
     _hitRunning = true;
 
-    // Drain the entire queue into one write
     var pending = _hitQueue.splice(0, _hitQueue.length);
     var today = new Date().toISOString().split('T')[0];
+    var apiBase = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json';
 
-    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json?ref=' + CONFIG.branch)
+    var retry = function() {
+      _hitQueue = pending.concat(_hitQueue);
+      setTimeout(function() { _hitRunning = false; _flushHits(); }, 2000);
+    };
+
+    fetch(apiBase + '?ref=' + CONFIG.branch + '&t=' + Date.now(), {
+      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
+    })
       .then(function(r) { return r.json(); })
       .then(function(result) {
         var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
@@ -327,15 +334,16 @@
         });
         var json = JSON.stringify(data) + '\n';
         var ascii = json.replace(/[^\x00-\x7F]/g, function(c) { return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4); });
-        console.log('[AZVLC tracking] saving hits:', pending.length, 'dailyHits now:', data.dailyHits[today]);
-        return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json', {
+        return fetch(apiBase, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
           body: JSON.stringify({ message: 'Track hit', content: btoa(ascii), sha: result.sha, branch: CONFIG.branch })
         });
       })
-      .catch(function(err) { console.error('[AZVLC tracking]', err); })
-      .then(function() { _flushHits(); });
+      .then(function(putResp) {
+        if (!putResp || putResp.status === 409) { retry(); } else { _flushHits(); }
+      })
+      .catch(function() { retry(); });
   }
 
   // ── Data loading ──
