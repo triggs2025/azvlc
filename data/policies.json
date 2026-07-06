@@ -200,13 +200,13 @@
   {
     "id": 34,
     "name": "SB 1275 - Diversion Program; Military Members; Veterans",
-    "sponsor": "",
+    "sponsor": "David Gowan",
     "category": "benefits",
     "description": "Establishes a diversion program for military members and Veterans in the criminal justice system, allowing judicial discretion for mandatory prison sentences.",
-    "status": "proposed",
-    "kudos": 0,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84790",
-    "approved": true
+    "status": "passed",
+    "approved": true,
+    "kudos": 0
   },
   {
     "id": 35,
