@@ -17,6 +17,7 @@
   var policies = [];
   var politicians = [];
   var currentFilter = 'all';
+  var currentStatusFilter = 'all';
   var currentPolicySearch = '';
   var currentPoliticianFilter = 'all';
   var currentPoliticianSort = 'grade';
@@ -623,11 +624,22 @@
     renderPolicies();
   }
 
+  function filterPolicyStatus(status, btn) {
+    currentStatusFilter = status;
+    document.querySelectorAll('#policyStatusFilterBar .filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    renderPolicies();
+  }
+
   function renderPolicies(filter) {
     if (filter !== undefined) currentFilter = filter;
     var list = currentFilter === 'all'
       ? policies
       : policies.filter(function (p) { return p.category === currentFilter; });
+
+    if (currentStatusFilter !== 'all') {
+      list = list.filter(function (p) { return p.status === currentStatusFilter; });
+    }
 
     if (currentPolicySearch) {
       list = list.filter(function (p) {
@@ -638,12 +650,14 @@
       });
     }
 
-    // passed policies always first
-    list = list.slice().sort(function(a, b) {
-      var aP = a.status === 'passed' ? 0 : 1;
-      var bP = b.status === 'passed' ? 0 : 1;
-      return aP - bP;
-    });
+    // passed policies always first (when not already filtering by status)
+    if (currentStatusFilter === 'all') {
+      list = list.slice().sort(function(a, b) {
+        var aP = a.status === 'passed' ? 0 : 1;
+        var bP = b.status === 'passed' ? 0 : 1;
+        return aP - bP;
+      });
+    }
 
     var el = document.getElementById('policiesList');
     if (!el) return;
@@ -2194,6 +2208,7 @@
   window.AZVLC = {
     giveKudos: giveKudos,
     filterPolicies: filterPolicies,
+    filterPolicyStatus: filterPolicyStatus,
     searchPolicies: searchPolicies,
     filterPoliticians: filterPoliticians,
     sortPoliticians: sortPoliticians,

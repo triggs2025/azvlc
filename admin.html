@@ -244,6 +244,13 @@
           <h3 style="color:var(--navy)">Manage Policies</h3>
           <button class="btn btn-blue btn-sm" onclick="openPolicyForm()">+ Add New Policy</button>
         </div>
+        <div id="adminPolicyStatusTabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <button class="filter-btn active" onclick="filterAdminPolicyStatus('all', this)">All</button>
+          <button class="filter-btn" onclick="filterAdminPolicyStatus('passed', this)">Passed</button>
+          <button class="filter-btn" onclick="filterAdminPolicyStatus('failed', this)">Failed</button>
+          <button class="filter-btn" onclick="filterAdminPolicyStatus('proposed', this)">Proposed</button>
+          <button class="filter-btn" onclick="filterAdminPolicyStatus('hidden', this)">Hidden</button>
+        </div>
         <input type="text" id="adminPolicySearch" placeholder="Search by name..." oninput="filterAdminPolicies(this.value)" style="width:100%;max-width:400px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em;margin-bottom:20px">
         <div id="adminPoliciesList"></div>
       </div>
@@ -861,9 +868,17 @@
 
     // ── POLICIES ──
     var adminPolicyQuery = '';
+    var adminPolicyStatusFilter = 'all';
 
     function filterAdminPolicies(query) {
       adminPolicyQuery = query.toLowerCase().trim();
+      renderAdminPolicies();
+    }
+
+    function filterAdminPolicyStatus(status, btn) {
+      adminPolicyStatusFilter = status;
+      document.querySelectorAll('#adminPolicyStatusTabs .filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      if (btn) btn.classList.add('active');
       renderAdminPolicies();
     }
 
@@ -874,8 +889,15 @@
         return;
       }
       var filtered = policies;
+      if (adminPolicyStatusFilter !== 'all') {
+        if (adminPolicyStatusFilter === 'hidden') {
+          filtered = filtered.filter(function(p) { return !p.approved; });
+        } else {
+          filtered = filtered.filter(function(p) { return p.approved && p.status === adminPolicyStatusFilter; });
+        }
+      }
       if (adminPolicyQuery) {
-        filtered = policies.filter(function(p) {
+        filtered = filtered.filter(function(p) {
           return p.name.toLowerCase().indexOf(adminPolicyQuery) !== -1;
         });
       }

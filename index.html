@@ -249,6 +249,14 @@
         <button class="filter-btn" onclick="AZVLC.filterPolicies('suggestion', this)">Public Suggestions</button>
       </div>
 
+      <div class="filter-bar" id="policyStatusFilterBar">
+        <span style="font-weight:600;color:var(--text-muted);padding:8px 0;margin-right:4px">Status:</span>
+        <button class="filter-btn active" onclick="AZVLC.filterPolicyStatus('all', this)">All</button>
+        <button class="filter-btn" onclick="AZVLC.filterPolicyStatus('passed', this)">Passed</button>
+        <button class="filter-btn" onclick="AZVLC.filterPolicyStatus('failed', this)">Failed</button>
+        <button class="filter-btn" onclick="AZVLC.filterPolicyStatus('proposed', this)">Proposed</button>
+      </div>
+
       <div class="card-grid" id="policiesList"></div>
     </section>
 
