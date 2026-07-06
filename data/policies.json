@@ -189,13 +189,13 @@
   {
     "id": 33,
     "name": "SB 1268 - Property Tax; Exemption; Veterans",
-    "sponsor": "",
+    "sponsor": "David Gowen",
     "category": "benefits",
     "description": "Provides property tax exemptions for Veterans in Arizona.",
-    "status": "proposed",
-    "kudos": 78,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84793",
-    "approved": true
+    "status": "passed",
+    "approved": false,
+    "kudos": 78
   },
   {
     "id": 34,
