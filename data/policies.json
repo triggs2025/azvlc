@@ -101,13 +101,13 @@
   {
     "id": 19,
     "name": "HB 2663 - Leaves of Absence; Military Training",
-    "sponsor": "",
+    "sponsor": "Michele Pe\u00f1a",
     "category": "employment",
     "description": "Ensures employees receive leaves of absence for military training without penalty.",
-    "status": "proposed",
-    "kudos": 11,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84470",
-    "approved": true
+    "status": "passed",
+    "approved": true,
+    "kudos": 11
   },
   {
     "id": 20,
