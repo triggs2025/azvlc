@@ -984,7 +984,12 @@
       closeModal('policyModal');
       showStatus('Saving policies to GitHub...', '');
 
-      saveFileToGitHub('data/policies.json', policies, policiesSha)
+      // Fetch fresh SHA before saving to prevent stale-SHA conflicts
+      ghAPI('GET', '/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/data/policies.json?ref=' + BRANCH)
+        .then(function(freshResult) {
+          policiesSha = freshResult.sha;
+          return saveFileToGitHub('data/policies.json', policies, policiesSha);
+        })
         .then(function(result) {
           policiesSha = result.content.sha;
           renderAdminPolicies();
