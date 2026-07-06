@@ -299,7 +299,7 @@
     trackHit('load');
   }
 
-  function trackHit(type) {
+  function trackHit(type, firstSection) {
     if (!CONFIG.ghToken) return;
     if (_hitPending) return;
     _hitPending = true;
@@ -313,9 +313,11 @@
         var data = JSON.parse(decoded);
         if (!data.daily) data.daily = {};
         if (!data.dailyHits) data.dailyHits = {};
+        if (!data.firstClicks) data.firstClicks = {};
         if (!data.startDate) data.startDate = today;
         if (type === 'load') data.daily[today] = (data.daily[today] || 0) + 1;
         data.dailyHits[today] = (data.dailyHits[today] || 0) + 1;
+        if (firstSection) data.firstClicks[firstSection] = (data.firstClicks[firstSection] || 0) + 1;
         var json = JSON.stringify(data) + '\n';
         var ascii = json.replace(/[^\x00-\x7F]/g, function(c) { return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4); });
         var content = btoa(ascii);
@@ -531,7 +533,9 @@
 
     window.scrollTo(0, 0);
     if (!skipHash) window.location.hash = section;
-    trackHit('nav');
+    var isFirstNav = !sessionStorage.getItem('azvlc_first_nav');
+    if (isFirstNav) sessionStorage.setItem('azvlc_first_nav', section);
+    trackHit('nav', isFirstNav ? section : null);
   }
 
   function bindMobileMenu() {

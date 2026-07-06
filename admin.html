@@ -229,6 +229,12 @@
               <option value="all" selected>All Time</option>
             </select>
           </div>
+          <div class="stat-card">
+            <h3>Top First Click</h3>
+            <div class="number" id="analFirstClickSection" style="font-size:1.3em;text-transform:capitalize">—</div>
+            <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Most visited section first</p>
+            <div id="analFirstClickList" style="margin-top:10px;font-size:0.78em;color:var(--text-muted);text-align:left;line-height:1.8"></div>
+          </div>
         </div>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
@@ -2813,6 +2819,7 @@
           if (startEl && data.startDate) startEl.textContent = 'Tracking since ' + data.startDate;
           updateViewsPeriod();
           updateHitsPeriod();
+          updateFirstClicks();
         })
         .catch(function() {
           setText2('analViews', '—');
@@ -2876,6 +2883,33 @@
         if (include) total += daily[dateStr];
       }
       setText2('analHits', total);
+    }
+
+    function updateFirstClicks() {
+      var fc = analyticsData && analyticsData.firstClicks;
+      var sectionEl = document.getElementById('analFirstClickSection');
+      var listEl = document.getElementById('analFirstClickList');
+      if (!fc || Object.keys(fc).length === 0) {
+        if (sectionEl) sectionEl.textContent = '—';
+        if (listEl) listEl.innerHTML = '';
+        return;
+      }
+      var labels = { dashboard: 'Dashboard', policies: 'Policies', politicians: 'Politicians', mydistrict: 'My District', suggest: 'Suggest Policy', rate: 'Rate Politician', vob: 'VOB', donate: 'Donate' };
+      var sorted = Object.keys(fc).sort(function(a, b) { return fc[b] - fc[a]; });
+      var topSection = sorted[0];
+      var topCount = fc[topSection];
+      var grandTotal = sorted.reduce(function(s, k) { return s + fc[k]; }, 0);
+      if (sectionEl) sectionEl.textContent = labels[topSection] || topSection;
+      if (listEl) {
+        listEl.innerHTML = sorted.map(function(k) {
+          var pct = Math.round(fc[k] / grandTotal * 100);
+          return '<div style="margin-bottom:4px">' +
+            '<span style="display:inline-block;width:100px">' + (labels[k] || k) + '</span>' +
+            '<span style="display:inline-block;background:var(--gold);height:8px;border-radius:4px;width:' + pct + '%;max-width:90px;vertical-align:middle;margin:0 6px"></span>' +
+            '<span>' + fc[k] + ' (' + pct + '%)</span>' +
+          '</div>';
+        }).join('');
+      }
     }
 
     function setText2(id, val) { var e = document.getElementById(id); if (e) e.textContent = val; }
