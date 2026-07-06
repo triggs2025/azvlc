@@ -427,5 +427,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-06T02:16:44.259Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Patty Contreras (D)",
+    "date": "2026-07-06",
+    "type": "politician-rating",
+    "politician": "Patty Contreras",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Has not sponsored nor co-sponsored Veteran bills is not a supporter of Veterans organizations",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-06T02:22:30.276Z"
   }
 ]
