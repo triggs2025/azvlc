@@ -211,13 +211,13 @@
   {
     "id": 35,
     "name": "SB 1365 - Property Tax; Exemption; Veterans; Disabilities",
-    "sponsor": "",
+    "sponsor": "David Gowan",
     "category": "benefits",
     "description": "Provides property tax exemptions for Veterans with disabilities in Arizona.",
-    "status": "proposed",
-    "kudos": 98,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84967",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 98
   },
   {
     "id": 36,
