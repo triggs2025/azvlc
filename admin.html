@@ -2200,9 +2200,13 @@
 
       var file = type === 'politician' ? 'politicians' : 'policies';
       var data = type === 'politician' ? politicians : policies;
-      var sha = type === 'politician' ? politiciansSha : policiesSha;
 
-      saveFileToGitHub('data/' + file + '.json', data, sha)
+      ghAPI('GET', '/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/data/' + file + '.json?ref=' + BRANCH)
+        .then(function(freshResult) {
+          if (type === 'politician') politiciansSha = freshResult.sha;
+          else policiesSha = freshResult.sha;
+          return saveFileToGitHub('data/' + file + '.json', data, freshResult.sha);
+        })
         .then(function(result) {
           if (type === 'politician') { politiciansSha = result.content.sha; renderAdminPoliticians(); }
           else { policiesSha = result.content.sha; renderAdminPolicies(); }
