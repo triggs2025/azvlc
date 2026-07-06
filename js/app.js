@@ -399,7 +399,11 @@
       console.log('No GitHub token configured. Rating saved locally only.');
       return Promise.resolve({ content: { sha: politiciansSha } });
     }
-    var content = btoa(unescape(encodeURIComponent(JSON.stringify(allPoliticians, null, 2) + '\n')));
+    var json = JSON.stringify(allPoliticians, null, 2) + '\n';
+    var ascii = json.replace(/[^\x00-\x7F]/g, function(c) {
+      return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
+    });
+    var content = btoa(ascii);
     return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/politicians.json', {
       method: 'PUT',
       headers: {
@@ -2028,7 +2032,7 @@
       headers: { 'Authorization': 'token ' + CONFIG.ghToken }
     }).then(function(r) { return r.json(); }).then(function(result) {
       politiciansSha = result.sha;
-      return JSON.parse(atob(result.content.replace(/\n/g,'')));
+      return JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g,'')))));
     }).then(function(allPoliticians) {
       var target = allPoliticians.find(function(p) { return p.id === politician.id; });
       if (target) {
