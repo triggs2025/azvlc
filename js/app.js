@@ -297,10 +297,6 @@
     _enqueueHit(true, null);
   }
 
-  function trackHit(type, firstSection) {
-    _enqueueHit(false, firstSection || null);
-  }
-
   function _enqueueHit(isLoad, firstSection) {
     if (!CONFIG.ghToken) return;
     _hitQueue.push({ isLoad: isLoad, firstSection: firstSection });
@@ -510,13 +506,7 @@
     document.querySelectorAll('[data-nav]').forEach(function (el) {
       el.addEventListener('click', function (e) {
         e.preventDefault();
-        var section = el.getAttribute('data-nav');
-        var isFirstNav = !sessionStorage.getItem('azvlc_first_nav');
-        if (isFirstNav) {
-          sessionStorage.setItem('azvlc_first_nav', section);
-          _enqueueHit(false, section);
-        }
-        navigate(section);
+        navigate(el.getAttribute('data-nav'));
       });
     });
 
@@ -549,7 +539,12 @@
 
     window.scrollTo(0, 0);
     if (!skipHash) window.location.hash = section;
-    trackHit('nav', null);
+
+    if (!skipHash) {
+      var isFirstNav = !sessionStorage.getItem('azvlc_first_nav');
+      if (isFirstNav) sessionStorage.setItem('azvlc_first_nav', section);
+      _enqueueHit(false, isFirstNav ? section : null);
+    }
   }
 
   function bindMobileMenu() {
