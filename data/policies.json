@@ -178,13 +178,13 @@
   {
     "id": 32,
     "name": "SB 1155 - Game & Fish; Complimentary Licenses; Veterans",
-    "sponsor": "",
+    "sponsor": "Wendy Rogers",
     "category": "benefits",
     "description": "Provides complimentary hunting and fishing licenses to Veterans through Arizona Game & Fish.",
-    "status": "proposed",
-    "kudos": 0,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/83938",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 0
   },
   {
     "id": 33,
