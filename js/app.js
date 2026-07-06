@@ -327,13 +327,14 @@
         });
         var json = JSON.stringify(data) + '\n';
         var ascii = json.replace(/[^\x00-\x7F]/g, function(c) { return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4); });
+        console.log('[AZVLC tracking] saving hits:', pending.length, 'dailyHits now:', data.dailyHits[today]);
         return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
           body: JSON.stringify({ message: 'Track hit', content: btoa(ascii), sha: result.sha, branch: CONFIG.branch })
         });
       })
-      .catch(function() {})
+      .catch(function(err) { console.error('[AZVLC tracking]', err); })
       .then(function() { _flushHits(); });
   }
 
