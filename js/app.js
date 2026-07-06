@@ -700,8 +700,12 @@
     renderPoliticians();
   }
 
+  function stripAccents(s) {
+    return s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+  }
+
   function searchPoliticians(query) {
-    currentPoliticianSearch = query.toLowerCase().trim();
+    currentPoliticianSearch = stripAccents(query.toLowerCase().trim());
     renderPoliticians();
   }
 
@@ -710,7 +714,7 @@
 
     if (currentPoliticianSearch) {
       list = list.filter(function (p) {
-        return p.name.toLowerCase().indexOf(currentPoliticianSearch) !== -1;
+        return stripAccents(p.name.toLowerCase()).indexOf(currentPoliticianSearch) !== -1;
       });
     }
 
@@ -897,9 +901,9 @@
     var dropdown = document.getElementById('rateDropdown');
     if (!query || query.length < 1) { dropdown.style.display = 'none'; return; }
 
-    var q = query.toLowerCase();
+    var q = stripAccents(query.toLowerCase());
     var matches = politicians.filter(function (p) {
-      return p.name.toLowerCase().indexOf(q) !== -1;
+      return stripAccents(p.name.toLowerCase()).indexOf(q) !== -1;
     }).slice(0, 10);
 
     if (matches.length === 0) {
