@@ -222,13 +222,13 @@
   {
     "id": 36,
     "name": "SB 1803 - Veterans' Benefits; Claims; Prohibition",
-    "sponsor": "",
+    "sponsor": "David Gowan",
     "category": "benefits",
     "description": "Addresses protections related to Veterans' benefits claims processes in Arizona.",
-    "status": "proposed",
-    "kudos": 22,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/85473",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 22
   },
   {
     "id": 37,
