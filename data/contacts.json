@@ -442,5 +442,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-06T02:22:30.276Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: QuantÃ¡ Crews (A)",
+    "date": "2026-07-06",
+    "type": "politician-rating",
+    "politician": "QuantÃ¡ Crews",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Co-Sponsored HB2373 income tax; refunds; veterans' organizations",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-06T02:26:03.431Z"
   }
 ]
