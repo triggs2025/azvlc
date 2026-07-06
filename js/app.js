@@ -536,7 +536,7 @@
 
   // ── Dashboard ──
   function renderDashboard() {
-    setText('statPolicies', policies.length);
+    setText('statPolicies', policies.filter(function(p) { return p.status === 'proposed'; }).length);
     setText('statPoliticians', politicians.length);
 
     var totalKudos = 0;
