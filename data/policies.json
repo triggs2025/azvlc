@@ -79,13 +79,13 @@
   {
     "id": 17,
     "name": "HB 2618 - Veterans; Scholarship Waivers; Counseling; Benefits",
-    "sponsor": "",
+    "sponsor": "Walt Blackman",
     "category": "education",
     "description": "Provides scholarship waivers and counseling benefits for Veterans in Arizona.",
-    "status": "proposed",
-    "kudos": 54,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84429",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 54
   },
   {
     "id": 18,
