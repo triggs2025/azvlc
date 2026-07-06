@@ -68,13 +68,13 @@
   {
     "id": 16,
     "name": "HB 2607 - Veteran Housing; Reintegration; Appropriation",
-    "sponsor": "",
+    "sponsor": "Walt Blackman",
     "category": "housing",
     "description": "Appropriates funds for Veteran housing and reintegration programs in Arizona.",
-    "status": "proposed",
-    "kudos": 46,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84416",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 46
   },
   {
     "id": 17,
