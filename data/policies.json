@@ -57,13 +57,13 @@
   {
     "id": 15,
     "name": "HB 2603 - Veterans; Mobile Service Units",
-    "sponsor": "",
+    "sponsor": "Walt Blackman",
     "category": "healthcare",
     "description": "Creates mobile service units to bring healthcare and benefits services directly to Veterans across Arizona.",
-    "status": "proposed",
-    "kudos": 5,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/84412",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 5
   },
   {
     "id": 16,
