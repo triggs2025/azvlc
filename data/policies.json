@@ -167,13 +167,13 @@
   {
     "id": 31,
     "name": "SB 1065 - Appropriation; Hyperbaric Oxygen Therapy; Veterans",
-    "sponsor": "",
+    "sponsor": "Wendy Rogers",
     "category": "healthcare",
     "description": "Appropriates funds for hyperbaric oxygen therapy treatment for Veterans in Arizona.",
-    "status": "proposed",
-    "kudos": 46,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/83689",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 46
   },
   {
     "id": 32,
