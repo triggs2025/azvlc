@@ -472,5 +472,16 @@
     "zip": "86403",
     "anonymous": false,
     "timestamp": "2026-07-06T18:42:31.753Z"
+  },
+  {
+    "email": "minfanzon@epicpolicygroup.com",
+    "name": "Michael Infanzon",
+    "source": "VOB: EPIC Policy Group",
+    "date": "2026-07-06",
+    "type": "vob-submission",
+    "businessName": "EPIC Policy Group",
+    "category": "Consulting",
+    "phone": "602.456.2453",
+    "timestamp": "2026-07-06T18:45:56.283Z"
   }
 ]
