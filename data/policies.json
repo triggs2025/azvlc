@@ -156,13 +156,13 @@
   {
     "id": 30,
     "name": "SB 1050 - Veterans; Lifetime State Park Pass",
-    "sponsor": "",
+    "sponsor": "Wendy Rogers",
     "category": "benefits",
     "description": "Provides Veterans with a lifetime state park pass in Arizona.",
-    "status": "proposed",
-    "kudos": 0,
     "link": "https://apps.azleg.gov/BillStatus/BillOverview/83673",
-    "approved": true
+    "status": "failed",
+    "approved": true,
+    "kudos": 0
   },
   {
     "id": 31,
