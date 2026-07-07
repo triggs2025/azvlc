@@ -528,5 +528,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-07T01:42:03.554Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lisa Fink (D)",
+    "date": "2026-07-07",
+    "type": "politician-rating",
+    "politician": "Lisa Fink",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Does not sponsor, co-sponsor nor support Veterans organizations",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-07T01:45:57.704Z"
   }
 ]
