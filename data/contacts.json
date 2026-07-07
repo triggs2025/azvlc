@@ -543,5 +543,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-07T01:45:57.704Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Brian Garcia (A)",
+    "date": "2026-07-07",
+    "type": "politician-rating",
+    "politician": "Brian Garcia",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Sponsored HB2373 income tax; refunds; veterans' organizations",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-07T01:50:16.886Z"
   }
 ]
