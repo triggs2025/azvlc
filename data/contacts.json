@@ -573,5 +573,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-07T01:53:30.569Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Gail Griffin (A)",
+    "date": "2026-07-07",
+    "type": "politician-rating",
+    "politician": "Gail Griffin",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Sponsor HB2373\tincome tax; refunds; veterans' organizations\nSponsor HB2759\tappropriation; department of veterans' services\nSponsor HB2960\tveterans' court fund; grant program",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-07T01:56:19.720Z"
   }
 ]
