@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": 1783454899930,
+    "businessName": "SafeArbor Consulting",
+    "category": "Consulting",
+    "description": "we provide comprehensive strategic planning, achieve long-term growth. Our tailored analysis ensures your business stays ahead in competitive markets. We have the tech!",
+    "website": "https://safearborconsulting.com",
+    "address": "Chandler, Az",
+    "zip": "85286",
+    "phone": "4808034589",
+    "hours": "By appointment",
+    "discount": "20%",
+    "ownerName": "Manny",
+    "ownerEmail": "manuel@safearborconsulting.com",
+    "ownerPhone": "4808034589",
+    "submittedAt": "2026-07-07T20:08:19.930Z"
+  }
+]
