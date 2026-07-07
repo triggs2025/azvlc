@@ -513,5 +513,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-07T01:38:07.268Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lupe Diaz (A)",
+    "date": "2026-07-07",
+    "type": "politician-rating",
+    "politician": "Lupe Diaz",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Sponsored HB2165 veterans; state park fees; exemption",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-07T01:42:03.554Z"
   }
 ]
