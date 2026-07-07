@@ -558,5 +558,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-07T01:50:16.886Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Matt Gress (A)",
+    "date": "2026-07-07",
+    "type": "politician-rating",
+    "politician": "Matt Gress",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Sponsored HB2127\tbronze star medal license plates",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-07T01:53:30.569Z"
   }
 ]
