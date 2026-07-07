@@ -588,5 +588,16 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-07T01:56:19.720Z"
+  },
+  {
+    "email": "manuel@safearborconsulting.com",
+    "name": "Manny",
+    "source": "VOB: SafeArbor Consulting",
+    "date": "2026-07-07",
+    "type": "vob-submission",
+    "businessName": "SafeArbor Consulting",
+    "category": "Consulting",
+    "phone": "4808034589",
+    "timestamp": "2026-07-07T20:08:19.930Z"
   }
 ]
