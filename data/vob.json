@@ -132,5 +132,21 @@
     "ownerEmail": "manuel@safearborconsulting.com",
     "ownerPhone": "4808034589",
     "approvedAt": "2026-07-07T20:49:42.516Z"
+  },
+  {
+    "id": 9,
+    "businessName": "USA Turf Guy",
+    "category": "Home Services",
+    "description": "USA Turf Guy is a veteran-owned artificial turf company serving the Greater Phoenix area. We specialize in premium American-made artificial turf for residential and commercial properties, including pet turf, putting greens, playgrounds, and custom landscape solutions. We provide free estimates, no minimum project size, and back every installation with a 15-year warranty. Ask about discounts for veterans, first responders, teachers, and healthcare workers.",
+    "website": "https://www.usaturfguy.com",
+    "address": "",
+    "zip": "85383",
+    "phone": "480-699-1130",
+    "hours": "Mon-Fri 8am-5pm",
+    "discount": "Veteran discounts offered.",
+    "ownerName": "Clay Busby",
+    "ownerEmail": "clay@usaturfguy.com",
+    "ownerPhone": "480-699-1130",
+    "approvedAt": "2026-07-08T14:37:33.919Z"
   }
 ]
