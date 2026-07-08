@@ -93,15 +93,16 @@
           .map(function(m) { return m.text; })
           .filter(Boolean);
 
-        // Ensure both ticker lines have content: fill in permanent messages
-        // (rotating every other day) whenever fewer than 2 temporary messages are active.
+        // Always add 1 permanent message rotating weekly, plus fill remaining slots if still under 2.
         var permanent = (data.permanentMessages || []).filter(Boolean);
-        var needed = Math.max(0, 2 - msgs.length);
-        if (needed > 0 && permanent.length > 0) {
+        if (permanent.length > 0) {
           var epochDays = Math.floor(Date.now() / 86400000);
-          var rotationIndex = Math.floor(epochDays / 2);
-          for (var k = 0; k < needed; k++) {
-            msgs.push(permanent[(rotationIndex + k) % permanent.length]);
+          var weekIndex = Math.floor(epochDays / 7);
+          var weeklyPick = permanent[weekIndex % permanent.length];
+          msgs.push(weeklyPick);
+          // If still under 2 total, pull next permanent to fill
+          if (msgs.length < 2) {
+            msgs.push(permanent[(weekIndex + 1) % permanent.length]);
           }
         }
         if (msgs.length === 0) return;
