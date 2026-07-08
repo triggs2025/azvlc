@@ -734,8 +734,9 @@
     "position": "State Representative",
     "party": "Republican",
     "district": "District 7",
+    "email": "",
     "website": "https://www.azleg.gov/House/House-member/?legislature=57&session=130&legislator=2321",
-    "veteran": false,
+    "veteran": true,
     "photo": "",
     "grades": {
       "A": 0,
@@ -744,8 +745,7 @@
       "D": 0,
       "F": 0
     },
-    "kudos": 1,
-    "email": ""
+    "kudos": 1
   },
   {
     "id": 139,
