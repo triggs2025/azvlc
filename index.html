@@ -29,7 +29,6 @@
         <a href="#suggest" data-nav="suggest" style="text-align:center;line-height:1.2">Suggest<br>Policy</a>
         <a href="#rate" data-nav="rate" style="text-align:center;line-height:1.2">Rate<br>Politician</a>
         <a href="#vob" data-nav="vob">VOB</a>
-        <a href="#nonprofits" data-nav="nonprofits" style="text-align:center;line-height:1.2">Non<br>Profits</a>
         <a href="#donate" data-nav="donate" class="btn btn-primary" style="color:#fff;padding:6px 18px;font-size:0.9em">Donate</a>
       </div>
     </div>
@@ -440,30 +439,6 @@
       </div>
     </section>
 
-    <!-- ══ VETERAN NON-PROFITS ══ -->
-    <section id="section-nonprofits" class="page-section">
-      <div style="text-align:center"><h2 class="section-header">Veteran Non-Profits</h2></div>
-
-      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center">
-        <input type="text" id="npSearch" placeholder="Search by name, zip, or focus area..." oninput="AZVLC.searchNP(this.value)" style="flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em">
-        <select id="npSort" onchange="AZVLC.sortNP(this.value)" style="padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em">
-          <option value="name">Sort: Name (A-Z)</option>
-          <option value="kudos">Sort: Most Kudos</option>
-          <option value="newest">Sort: Newest First</option>
-        </select>
-        <button class="btn btn-blue btn-sm" onclick="AZVLC.openNPSubmitModal()">+ List Your Organization</button>
-        <button class="btn btn-sm" style="background:#e8f0fe;color:#1565c0;font-weight:600" onclick="openNPShare()">&#8679; Share</button>
-      </div>
-
-      <div class="filter-bar" id="npFilterBar">
-        <button class="filter-btn active" onclick="AZVLC.filterNP('all', this)">All</button>
-      </div>
-
-      <div class="card-grid" id="npList">
-        <div class="empty-state"><p>No organizations listed yet. Be the first!</p></div>
-      </div>
-    </section>
-
     <!-- EMAIL POLITICIANS ABOUT POLICY MODAL -->
     <div id="emailPolModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto">
       <div style="background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.2);width:100%;max-width:650px;padding:32px">
@@ -591,87 +566,6 @@
           </div>
         </form>
         <div class="alert alert-success" id="vobSubmitSuccess" style="margin-top:12px">Your business has been submitted for review. Thank you!</div>
-      </div>
-    </div>
-
-    <!-- NP SUBMISSION MODAL -->
-    <div id="npSubmitModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto">
-      <div style="background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.2);width:100%;max-width:650px;padding:32px">
-        <button onclick="AZVLC.closeNPSubmitModal()" style="float:right;background:none;border:none;font-size:1.5em;cursor:pointer;color:#666">&times;</button>
-        <h3 style="color:var(--navy);margin-bottom:20px">List Your Veteran Non-Profit</h3>
-        <p style="color:var(--text-muted);font-size:0.9em;margin-bottom:16px">Submit your organization to be listed in our directory. Submissions are reviewed before appearing on the site.</p>
-        <form id="npSubmitForm" onsubmit="AZVLC.submitNP(event)">
-          <h4 style="color:var(--blue);margin-bottom:12px;border-bottom:1px solid #eee;padding-bottom:8px">Organization Information</h4>
-          <div class="form-group">
-            <label for="npOrgName">Organization Name *</label>
-            <input type="text" id="npOrgName" required placeholder="Your organization name">
-          </div>
-          <div class="form-group">
-            <label for="npFocusArea">Focus Area *</label>
-            <select id="npFocusArea" required>
-              <option value="">Select a focus area...</option>
-              <option value="Employment">Employment</option>
-              <option value="Education">Education</option>
-              <option value="Healthcare">Healthcare</option>
-              <option value="Housing">Housing</option>
-              <option value="Legal Aid">Legal Aid</option>
-              <option value="Mental Health">Mental Health</option>
-              <option value="Financial Assistance">Financial Assistance</option>
-              <option value="Homeless Veterans">Homeless Veterans</option>
-              <option value="Women Veterans">Women Veterans</option>
-              <option value="Disability Support">Disability Support</option>
-              <option value="Community">Community</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="npDescription">About Your Organization * <span style="font-weight:400;font-size:0.85em;color:var(--text-muted)">(max 500 characters)</span></label>
-            <textarea id="npDescription" required maxlength="500" placeholder="Tell us about your organization, your mission, and how you help Veterans..." oninput="document.getElementById('npDescCount').textContent=this.value.length+'/500'"></textarea>
-            <p id="npDescCount" style="font-size:0.8em;color:var(--text-muted);text-align:right;margin-top:4px">0/500</p>
-          </div>
-          <div class="form-group">
-            <label for="npWebsite">Website</label>
-            <input type="url" id="npWebsite" placeholder="https://...">
-          </div>
-          <div class="form-group">
-            <label for="npAddress">Address</label>
-            <input type="text" id="npAddress" placeholder="123 Main St, Phoenix, AZ 85001">
-          </div>
-          <div class="form-group">
-            <label for="npZip">Zip Code *</label>
-            <input type="text" id="npZip" required placeholder="85001" maxlength="5" pattern="[0-9]{5}">
-          </div>
-          <div class="form-group">
-            <label for="npPhone">Organization Phone</label>
-            <input type="tel" id="npPhone" placeholder="(555) 123-4567">
-          </div>
-
-          <h4 style="color:var(--blue);margin:20px 0 12px;border-bottom:1px solid #eee;padding-bottom:8px">Contact Person (for verification — not displayed)</h4>
-          <div class="form-group">
-            <label for="npContactName">Your Name *</label>
-            <input type="text" id="npContactName" required placeholder="Full name">
-          </div>
-          <div class="form-group">
-            <label for="npContactEmail">Email</label>
-            <input type="email" id="npContactEmail" placeholder="your@email.com">
-          </div>
-          <div class="form-group">
-            <label for="npContactPhone">Phone</label>
-            <input type="tel" id="npContactPhone" placeholder="(555) 123-4567">
-          </div>
-          <p style="font-size:0.8em;color:var(--text-muted);margin-bottom:16px">* At least one contact method (email or phone) is required for verification.</p>
-
-          <div class="form-group" style="background:#f8f9fa;padding:12px;border-radius:6px;border:1px solid var(--border)">
-            <label id="npCaptchaLabel" style="font-weight:700;color:var(--navy)">What is 0 + 0?</label>
-            <input type="number" id="npCaptchaAnswer" required placeholder="Your answer" style="max-width:150px">
-          </div>
-
-          <div style="display:flex;gap:8px">
-            <button type="submit" class="form-submit" style="flex:1">Submit for Review</button>
-            <button type="button" class="btn" style="background:#eee;color:var(--text)" onclick="AZVLC.closeNPSubmitModal()">Cancel</button>
-          </div>
-        </form>
-        <div class="alert alert-success" id="npSubmitSuccess" style="margin-top:12px">Your organization has been submitted for review. Thank you!</div>
       </div>
     </div>
 
@@ -1009,61 +903,6 @@
 
     function vobCopyLink() {
       var text = VOB_MSG + ' ' + VOB_URL;
-      navigator.clipboard.writeText(text).then(function() {
-        alert('Copied! The message and link are ready to paste.');
-      }).catch(function() {
-        prompt('Copy this:', text);
-      });
-    }
-  </script>
-
-  <!-- NP Share Modal -->
-  <div id="npShareModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center" onclick="if(event.target===this)closeNPShare()">
-    <div style="background:#fff;border-radius:12px;padding:32px;max-width:440px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.18)">
-      <h3 style="color:var(--navy);margin-bottom:8px">Share the Non-Profits Directory</h3>
-      <p style="color:var(--text-muted);font-size:0.9em;margin-bottom:12px">Help spread the word to Veteran Non-Profits in Arizona!</p>
-      <p style="font-size:0.85em;color:var(--text-muted);margin-bottom:6px">Copy the text below to paste it:</p>
-      <div style="background:#f8f9fa;border-radius:8px;padding:14px;margin-bottom:20px;font-size:0.9em;color:var(--text-muted);border-left:3px solid var(--gold);user-select:all;cursor:text">
-        If you are a Veteran Non-Profit in Arizona go list your organization on this website for free!
-      </div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <a id="npShareLinkedIn" href="#" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#0077b5;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          Share on LinkedIn
-        </a>
-        <a id="npShareFacebook" href="#" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#1877f2;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          Share on Facebook
-        </a>
-        <a id="npShareX" href="#" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#000;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.261 5.638 5.903-5.638zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          Share on X
-        </a>
-        <button onclick="npCopyLink()" style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:1em">
-          &#128279; Copy Link
-        </button>
-      </div>
-      <button onclick="closeNPShare()" style="margin-top:16px;width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text-muted);cursor:pointer;font-size:0.95em">Close</button>
-    </div>
-  </div>
-
-  <script>
-    var NP_URL = 'https://azvlc.org/#nonprofits';
-    var NP_MSG = 'If you are a Veteran Non-Profit in Arizona go list your organization on this website for free!';
-
-    function openNPShare() {
-      document.getElementById('npShareLinkedIn').href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(NP_URL) + '&summary=' + encodeURIComponent(NP_MSG);
-      document.getElementById('npShareFacebook').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(NP_URL) + '&quote=' + encodeURIComponent(NP_MSG);
-      document.getElementById('npShareX').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(NP_MSG) + '&url=' + encodeURIComponent(NP_URL);
-      document.getElementById('npShareModal').style.display = 'flex';
-    }
-
-    function closeNPShare() {
-      document.getElementById('npShareModal').style.display = 'none';
-    }
-
-    function npCopyLink() {
-      var text = NP_MSG + ' ' + NP_URL;
       navigator.clipboard.writeText(text).then(function() {
         alert('Copied! The message and link are ready to paste.');
       }).catch(function() {

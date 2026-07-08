@@ -186,7 +186,6 @@
         <button class="admin-tab" onclick="showTab('policysubmissions', this)">Policy Submissions <span id="policySubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('polsubmissions', this)">Politician Submissions <span id="polSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('vob', this)">VOB <span id="vobSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
-        <button class="admin-tab" onclick="showTab('nonprofits', this)">Non-Profits <span id="npSubmissionBadge" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('contacts', this)">Contacts <span id="contactsBadge" style="background:var(--blue);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="showTab('emailpol', this)">Email Politicians</button>
         <button class="admin-tab" onclick="showTab('sponsor', this)">Sponsor</button>
@@ -342,25 +341,6 @@
 
         <div id="vobAdminPending" style="display:none">
           <div id="adminVOBSubmissionsList"></div>
-        </div>
-      </div>
-
-      <!-- NON-PROFITS PANEL -->
-      <div id="panel-nonprofits" class="admin-panel">
-        <h3 style="color:var(--navy);margin-bottom:8px">Veteran Non-Profits</h3>
-        <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9em">Manage approved non-profits and review new submissions.</p>
-        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-          <button class="filter-btn active" id="npAdminTabApproved" onclick="showNPAdminTab('approved', this)">Approved Listings</button>
-          <button class="filter-btn" id="npAdminTabPending" onclick="showNPAdminTab('pending', this)">Pending Review <span id="npPendingCount" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
-        </div>
-
-        <div id="npAdminApproved">
-          <input type="text" id="adminNPSearch" placeholder="Search by name or focus area..." oninput="filterAdminNP(this.value)" style="width:100%;max-width:400px;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:1em;margin-bottom:16px">
-          <div id="adminNPList"></div>
-        </div>
-
-        <div id="npAdminPending" style="display:none">
-          <div id="adminNPSubmissionsList"></div>
         </div>
       </div>
 
@@ -893,7 +873,6 @@
         loadPolSubmissions();
         loadPolicySubmissions();
         loadVOBData();
-        loadNPData();
         loadPolicyFacts();
         loadTicker();
         loadSponsor();
@@ -1772,217 +1751,6 @@
       if (vobSubmissions.length > 0) {
         if (badge) { badge.textContent = vobSubmissions.length; badge.style.display = 'inline'; }
         if (pending) { pending.textContent = vobSubmissions.length; pending.style.display = 'inline'; }
-      } else {
-        if (badge) badge.style.display = 'none';
-        if (pending) pending.style.display = 'none';
-      }
-    }
-
-    // ── Non-Profits Management ──
-    var adminNPs = [];
-    var npShaAdmin = '';
-    var npSubmissions = [];
-    var npSubmissionsShaAdmin = '';
-    var adminNPSearch = '';
-
-    function loadNPData() {
-      loadFileFromGitHub('data/nonprofits.json')
-        .then(function(result) {
-          adminNPs = result.data || [];
-          npShaAdmin = result.sha;
-          renderAdminNP();
-        })
-        .catch(function() { adminNPs = []; renderAdminNP(); });
-
-      fetch('data/nonprofit-submissions.json?t=' + Date.now())
-        .then(function(r) { return r.json(); })
-        .then(function(d) {
-          npSubmissions = d || [];
-          renderNPSubmissions();
-          updateNPBadge();
-        })
-        .catch(function() { npSubmissions = []; renderNPSubmissions(); });
-
-      ghAPI('GET', '/repos/triggs2025/azvlc/contents/data/nonprofit-submissions.json?ref=master')
-        .then(function(result) { npSubmissionsShaAdmin = result.sha; })
-        .catch(function() {});
-    }
-
-    function showNPAdminTab(tab, btn) {
-      document.getElementById('npAdminApproved').style.display = tab === 'approved' ? '' : 'none';
-      document.getElementById('npAdminPending').style.display = tab === 'pending' ? '' : 'none';
-      document.getElementById('npAdminTabApproved').classList.toggle('active', tab === 'approved');
-      document.getElementById('npAdminTabPending').classList.toggle('active', tab === 'pending');
-    }
-
-    function filterAdminNP(query) {
-      adminNPSearch = query.toLowerCase().trim();
-      renderAdminNP();
-    }
-
-    function renderAdminNP() {
-      var el = document.getElementById('adminNPList');
-      if (!el) return;
-      if (adminNPs.length === 0) {
-        el.innerHTML = '<div class="admin-empty"><p>No organizations listed yet.</p></div>';
-        return;
-      }
-      var filtered = adminNPs;
-      if (adminNPSearch) {
-        filtered = adminNPs.filter(function(n) {
-          return (n.orgName || '').toLowerCase().indexOf(adminNPSearch) !== -1 ||
-            (n.focusArea || '').toLowerCase().indexOf(adminNPSearch) !== -1;
-        });
-      }
-      el.innerHTML = filtered.map(function(n) {
-        var idx = adminNPs.indexOf(n);
-        return '<div class="submission-card">' +
-          '<div class="submission-meta"><strong>' + esc(n.orgName) + '</strong> &mdash; <span class="badge badge-category">' + esc(n.focusArea) + '</span></div>' +
-          (n.description ? '<p style="margin:6px 0;color:var(--text-muted);font-size:0.9em">' + esc(n.description) + '</p>' : '') +
-          (n.website ? '<p style="font-size:0.85em"><a href="' + esc(n.website) + '" target="_blank">' + esc(n.website) + '</a></p>' : '') +
-          (n.address ? '<p style="font-size:0.85em;color:var(--text-muted)">📍 ' + esc(n.address) + (n.zip ? ' ' + esc(n.zip) : '') + '</p>' : '') +
-          (n.phone ? '<p style="font-size:0.85em;color:var(--text-muted)">📞 ' + esc(n.phone) + '</p>' : '') +
-          '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">' +
-            '<button class="btn btn-sm btn-blue" onclick="editNP(' + idx + ')">Edit</button>' +
-            '<button class="btn btn-sm btn-danger" onclick="deleteNP(' + idx + ')">Delete</button>' +
-          '</div>' +
-        '</div>';
-      }).join('');
-    }
-
-    function renderNPSubmissions() {
-      var el = document.getElementById('adminNPSubmissionsList');
-      if (!el) return;
-      if (npSubmissions.length === 0) {
-        el.innerHTML = '<div class="admin-empty"><p>No non-profit submissions to review.</p></div>';
-        return;
-      }
-      el.innerHTML = npSubmissions.map(function(s, idx) {
-        return '<div class="submission-card">' +
-          '<div class="submission-meta"><strong>' + esc(s.orgName) + '</strong> &mdash; <span class="badge badge-category">' + esc(s.focusArea) + '</span></div>' +
-          (s.description ? '<p style="margin:6px 0;color:var(--text-muted);font-size:0.9em">' + esc(s.description) + '</p>' : '') +
-          (s.website ? '<p style="font-size:0.85em"><a href="' + esc(s.website) + '" target="_blank">' + esc(s.website) + '</a></p>' : '') +
-          (s.address ? '<p style="font-size:0.85em;color:var(--text-muted)">📍 ' + esc(s.address) + (s.zip ? ' ' + esc(s.zip) : '') + '</p>' : '') +
-          (s.phone ? '<p style="font-size:0.85em;color:var(--text-muted)">📞 ' + esc(s.phone) + '</p>' : '') +
-          '<p style="font-size:0.85em;color:var(--text-muted);margin-top:6px">Contact: ' + esc(s.contactName || '') + (s.contactEmail ? ' &mdash; ' + esc(s.contactEmail) : '') + (s.contactPhone ? ' &mdash; ' + esc(s.contactPhone) : '') + '</p>' +
-          '<p style="font-size:0.8em;color:var(--text-muted)">Submitted: ' + new Date(s.submittedAt).toLocaleDateString() + '</p>' +
-          '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">' +
-            '<button class="btn btn-sm btn-success" onclick="approveNP(' + idx + ')">Approve &amp; Publish</button>' +
-            '<button class="btn btn-sm btn-danger" onclick="dismissNP(' + idx + ')">Dismiss</button>' +
-          '</div>' +
-        '</div>';
-      }).join('');
-    }
-
-    function approveNP(idx) {
-      var s = npSubmissions[idx];
-      if (!confirm('Approve "' + s.orgName + '" and publish it?')) return;
-      var approved = {
-        id: nextId(adminNPs),
-        orgName: s.orgName,
-        focusArea: s.focusArea,
-        description: s.description,
-        website: s.website,
-        address: s.address,
-        zip: s.zip,
-        phone: s.phone,
-        ownerName: s.contactName,
-        ownerEmail: s.contactEmail,
-        kudos: 0,
-        approvedAt: new Date().toISOString()
-      };
-      adminNPs.push(approved);
-      npSubmissions.splice(idx, 1);
-      showStatus('Publishing non-profit...', '');
-      saveFileToGitHub('data/nonprofits.json', adminNPs, npShaAdmin)
-        .then(function(result) {
-          npShaAdmin = result.content.sha;
-          renderAdminNP();
-          return saveNPSubmissionsList();
-        })
-        .then(function() {
-          renderNPSubmissions();
-          updateNPBadge();
-          showStatus('Non-profit approved and published!', 'success');
-        })
-        .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
-    }
-
-    function dismissNP(idx) {
-      if (!confirm('Dismiss this non-profit submission?')) return;
-      npSubmissions.splice(idx, 1);
-      showStatus('Dismissing submission...', '');
-      saveNPSubmissionsList().then(function() {
-        renderNPSubmissions();
-        updateNPBadge();
-        showStatus('Non-profit submission dismissed.', 'success');
-      }).catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
-    }
-
-    function editNP(idx) {
-      var n = adminNPs[idx];
-      if (!n) return;
-      var name = prompt('Organization Name:', n.orgName);
-      if (!name) return;
-      var focusArea = prompt('Focus Area:', n.focusArea);
-      if (focusArea === null) return;
-      var description = prompt('Description:', n.description);
-      if (description === null) return;
-      var website = prompt('Website:', n.website || '');
-      if (website === null) return;
-      var address = prompt('Address:', n.address || '');
-      if (address === null) return;
-      var phone = prompt('Phone:', n.phone || '');
-      if (phone === null) return;
-
-      adminNPs[idx].orgName = name.trim();
-      adminNPs[idx].focusArea = focusArea.trim();
-      adminNPs[idx].description = description.trim();
-      adminNPs[idx].website = website.trim();
-      adminNPs[idx].address = address.trim();
-      adminNPs[idx].phone = phone.trim();
-
-      showStatus('Saving changes...', '');
-      saveFileToGitHub('data/nonprofits.json', adminNPs, npShaAdmin)
-        .then(function(result) {
-          npShaAdmin = result.content.sha;
-          renderAdminNP();
-          showStatus('Organization updated.', 'success');
-        })
-        .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
-    }
-
-    function deleteNP(idx) {
-      if (!confirm('Delete "' + adminNPs[idx].orgName + '" from the directory?')) return;
-      adminNPs.splice(idx, 1);
-      showStatus('Deleting organization...', '');
-      saveFileToGitHub('data/nonprofits.json', adminNPs, npShaAdmin)
-        .then(function(result) {
-          npShaAdmin = result.content.sha;
-          renderAdminNP();
-          showStatus('Organization deleted.', 'success');
-        })
-        .catch(function(err) { showStatus('Error: ' + err.message, 'error'); });
-    }
-
-    function saveNPSubmissionsList() {
-      var content = btoa(unescape(encodeURIComponent(JSON.stringify(npSubmissions, null, 2) + '\n')));
-      return ghAPI('PUT', '/repos/triggs2025/azvlc/contents/data/nonprofit-submissions.json', {
-        message: 'Update nonprofit submissions',
-        content: content,
-        sha: npSubmissionsShaAdmin,
-        branch: 'master'
-      }).then(function(result) {
-        if (result.content) npSubmissionsShaAdmin = result.content.sha;
-      });
-    }
-
-    function updateNPBadge() {
-      var badge = document.getElementById('npSubmissionBadge');
-      var pending = document.getElementById('npPendingCount');
-      if (npSubmissions.length > 0) {
-        if (badge) { badge.textContent = npSubmissions.length; badge.style.display = 'inline'; }
-        if (pending) { pending.textContent = npSubmissions.length; pending.style.display = 'inline'; }
       } else {
         if (badge) badge.style.display = 'none';
         if (pending) pending.style.display = 'none';

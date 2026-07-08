@@ -416,9 +416,6 @@
         loadVOBSha();
         loadVOBSubmissionsSha();
         loadVOB();
-        loadNPSha();
-        loadNPSubmissionsSha();
-        loadNP();
         loadContactsSha();
       })
       .catch(function (err) {
@@ -962,8 +959,6 @@
       item = policies.find(function (p) { return p.id === id; });
     } else if (type === 'vob') {
       item = vobData.find(function (b) { return b.id === id; });
-    } else if (type === 'np') {
-      item = npData.find(function (n) { return n.id === id; });
     } else {
       item = politicians.find(function (p) { return p.id === id; });
     }
@@ -975,10 +970,9 @@
     // re-render to disable button
     if (type === 'policy') renderPolicies();
     else if (type === 'vob') renderVOB();
-    else if (type === 'np') renderNP();
     else renderPoliticians();
 
-    if (type !== 'vob' && type !== 'np') renderDashboard();
+    if (type !== 'vob') renderDashboard();
 
     // save to GitHub
     if (type === 'vob') {
@@ -989,14 +983,6 @@
       }).then(function() {
         loadVOBSha();
       }).catch(function(err) { console.error('VOB kudos save error:', err); });
-    } else if (type === 'np') {
-      fetch('data/nonprofits.json?t=' + Date.now()).then(function(r) { return r.json(); }).then(function(all) {
-        var target = all.find(function(n) { return n.id === id; });
-        if (target) target.kudos = item.kudos;
-        return saveNPToGitHub(all);
-      }).then(function() {
-        loadNPSha();
-      }).catch(function(err) { console.error('NP kudos save error:', err); });
     } else if (type === 'politician') {
       fetch('data/politicians.json?t=' + Date.now()).then(function(r) { return r.json(); }).then(function(all) {
         var target = all.find(function(p) { return p.id === id; });
@@ -1965,254 +1951,6 @@
     });
   }
 
-  // ── Veteran Non-Profits ──
-  var npData = [];
-  var npSha = '';
-  var npSubmissionsSha = '';
-  var npCurrentSearch = '';
-  var npCurrentFilter = 'all';
-  var npCurrentSort = 'name';
-  var npCaptchaA = 0, npCaptchaB = 0;
-
-  function loadNPSha() {
-    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/nonprofits.json?ref=' + CONFIG.branch, {
-      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(result) { npSha = result.sha; })
-    .catch(function() { npSha = ''; });
-  }
-
-  function saveNPToGitHub(data) {
-    if (!CONFIG.ghToken) return Promise.resolve({ content: { sha: npSha } });
-    var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2) + '\n')));
-    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/nonprofits.json', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
-      body: JSON.stringify({ message: 'Update nonprofit kudos', content: content, sha: npSha, branch: CONFIG.branch })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(result) {
-      if (result.content) npSha = result.content.sha;
-      return result;
-    });
-  }
-
-  function loadNPSubmissionsSha() {
-    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/nonprofit-submissions.json?ref=' + CONFIG.branch, {
-      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(result) { npSubmissionsSha = result.sha; })
-    .catch(function() { npSubmissionsSha = ''; });
-  }
-
-  function loadNP() {
-    fetch('data/nonprofits.json?t=' + Date.now())
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        npData = data || [];
-        renderNP();
-        renderNPFilters();
-      })
-      .catch(function() { npData = []; });
-  }
-
-  function renderNPFilters() {
-    var areas = {};
-    npData.forEach(function(n) { if (n.focusArea) areas[n.focusArea] = true; });
-    var bar = document.getElementById('npFilterBar');
-    if (!bar) return;
-    var html = '<button class="filter-btn' + (npCurrentFilter === 'all' ? ' active' : '') + '" onclick="AZVLC.filterNP(\'all\', this)">All</button>';
-    Object.keys(areas).sort().forEach(function(area) {
-      html += '<button class="filter-btn' + (npCurrentFilter === area ? ' active' : '') + '" onclick="AZVLC.filterNP(\'' + esc(area) + '\', this)">' + esc(area) + '</button>';
-    });
-    bar.innerHTML = html;
-  }
-
-  function renderNP() {
-    var el = document.getElementById('npList');
-    if (!el) return;
-
-    var filtered = npData.slice();
-    if (npCurrentFilter !== 'all') {
-      filtered = filtered.filter(function(n) { return n.focusArea === npCurrentFilter; });
-    }
-    if (npCurrentSearch) {
-      var q = npCurrentSearch;
-      filtered = filtered.filter(function(n) {
-        return (n.orgName || '').toLowerCase().indexOf(q) !== -1 ||
-          (n.focusArea || '').toLowerCase().indexOf(q) !== -1 ||
-          (n.zip || '').indexOf(q) !== -1 ||
-          (n.address || '').toLowerCase().indexOf(q) !== -1 ||
-          (n.description || '').toLowerCase().indexOf(q) !== -1;
-      });
-    }
-
-    filtered.sort(function(a, b) {
-      if (npCurrentSort === 'kudos') return (b.kudos || 0) - (a.kudos || 0);
-      if (npCurrentSort === 'newest') return (b.id || 0) - (a.id || 0);
-      return (a.orgName || '').localeCompare(b.orgName || '');
-    });
-
-    if (filtered.length === 0) {
-      el.innerHTML = '<div class="empty-state"><p>' + (npData.length === 0 ? 'No organizations listed yet. Be the first!' : 'No organizations match your search.') + '</p></div>';
-      return;
-    }
-
-    el.innerHTML = filtered.map(function(n) {
-      var voted = hasVotedKudo('np', n.id);
-      var desc = n.description || '';
-      var truncLen = 120;
-      var needsMore = desc.length > truncLen;
-      return '<div class="card">' +
-        '<h3>' + esc(n.orgName) + '</h3>' +
-        '<div class="card-meta">' +
-          '<span class="badge badge-category">' + esc(n.focusArea) + '</span>' +
-        '</div>' +
-        (needsMore
-          ? '<p><span id="np-desc-short-' + n.id + '">' + esc(desc.substring(0, truncLen)) + '... <a href="#" onclick="AZVLC.toggleNPDesc(' + n.id + ');return false" style="color:var(--blue);font-weight:600">Read More</a></span>' +
-            '<span id="np-desc-full-' + n.id + '" style="display:none">' + esc(desc) + ' <a href="#" onclick="AZVLC.toggleNPDesc(' + n.id + ');return false" style="color:var(--blue);font-weight:600">Show Less</a></span></p>'
-          : '<p>' + esc(desc) + '</p>') +
-        '<div style="margin-top:12px;font-size:0.9em;color:var(--text-muted);line-height:1.8">' +
-          (n.address ? '<div>📍 ' + esc(n.address) + '</div>' : '') +
-          (n.phone ? '<div>📞 ' + esc(n.phone) + '</div>' : '') +
-          (n.website ? '<div>🌐 <a href="' + esc(n.website) + '" target="_blank" rel="noopener">' + esc(n.website) + '</a></div>' : '') +
-        '</div>' +
-        '<div class="kudos-bar">' +
-          '<button class="kudos-btn' + (voted ? ' voted' : '') + '" onclick="AZVLC.giveKudos(' + n.id + ',\'np\')" ' + (voted ? 'disabled' : '') + '>' +
-            '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>' +
-            (voted ? 'Thanked' : 'Give Kudos') +
-          '</button>' +
-          '<span class="kudos-count" id="kudos-np-' + n.id + '">' + (n.kudos || 0) + '</span>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-  }
-
-  function searchNP(query) {
-    npCurrentSearch = query.toLowerCase().trim();
-    renderNP();
-  }
-
-  function filterNP(area, btn) {
-    npCurrentFilter = area;
-    if (btn) {
-      document.querySelectorAll('#npFilterBar .filter-btn').forEach(function(b) { b.classList.remove('active'); });
-      btn.classList.add('active');
-    }
-    renderNP();
-  }
-
-  function toggleNPDesc(id) {
-    var short = document.getElementById('np-desc-short-' + id);
-    var full = document.getElementById('np-desc-full-' + id);
-    if (!short || !full) return;
-    if (full.style.display === 'none') { short.style.display = 'none'; full.style.display = ''; }
-    else { short.style.display = ''; full.style.display = 'none'; }
-  }
-
-  function sortNP(sortBy) {
-    npCurrentSort = sortBy;
-    renderNP();
-  }
-
-  function generateNPCaptcha() {
-    npCaptchaA = Math.floor(Math.random() * 10) + 1;
-    npCaptchaB = Math.floor(Math.random() * 10) + 1;
-    var label = document.getElementById('npCaptchaLabel');
-    if (label) label.textContent = 'What is ' + npCaptchaA + ' + ' + npCaptchaB + '?';
-  }
-
-  function verifyNPCaptcha() {
-    var input = document.getElementById('npCaptchaAnswer');
-    if (!input) return false;
-    return parseInt(input.value) === (npCaptchaA + npCaptchaB);
-  }
-
-  function openNPSubmitModal() {
-    document.getElementById('npSubmitModal').style.display = 'flex';
-    document.getElementById('npSubmitForm').reset();
-    document.getElementById('npSubmitSuccess').classList.remove('show');
-    generateNPCaptcha();
-  }
-
-  function closeNPSubmitModal() {
-    document.getElementById('npSubmitModal').style.display = 'none';
-  }
-
-  function submitNP(e) {
-    e.preventDefault();
-    var form = e.target;
-
-    if (!verifyNPCaptcha()) {
-      alert('Incorrect answer. Please solve the math problem to verify you are human.');
-      generateNPCaptcha();
-      return;
-    }
-
-    var contactEmail = document.getElementById('npContactEmail').value.trim();
-    var contactPhone = document.getElementById('npContactPhone').value.trim();
-    if (!contactEmail && !contactPhone) {
-      alert('Please provide at least one contact method (email or phone) for verification.');
-      return;
-    }
-
-    var submission = {
-      id: Date.now(),
-      orgName: document.getElementById('npOrgName').value.trim(),
-      focusArea: document.getElementById('npFocusArea').value,
-      description: document.getElementById('npDescription').value.trim(),
-      website: document.getElementById('npWebsite').value.trim(),
-      address: document.getElementById('npAddress').value.trim(),
-      zip: document.getElementById('npZip').value.trim(),
-      phone: document.getElementById('npPhone').value.trim(),
-      contactName: document.getElementById('npContactName').value.trim(),
-      contactEmail: contactEmail,
-      contactPhone: contactPhone,
-      submittedAt: new Date().toISOString()
-    };
-
-    var submitBtn = form.querySelector('.form-submit');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-
-    fetch('data/nonprofit-submissions.json').then(function(r) { return r.json(); }).then(function(submissions) {
-      submissions.push(submission);
-      var content = btoa(unescape(encodeURIComponent(JSON.stringify(submissions, null, 2) + '\n')));
-      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/nonprofit-submissions.json', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
-        body: JSON.stringify({ message: 'Nonprofit submission: ' + submission.orgName, content: content, sha: npSubmissionsSha, branch: CONFIG.branch })
-      });
-    }).then(function(r) { return r.json(); }).then(function(result) {
-      if (result.content) {
-        npSubmissionsSha = result.content.sha;
-        var successEl = document.getElementById('npSubmitSuccess');
-        successEl.classList.add('show');
-        form.reset();
-        setTimeout(function() { successEl.classList.remove('show'); closeNPSubmitModal(); }, 3000);
-      } else {
-        throw new Error(result.message || 'Save failed');
-      }
-    }).catch(function(err) {
-      console.error('NP submission error:', err);
-      alert('There was an issue submitting. Please try again.');
-    }).finally(function() {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit for Review';
-      loadNPSubmissionsSha();
-    });
-
-    saveContact(contactEmail || '', submission.contactName, 'NP: ' + submission.orgName, {
-      type: 'np-submission',
-      orgName: submission.orgName,
-      focusArea: submission.focusArea,
-      phone: contactPhone,
-      timestamp: submission.submittedAt
-    });
-  }
-
   function submitDonateForm(e) {
     e.preventDefault();
     var form = e.target;
@@ -2695,13 +2433,6 @@
     requestVOBEdit: requestVOBEdit,
     openVOBSubmitModal: openVOBSubmitModal,
     closeVOBSubmitModal: closeVOBSubmitModal,
-    submitVOB: submitVOB,
-    searchNP: searchNP,
-    filterNP: filterNP,
-    sortNP: sortNP,
-    toggleNPDesc: toggleNPDesc,
-    openNPSubmitModal: openNPSubmitModal,
-    closeNPSubmitModal: closeNPSubmitModal,
-    submitNP: submitNP
+    submitVOB: submitVOB
   };
 })();
