@@ -621,5 +621,16 @@
     "category": "Home Services",
     "phone": "480-699-1130",
     "timestamp": "2026-07-08T04:35:58.042Z"
+  },
+  {
+    "email": "kenneth@guardsmarc.com",
+    "name": "Kenneth Lubowa",
+    "source": "VOB: Guards Marc Security Services",
+    "date": "2026-07-08",
+    "type": "vob-submission",
+    "businessName": "Guards Marc Security Services",
+    "category": "Security",
+    "phone": "+17472629196",
+    "timestamp": "2026-07-08T22:13:13.865Z"
   }
 ]
