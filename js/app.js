@@ -974,31 +974,39 @@
 
     if (type !== 'vob') renderDashboard();
 
-    // save to GitHub
+    // save to GitHub — fetch fresh SHA from API (cache-busted) to avoid stale SHA conflicts
+    var apiBase = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/';
+    var apiHeaders = { 'Authorization': 'token ' + CONFIG.ghToken };
     if (type === 'vob') {
-      fetch('data/vob.json?t=' + Date.now()).then(function(r) { return r.json(); }).then(function(all) {
-        var target = all.find(function(b) { return b.id === id; });
-        if (target) target.kudos = item.kudos;
-        return saveVOBToGitHub(all);
-      }).then(function() {
-        loadVOBSha();
-      }).catch(function(err) { console.error('VOB kudos save error:', err); });
+      fetch(apiBase + 'vob.json?ref=' + CONFIG.branch + '&_=' + Date.now(), { headers: apiHeaders })
+        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          var all = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
+          vobSha = result.sha;
+          var target = all.find(function(b) { return b.id === id; });
+          if (target) target.kudos = item.kudos;
+          return saveVOBToGitHub(all);
+        }).catch(function(err) { console.error('VOB kudos save error:', err); });
     } else if (type === 'politician') {
-      fetch('data/politicians.json?t=' + Date.now()).then(function(r) { return r.json(); }).then(function(all) {
-        var target = all.find(function(p) { return p.id === id; });
-        if (target) target.kudos = item.kudos;
-        return savePoliticiansToGitHub(all);
-      }).then(function() {
-        loadPoliticiansWithSha();
-      }).catch(function(err) { console.error('Kudos save error:', err); });
+      fetch(apiBase + 'politicians.json?ref=' + CONFIG.branch + '&_=' + Date.now(), { headers: apiHeaders })
+        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          var all = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
+          politiciansSha = result.sha;
+          var target = all.find(function(p) { return p.id === id; });
+          if (target) target.kudos = item.kudos;
+          return savePoliticiansToGitHub(all);
+        }).catch(function(err) { console.error('Kudos save error:', err); });
     } else {
-      fetch('data/policies.json?t=' + Date.now()).then(function(r) { return r.json(); }).then(function(all) {
-        var target = all.find(function(p) { return p.id === id; });
-        if (target) target.kudos = item.kudos;
-        return savePoliciesToGitHub(all);
-      }).then(function() {
-        loadPoliciesWithSha();
-      }).catch(function(err) { console.error('Kudos save error:', err); });
+      fetch(apiBase + 'policies.json?ref=' + CONFIG.branch + '&_=' + Date.now(), { headers: apiHeaders })
+        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          var all = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
+          policiesSha = result.sha;
+          var target = all.find(function(p) { return p.id === id; });
+          if (target) target.kudos = item.kudos;
+          return savePoliciesToGitHub(all);
+        }).catch(function(err) { console.error('Kudos save error:', err); });
     }
   }
 
