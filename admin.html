@@ -1575,6 +1575,7 @@
           adminVOBs = result.data || [];
           vobSha = result.sha;
           renderAdminVOB();
+          updateVOBClickNames();
         })
         .catch(function() { adminVOBs = []; renderAdminVOB(); });
 
@@ -3079,6 +3080,22 @@
           '</div>';
         }).join('');
       }
+    }
+
+    function updateVOBClickNames() {
+      if (!analyticsData) return;
+      var vc = analyticsData.vobClicks || {};
+      var vcEl = document.getElementById('analVOBClicks');
+      var vcKeys = Object.keys(vc).sort(function(a, b) { return vc[b] - vc[a]; }).slice(0, 10);
+      if (!vcEl || vcKeys.length === 0) return;
+      vcEl.innerHTML = vcKeys.map(function(id, i) {
+        var biz = adminVOBs.find(function(b) { return String(b.id) === id; });
+        var name = biz ? biz.businessName : 'Business #' + id;
+        return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0">' +
+          '<span style="flex:1;font-size:0.9em">' + (i+1) + '. ' + esc(name) + '</span>' +
+          '<span style="font-weight:700;color:var(--blue)">' + vc[id] + ' clicks</span>' +
+        '</div>';
+      }).join('');
     }
 
     function updateExtendedAnalytics() {
