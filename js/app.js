@@ -10,7 +10,7 @@
     repoOwner: 'triggs2025',
     repoName: 'azvlc',
     branch: 'master',
-    ghToken: ''
+    ghToken: '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'
   };
 
   // ── State ──
@@ -1244,32 +1244,71 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
-    fetch('https://api.azvlc.org/submit.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'correction',
-        correctionType: correction.originalName,
-        description: correction.reason,
-        submitterName: '',
-        submitterEmail: correction.submitterEmail
-      })
-    }).then(function(r) { return r.json(); }).then(function(result) {
-      if (result.success) {
+    fetch('data/corrections.json').then(function (r) { return r.json(); }).then(function (corrections) {
+      corrections.push(correction);
+
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(corrections, null, 2) + '\n')));
+      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/corrections.json', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'token ' + CONFIG.ghToken
+        },
+        body: JSON.stringify({
+          message: 'Policy correction submitted for: ' + correction.originalName,
+          content: content,
+          sha: correctionsSha,
+          branch: CONFIG.branch
+        })
+      });
+    }).then(function (r) { return r.json(); }).then(function (result) {
+      if (result.content) {
+        correctionsSha = result.content.sha;
+
+        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'token ' + CONFIG.ghToken
+          },
+          body: JSON.stringify({
+            title: 'Policy Correction: ' + correction.originalName,
+            body: '**Policy:** ' + correction.originalName + '\n' +
+              '**Reason:** ' + correction.reason + '\n' +
+              '**Submitted by:** ' + (correction.submitterEmail || 'Anonymous') + '\n' +
+              '**Date:** ' + correction.submittedAt + '\n\n' +
+              'Review this correction in the [Admin Panel](https://azvlc.org/admin.html).',
+            labels: ['correction']
+          })
+        }).catch(function () {});
+
         var successEl = document.getElementById('correctionSuccess');
         successEl.classList.add('show');
+        if (correction.submitterEmail) {
+          setTimeout(function () { saveContact(correction.submitterEmail, '', 'Correction: ' + correction.originalName, {
+            type: 'policy-correction',
+            policyName: correction.originalName,
+            correctedName: correction.correctedName,
+            correctedSponsor: correction.correctedSponsor,
+            correctedCategory: correction.correctedCategory,
+            correctedStatus: correction.correctedStatus,
+            reason: correction.reason,
+            timestamp: new Date().toISOString()
+          }); }, 2000);
+        }
         document.getElementById('corrReason').value = '';
         document.getElementById('corrEmail').value = '';
-        setTimeout(function() { successEl.classList.remove('show'); closeCorrectionModal(); }, 3000);
+        setTimeout(function () { successEl.classList.remove('show'); closeCorrectionModal(); }, 3000);
       } else {
-        throw new Error(result.error || 'Save failed');
+        throw new Error(result.message || 'Save failed');
       }
-    }).catch(function(err) {
+    }).catch(function (err) {
       console.error('Correction error:', err);
       alert('There was an issue submitting your correction. Please try again.');
-    }).finally(function() {
+    }).finally(function () {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit Correction';
+      loadCorrectionsWithSha();
     });
   }
 
@@ -1911,32 +1950,67 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
-    fetch('https://api.azvlc.org/submit.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'vob',
-        businessName: document.getElementById('vobBizName').value.trim(),
-        category: document.getElementById('vobCategory').value,
-        description: document.getElementById('vobDescription').value.trim(),
-        website: document.getElementById('vobWebsite').value.trim(),
-        address: document.getElementById('vobAddress').value.trim(),
-        zip: document.getElementById('vobZip').value.trim(),
-        bizPhone: document.getElementById('vobBizPhone').value.trim(),
-        hours: document.getElementById('vobHours').value.trim(),
-        discount: document.getElementById('vobDiscount').value.trim(),
-        ownerName: document.getElementById('vobOwnerName').value.trim(),
-        ownerEmail: ownerEmail,
-        ownerPhone: ownerPhone
-      })
+    var submission = {
+      id: Date.now(),
+      businessName: document.getElementById('vobBizName').value.trim(),
+      category: document.getElementById('vobCategory').value,
+      description: document.getElementById('vobDescription').value.trim(),
+      website: document.getElementById('vobWebsite').value.trim(),
+      address: document.getElementById('vobAddress').value.trim(),
+      zip: document.getElementById('vobZip').value.trim(),
+      phone: document.getElementById('vobBizPhone').value.trim(),
+      hours: document.getElementById('vobHours').value.trim(),
+      discount: document.getElementById('vobDiscount').value.trim(),
+      ownerName: document.getElementById('vobOwnerName').value.trim(),
+      ownerEmail: ownerEmail,
+      ownerPhone: ownerPhone,
+      submittedAt: new Date().toISOString()
+    };
+
+    fetch('data/vob-submissions.json').then(function(r) { return r.json(); }).then(function(submissions) {
+      submissions.push(submission);
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(submissions, null, 2) + '\n')));
+      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/vob-submissions.json', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'token ' + CONFIG.ghToken
+        },
+        body: JSON.stringify({
+          message: 'VOB submission: ' + submission.businessName,
+          content: content,
+          sha: vobSubmissionsSha,
+          branch: CONFIG.branch
+        })
+      });
     }).then(function(r) { return r.json(); }).then(function(result) {
-      if (result.success) {
+      if (result.content) {
+        vobSubmissionsSha = result.content.sha;
+
+        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'token ' + CONFIG.ghToken
+          },
+          body: JSON.stringify({
+            title: 'VOB Submission: ' + submission.businessName,
+            body: '**Business:** ' + submission.businessName + '\n' +
+              '**Category:** ' + submission.category + '\n' +
+              '**Owner:** ' + submission.ownerName + '\n' +
+              '**Contact:** ' + (submission.ownerEmail || 'N/A') + ' / ' + (submission.ownerPhone || 'N/A') + '\n' +
+              '**Date:** ' + submission.submittedAt + '\n\n' +
+              'Review in the [Admin Panel](https://azvlc.org/admin.html).',
+            labels: ['vob-submission']
+          })
+        }).catch(function() {});
+
         var successEl = document.getElementById('vobSubmitSuccess');
         successEl.classList.add('show');
         form.reset();
         setTimeout(function() { successEl.classList.remove('show'); closeVOBSubmitModal(); }, 3000);
       } else {
-        throw new Error(result.error || 'Save failed');
+        throw new Error(result.message || 'Save failed');
       }
     }).catch(function(err) {
       console.error('VOB submission error:', err);
@@ -1944,6 +2018,15 @@
     }).finally(function() {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit for Review';
+      loadVOBSubmissionsSha();
+    });
+
+    saveContact(ownerEmail || '', submission.ownerName, 'VOB: ' + submission.businessName, {
+      type: 'vob-submission',
+      businessName: submission.businessName,
+      category: submission.category,
+      phone: ownerPhone,
+      timestamp: submission.submittedAt
     });
   }
 
@@ -1958,18 +2041,36 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
-    fetch('https://api.azvlc.org/submit.php', {
+    saveContact(email, name, 'Donate Interest', {
+      type: 'donate-interest',
+      phone: phone,
+      timestamp: new Date().toISOString()
+    });
+
+    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'donate', name: name, email: email, phone: phone })
-    }).catch(function() {}).finally(function() {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'token ' + CONFIG.ghToken
+      },
+      body: JSON.stringify({
+        title: 'Donation Interest: ' + name,
+        body: '**Name:** ' + name + '\n' +
+          '**Email:** ' + email + '\n' +
+          '**Phone:** ' + phone + '\n' +
+          '**Date:** ' + new Date().toISOString(),
+        labels: ['donate-interest']
+      })
+    }).catch(function() {});
+
+    setTimeout(function() {
       var successEl = document.getElementById('donateSuccess');
       if (successEl) successEl.classList.add('show');
       form.reset();
       submitBtn.disabled = false;
       submitBtn.textContent = 'Notify Me When Donations Open';
       setTimeout(function() { if (successEl) successEl.classList.remove('show'); }, 5000);
-    });
+    }, 2500);
   }
 
   function submitPolicyForm(e) {
@@ -1999,19 +2100,44 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
-    fetch('https://api.azvlc.org/submit.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'policy',
-        policyName: suggestPolicyName,
-        description: suggestPolicyDescription,
-        submitterName: suggestName || 'Anonymous',
-        email: suggestEmail,
-        zip: ''
-      })
+    fetch('data/policy-submissions.json').then(function(r) { return r.json(); }).then(function(submissions) {
+      submissions.push(submission);
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(submissions, null, 2) + '\n')));
+      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/policy-submissions.json', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'token ' + CONFIG.ghToken
+        },
+        body: JSON.stringify({
+          message: 'Policy suggestion: ' + submission.name,
+          content: content,
+          sha: policySubmissionsSha,
+          branch: CONFIG.branch
+        })
+      });
     }).then(function(r) { return r.json(); }).then(function(result) {
-      if (result.success) {
+      if (result.content) {
+        policySubmissionsSha = result.content.sha;
+
+        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'token ' + CONFIG.ghToken
+          },
+          body: JSON.stringify({
+            title: 'Policy Suggestion: ' + submission.name,
+            body: '**Policy:** ' + submission.name + '\n' +
+              '**Sponsor:** ' + submission.sponsor + '\n' +
+              '**Description:** ' + submission.description + '\n' +
+              '**Submitted by:** ' + (submission.submitterEmail || 'Anonymous') + '\n' +
+              '**Date:** ' + submission.submittedAt + '\n\n' +
+              'Review this in the [Admin Panel](https://azvlc.org/admin.html).',
+            labels: ['policy-suggestion']
+          })
+        }).catch(function() {});
+
         var successEl = document.getElementById('policySuccess');
         if (successEl) {
           successEl.textContent = 'Thank you! Your policy suggestion has been submitted for review.';
@@ -2020,7 +2146,7 @@
         form.reset();
         setTimeout(function() { if (successEl) successEl.classList.remove('show'); }, 5000);
       } else {
-        throw new Error(result.error || 'Save failed');
+        throw new Error(result.message || 'Save failed');
       }
     }).catch(function(err) {
       console.error('Policy submission error:', err);
@@ -2028,6 +2154,7 @@
     }).finally(function() {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit Policy Suggestion';
+      loadPolicySubmissionsWithSha();
     });
 
     if (CONFIG.ghlWebhookPolicy) {
