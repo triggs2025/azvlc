@@ -255,27 +255,12 @@
     var params = new URLSearchParams(window.location.search);
     var politicianId = parseInt(params.get('id'));
 
-    function trackScorecardView(id, attempt) {
-      attempt = attempt || 1;
-      if (attempt > 5) return;
-      fetch(GH_API + '?ref=' + CONFIG.branch + '&_=' + Date.now(), {
-        headers: { 'Authorization': 'token ' + CONFIG.ghToken }
-      }).then(function(r) { return r.json(); }).then(function(result) {
-        var data = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
-        if (!data.scorecardViews) data.scorecardViews = {};
-        data.scorecardViews[String(id)] = (data.scorecardViews[String(id)] || 0) + 1;
-        var json = JSON.stringify(data) + '\n';
-        var ascii = json.replace(/[^\x00-\x7F]/g, function(c) { return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4); });
-        return fetch(GH_API, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
-          body: JSON.stringify({ message: 'Track scorecard view', content: btoa(ascii), sha: result.sha, branch: CONFIG.branch })
-        });
-      }).then(function(r) {
-        if (r && !r.ok) setTimeout(function() { trackScorecardView(id, attempt + 1); }, 1500);
-      }).catch(function() {
-        setTimeout(function() { trackScorecardView(id, attempt + 1); }, 1500);
-      });
+    function trackScorecardView(id) {
+      try {
+        var pending = JSON.parse(localStorage.getItem('azvlc_pending_scorecards') || '[]');
+        pending.push(String(id));
+        localStorage.setItem('azvlc_pending_scorecards', JSON.stringify(pending));
+      } catch(e) {}
     }
 
     if (!politicianId) {

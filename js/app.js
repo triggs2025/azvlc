@@ -33,6 +33,7 @@
     bindMobileMenu();
     bindForms();
     trackPageView();
+    flushPendingScorecardViews();
   });
 
   // ── Sponsor ──
@@ -328,6 +329,15 @@
 
   function trackVOBClick(id) {
     _enqueueEvent({ type: 'vobClick', id: String(id) });
+  }
+
+  function flushPendingScorecardViews() {
+    try {
+      var pending = JSON.parse(localStorage.getItem('azvlc_pending_scorecards') || '[]');
+      if (pending.length === 0) return;
+      localStorage.removeItem('azvlc_pending_scorecards');
+      pending.forEach(function(id) { _enqueueEvent({ type: 'scorecard', id: String(id) }); });
+    } catch(e) {}
   }
 
   function _applyHits(data, pending) {
