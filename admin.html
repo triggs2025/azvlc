@@ -1660,6 +1660,25 @@
         .then(function(r) { if (r.content) vobSha = r.content.sha; renderAdminVOB(); });
     }
 
+    function movePendingToFriendly(idx) {
+      var s = vobSubmissions[idx];
+      if (!confirm('Move "' + s.businessName + '" to Veteran Friendly (private)? It will be removed from pending.')) return;
+      var entry = {
+        id: nextId(adminVOBs.concat(adminVOBFriendly)),
+        businessName: s.businessName, category: s.category, description: s.description,
+        address: s.address || '', zip: s.zip || '', phone: s.phone || '', hours: s.hours || '',
+        discount: s.discount || '', website: s.website || '',
+        ownerName: s.ownerName || '', ownerEmail: s.ownerEmail || '', ownerPhone: s.ownerPhone || '',
+        kudos: 0
+      };
+      adminVOBFriendly.push(entry);
+      vobSubmissions.splice(idx, 1);
+      saveFileToGitHub('data/vob-friendly.json', adminVOBFriendly, vobFriendlySha)
+        .then(function(r) { if (r.content) vobFriendlySha = r.content.sha; renderAdminVOBFriendly(); });
+      saveFileToGitHub('data/vob-submissions.json', vobSubmissions, vobSubmissionsShaAdmin)
+        .then(function(r) { if (r.content) vobSubmissionsShaAdmin = r.content.sha; renderVOBSubmissions(); updateVOBBadge(); });
+    }
+
     function deleteVOBFriendly(idx) {
       if (!confirm('Permanently delete "' + adminVOBFriendly[idx].businessName + '"?')) return;
       adminVOBFriendly.splice(idx, 1);
@@ -1700,7 +1719,6 @@
             '<div class="admin-item-actions">' +
               '<button class="btn btn-sm btn-success" onclick="notifyVOBLive(' + idx + ')">Send Live Email</button>' +
               '<button class="btn btn-sm btn-blue" onclick="editVOB(' + idx + ')">Edit</button>' +
-              '<button class="btn btn-sm" style="background:var(--gold);color:var(--navy);font-weight:600" onclick="moveVOBToFriendly(' + idx + ')" title="Move to private Veteran Friendly holding area">Vet Friendly</button>' +
               '<button class="btn btn-sm btn-danger" onclick="deleteVOB(' + idx + ')">Delete</button>' +
             '</div>' +
           '</div>' +
@@ -1744,6 +1762,7 @@
           '</div>' +
           '<div style="margin-top:12px;display:flex;gap:8px">' +
             '<button class="btn btn-sm btn-success" onclick="approveVOB(' + idx + ')">Approve &amp; Publish</button>' +
+            '<button class="btn btn-sm" style="background:var(--gold);color:var(--navy);font-weight:600" onclick="movePendingToFriendly(' + idx + ')">Vet Friendly</button>' +
             '<button class="btn btn-sm btn-danger" onclick="dismissVOB(' + idx + ')">Dismiss</button>' +
           '</div>' +
         '</div>';
