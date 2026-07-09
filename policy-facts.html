@@ -87,6 +87,7 @@
     <img id="lightbox-img" src="" alt="">
   </div>
 
+  <script src="js/purify.min.js"></script>
   <script>
     var CONFIG = {
       repoOwner: 'triggs2025',
@@ -139,8 +140,12 @@
           '</div>';
         }
 
-        var contentHtml = html
-          ? '<div class="facts-html-content">' + html + '</div>'
+        var safeHtml = html ? DOMPurify.sanitize(html, {
+          ALLOWED_TAGS: ['h2','h3','h4','p','ul','ol','li','strong','em','a','br'],
+          ALLOWED_ATTR: ['href','target','rel']
+        }) : '';
+        var contentHtml = safeHtml
+          ? '<div class="facts-html-content">' + safeHtml + '</div>'
           : '<div class="facts-empty">No additional facts have been added for this policy yet.</div>';
 
         document.getElementById('factsContent').innerHTML =
