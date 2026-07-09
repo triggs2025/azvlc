@@ -392,11 +392,11 @@
           </div>
           <div class="form-group">
             <label for="raterEmail">Your Email *</label>
-            <input type="email" id="raterEmail" name="raterEmail" required placeholder="your@email.com">
+            <input type="email" id="raterEmail" name="raterEmail" autocomplete="email" required placeholder="your@email.com">
           </div>
           <div class="form-group">
             <label for="raterName">Your Name (optional)</label>
-            <input type="text" id="raterName" name="raterName" placeholder="Leave blank for anonymous">
+            <input type="text" id="raterName" name="raterName" autocomplete="name" placeholder="Leave blank for anonymous">
           </div>
           <div class="form-group checkbox-row">
             <input type="checkbox" id="raterAnonymous" name="raterAnonymous">
@@ -486,7 +486,7 @@
           <h4 style="color:var(--blue);margin-bottom:12px;border-bottom:1px solid #eee;padding-bottom:8px">Business Information</h4>
           <div class="form-group">
             <label for="vobBizName">Business Name *</label>
-            <input type="text" id="vobBizName" required placeholder="Your business name">
+            <input type="text" id="vobBizName" name="vobBizName" autocomplete="organization" required placeholder="Your business name">
           </div>
           <div class="form-group">
             <label for="vobCategory">Category *</label>
@@ -518,47 +518,47 @@
           </div>
           <div class="form-group">
             <label for="vobWebsite">Business Website</label>
-            <input type="url" id="vobWebsite" placeholder="https://...">
+            <input type="url" id="vobWebsite" name="vobWebsite" autocomplete="url" placeholder="https://...">
           </div>
           <div class="form-group">
             <label for="vobAddress">Business Address</label>
-            <input type="text" id="vobAddress" placeholder="123 Main St, Phoenix, AZ 85001">
+            <input type="text" id="vobAddress" name="vobAddress" autocomplete="street-address" placeholder="123 Main St, Phoenix, AZ 85001">
           </div>
           <div class="form-group">
             <label for="vobZip">Zip Code *</label>
-            <input type="text" id="vobZip" required placeholder="85001" maxlength="5" pattern="[0-9]{5}">
+            <input type="text" id="vobZip" name="vobZip" autocomplete="postal-code" required placeholder="85001" maxlength="5" pattern="[0-9]{5}">
           </div>
           <div class="form-group">
             <label for="vobBizPhone">Business Phone (displayed on site if provided)</label>
-            <input type="tel" id="vobBizPhone" placeholder="(555) 123-4567">
+            <input type="tel" id="vobBizPhone" name="vobBizPhone" autocomplete="tel" placeholder="(555) 123-4567">
           </div>
           <div class="form-group">
             <label for="vobHours">Hours of Operation</label>
-            <input type="text" id="vobHours" placeholder="e.g., Mon-Fri 9am-5pm, Sat 10am-2pm">
+            <input type="text" id="vobHours" name="vobHours" autocomplete="off" placeholder="e.g., Mon-Fri 9am-5pm, Sat 10am-2pm">
           </div>
           <div class="form-group">
             <label for="vobDiscount">Veteran Discounts Offered</label>
-            <input type="text" id="vobDiscount" placeholder="e.g., 10% off for all Veterans">
+            <input type="text" id="vobDiscount" name="vobDiscount" autocomplete="off" placeholder="e.g., 10% off for all Veterans">
           </div>
 
           <h4 style="color:var(--blue);margin:20px 0 12px;border-bottom:1px solid #eee;padding-bottom:8px">Owner Contact (for verification — not displayed)</h4>
           <div class="form-group">
             <label for="vobOwnerName">Your Name *</label>
-            <input type="text" id="vobOwnerName" required placeholder="Full name">
+            <input type="text" id="vobOwnerName" name="vobOwnerName" autocomplete="name" required placeholder="Full name">
           </div>
           <div class="form-group">
             <label for="vobOwnerEmail">Email</label>
-            <input type="email" id="vobOwnerEmail" placeholder="your@email.com">
+            <input type="email" id="vobOwnerEmail" name="vobOwnerEmail" autocomplete="email" placeholder="your@email.com">
           </div>
           <div class="form-group">
             <label for="vobOwnerPhone">Phone</label>
-            <input type="tel" id="vobOwnerPhone" placeholder="(555) 123-4567">
+            <input type="tel" id="vobOwnerPhone" name="vobOwnerPhone" autocomplete="tel" placeholder="(555) 123-4567">
           </div>
           <p style="font-size:0.8em;color:var(--text-muted);margin-bottom:16px">* At least one contact method (email or phone) is required for verification.</p>
 
           <div class="form-group" style="background:#f8f9fa;padding:12px;border-radius:6px;border:1px solid var(--border)">
             <label id="vobCaptchaLabel" style="font-weight:700;color:var(--navy)">What is 0 + 0?</label>
-            <input type="number" id="vobCaptchaAnswer" required placeholder="Your answer" style="max-width:150px">
+            <input type="number" id="vobCaptchaAnswer" name="vobCaptchaAnswer" autocomplete="off" required placeholder="Your answer" style="max-width:150px">
           </div>
 
           <div style="display:flex;gap:8px">
@@ -586,15 +586,15 @@
         <form id="donateForm">
           <div class="form-group">
             <label for="donateName">Your Name *</label>
-            <input type="text" id="donateName" name="donateName" required placeholder="Full name">
+            <input type="text" id="donateName" name="donateName" autocomplete="name" required placeholder="Full name">
           </div>
           <div class="form-group">
             <label for="donateEmail">Email Address *</label>
-            <input type="email" id="donateEmail" name="donateEmail" required placeholder="your@email.com">
+            <input type="email" id="donateEmail" name="donateEmail" autocomplete="email" required placeholder="your@email.com">
           </div>
           <div class="form-group">
             <label for="donatePhone">Phone Number *</label>
-            <input type="tel" id="donatePhone" name="donatePhone" required placeholder="(555) 123-4567">
+            <input type="tel" id="donatePhone" name="donatePhone" autocomplete="tel" required placeholder="(555) 123-4567">
           </div>
           <button type="submit" class="form-submit" style="width:100%">Notify Me When Donations Open</button>
         </form>
