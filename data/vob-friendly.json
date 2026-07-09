@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": 11,
+    "businessName": "Guards Marc Security Services",
+    "category": "Security",
+    "description": "Provide private security services in our community. We look forward to welcoming and working with anyone interested.",
+    "address": "1010 E Southern Ave",
+    "zip": "85040",
+    "phone": "7472629196",
+    "hours": "Mon-Fri 9am-5pm",
+    "discount": "10%",
+    "website": "",
+    "ownerName": "Kenneth Lubowa",
+    "ownerEmail": "kenneth@guardsmarc.com",
+    "ownerPhone": "+17472629196",
+    "kudos": 0
+  }
+]
