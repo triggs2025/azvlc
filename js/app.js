@@ -10,7 +10,7 @@
     repoOwner: 'triggs2025',
     repoName: 'azvlc',
     branch: 'master',
-    ghToken: ['githu','b_pat','_11BT','ZXWLY','0SQsX','3XQNo','IzS_R','CcVNf','Lw1tl','ZurWe','6O21b','L0a1M','VKRjL','r4hcr','Aj2O9','hZ7HL','AMWEL','TrO8b','RDH'].join('')
+    ghToken: ''
   };
 
   // ── State ──
@@ -445,9 +445,7 @@
   var RAW_BASE = 'https://raw.githubusercontent.com/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/' + CONFIG.branch + '/data/';
 
   function fetchGHData(file) {
-    return fetch(GH_API_BASE + file + '?ref=' + CONFIG.branch, {
-      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
-    })
+    return fetch(GH_API_BASE + file + '?ref=' + CONFIG.branch, {})
     .then(function(r) { return r.json(); })
     .then(function(result) {
       if (!result.content) throw new Error('No content');
