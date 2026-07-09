@@ -390,6 +390,7 @@
         <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid #eee;padding-bottom:12px">
           <button class="filter-btn active" id="vobAdminTabApproved" onclick="showVOBAdminTab('approved', this)">Approved Listings</button>
           <button class="filter-btn" id="vobAdminTabPending" onclick="showVOBAdminTab('pending', this)">Pending Review <span id="vobPendingCount" style="background:var(--red);color:#fff;font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
+          <button class="filter-btn" id="vobAdminTabFriendly" onclick="showVOBAdminTab('friendly', this)">Veteran Friendly <span style="background:var(--gold);color:var(--navy);font-size:0.75em;padding:2px 6px;border-radius:10px;margin-left:4px">Private</span></button>
         </div>
 
         <div id="vobAdminApproved">
@@ -399,6 +400,13 @@
 
         <div id="vobAdminPending" style="display:none">
           <div id="adminVOBSubmissionsList"></div>
+        </div>
+
+        <div id="vobAdminFriendly" style="display:none">
+          <p style="color:var(--text-muted);font-size:0.85em;margin-bottom:16px;background:#fff8e1;padding:10px 14px;border-radius:6px;border-left:3px solid var(--gold)">
+            These businesses offer Veteran discounts but are <strong>not shown on the public site</strong>. This is a holding area — you can charge for public listing in the future.
+          </p>
+          <div id="adminVOBFriendlyList"></div>
         </div>
       </div>
 
@@ -1555,6 +1563,8 @@
     // ── VOB Management ──
     var adminVOBs = [];
     var vobSha = '';
+    var adminVOBFriendly = [];
+    var vobFriendlySha = '';
     var vobSubmissions = [];
     var vobSubmissionsShaAdmin = '';
     var adminVOBSearch = '';
@@ -1567,6 +1577,14 @@
           renderAdminVOB();
         })
         .catch(function() { adminVOBs = []; renderAdminVOB(); });
+
+      loadFileFromGitHub('data/vob-friendly.json')
+        .then(function(result) {
+          adminVOBFriendly = result.data || [];
+          vobFriendlySha = result.sha;
+          renderAdminVOBFriendly();
+        })
+        .catch(function() { adminVOBFriendly = []; renderAdminVOBFriendly(); });
 
       fetch('data/vob-submissions.json?t=' + Date.now())
         .then(function(r) { return r.json(); })
@@ -1585,8 +1603,68 @@
     function showVOBAdminTab(tab, btn) {
       document.getElementById('vobAdminApproved').style.display = tab === 'approved' ? '' : 'none';
       document.getElementById('vobAdminPending').style.display = tab === 'pending' ? '' : 'none';
+      document.getElementById('vobAdminFriendly').style.display = tab === 'friendly' ? '' : 'none';
       document.getElementById('vobAdminTabApproved').classList.toggle('active', tab === 'approved');
       document.getElementById('vobAdminTabPending').classList.toggle('active', tab === 'pending');
+      document.getElementById('vobAdminTabFriendly').classList.toggle('active', tab === 'friendly');
+    }
+
+    function renderAdminVOBFriendly() {
+      var el = document.getElementById('adminVOBFriendlyList');
+      if (!el) return;
+      if (adminVOBFriendly.length === 0) {
+        el.innerHTML = '<div class="admin-empty"><p>No Veteran Friendly businesses yet. Move approved listings here using the button on each card.</p></div>';
+        return;
+      }
+      el.innerHTML = adminVOBFriendly.map(function(b, idx) {
+        return '<div class="admin-item" style="flex-direction:column;border-left-color:var(--gold)">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%">' +
+            '<div>' +
+              '<h4>' + esc(b.businessName) + '</h4>' +
+              '<p><span class="badge badge-category">' + esc(b.category) + '</span>' +
+              (b.discount ? ' <span class="badge" style="background:#fff3e0;color:#e65100">🎖 ' + esc(b.discount) + '</span>' : '') + '</p>' +
+            '</div>' +
+            '<div class="admin-item-actions">' +
+              '<button class="btn btn-sm btn-success" onclick="moveVOBFriendlyToApproved(' + idx + ')" title="Move to public VOB page">Make Public</button>' +
+              '<button class="btn btn-sm btn-danger" onclick="deleteVOBFriendly(' + idx + ')">Delete</button>' +
+            '</div>' +
+          '</div>' +
+          '<div style="margin-top:8px;font-size:0.85em;color:var(--text-muted);line-height:1.6">' +
+            '<p>' + esc((b.description || '').substring(0, 150)) + (b.description && b.description.length > 150 ? '...' : '') + '</p>' +
+            (b.address ? '<p>📍 ' + esc(b.address) + '</p>' : '') +
+            (b.phone ? '<p>📞 ' + esc(b.phone) + '</p>' : '') +
+            (b.website ? '<p>🌐 <a href="' + esc(b.website) + '" target="_blank">' + esc(b.website) + '</a></p>' : '') +
+            '<p style="margin-top:4px;color:#999"><strong>Owner:</strong> ' + esc(b.ownerName || '') + ' | ' + esc(b.ownerEmail || '') + '</p>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function moveVOBToFriendly(idx) {
+      if (!confirm('Move "' + adminVOBs[idx].businessName + '" to Veteran Friendly (private)? It will be removed from the public site.')) return;
+      var b = adminVOBs.splice(idx, 1)[0];
+      adminVOBFriendly.push(b);
+      saveFileToGitHub('data/vob.json', adminVOBs, vobSha)
+        .then(function(r) { if (r.content) vobSha = r.content.sha; renderAdminVOB(); });
+      saveFileToGitHub('data/vob-friendly.json', adminVOBFriendly, vobFriendlySha)
+        .then(function(r) { if (r.content) vobFriendlySha = r.content.sha; renderAdminVOBFriendly(); });
+    }
+
+    function moveVOBFriendlyToApproved(idx) {
+      if (!confirm('Move "' + adminVOBFriendly[idx].businessName + '" to the public VOB page?')) return;
+      var b = adminVOBFriendly.splice(idx, 1)[0];
+      adminVOBs.push(b);
+      saveFileToGitHub('data/vob-friendly.json', adminVOBFriendly, vobFriendlySha)
+        .then(function(r) { if (r.content) vobFriendlySha = r.content.sha; renderAdminVOBFriendly(); });
+      saveFileToGitHub('data/vob.json', adminVOBs, vobSha)
+        .then(function(r) { if (r.content) vobSha = r.content.sha; renderAdminVOB(); });
+    }
+
+    function deleteVOBFriendly(idx) {
+      if (!confirm('Permanently delete "' + adminVOBFriendly[idx].businessName + '"?')) return;
+      adminVOBFriendly.splice(idx, 1);
+      saveFileToGitHub('data/vob-friendly.json', adminVOBFriendly, vobFriendlySha)
+        .then(function(r) { if (r.content) vobFriendlySha = r.content.sha; renderAdminVOBFriendly(); });
     }
 
     function filterAdminVOB(query) {
@@ -1622,6 +1700,7 @@
             '<div class="admin-item-actions">' +
               '<button class="btn btn-sm btn-success" onclick="notifyVOBLive(' + idx + ')">Send Live Email</button>' +
               '<button class="btn btn-sm btn-blue" onclick="editVOB(' + idx + ')">Edit</button>' +
+              '<button class="btn btn-sm" style="background:var(--gold);color:var(--navy);font-weight:600" onclick="moveVOBToFriendly(' + idx + ')" title="Move to private Veteran Friendly holding area">Vet Friendly</button>' +
               '<button class="btn btn-sm btn-danger" onclick="deleteVOB(' + idx + ')">Delete</button>' +
             '</div>' +
           '</div>' +
