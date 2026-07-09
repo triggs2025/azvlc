@@ -3071,7 +3071,7 @@
           vcEl.innerHTML = '<p style="color:#aaa;text-align:center">No clicks yet</p>';
         } else {
           vcEl.innerHTML = vcKeys.map(function(id, i) {
-            var biz = typeof vobData !== 'undefined' ? vobData.find(function(b) { return String(b.id) === id; }) : null;
+            var biz = (typeof adminVOBs !== 'undefined' ? adminVOBs : []).find(function(b) { return String(b.id) === id; });
             var name = biz ? biz.businessName : 'Business #' + id;
             return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0">' +
               '<span style="flex:1;font-size:0.9em">' + (i+1) + '. ' + esc(name) + '</span>' +
