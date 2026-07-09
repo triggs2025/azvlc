@@ -152,6 +152,7 @@
       document.getElementById('districtResults').style.display = 'none';
       return;
     }
+    _enqueueEvent({ type: 'district', num: String(distNum) });
     var distLabel = 'District ' + distNum;
     var reps = politicians.filter(function(p) {
       return (p.district || '').replace(/\D/g, '') === String(distNum);
@@ -293,17 +294,44 @@
   var _hitRunning = false;
   var _analyticsSha = null;    // stored from last PUT — avoids stale GET
   var _analyticsCache = null;  // stored data from last successful read
+  var _dwellSection = null;
+  var _dwellStart = 0;
+  var _searchTimer = null;
 
   function trackPageView() {
     if (sessionStorage.getItem('azvlc_viewed')) return;
     sessionStorage.setItem('azvlc_viewed', '1');
     _enqueueHit(true, null);
+    // visitor type (new vs returning)
+    var isNew = !localStorage.getItem('azvlc_visitor');
+    if (isNew) localStorage.setItem('azvlc_visitor', '1');
+    _hitQueue.push({ type: 'visitor', isNew: isNew });
+    // device type
+    var mobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    _hitQueue.push({ type: 'device', mobile: mobile });
   }
 
   function _enqueueHit(isLoad, firstSection) {
     if (!CONFIG.ghToken) return;
-    _hitQueue.push({ isLoad: isLoad, firstSection: firstSection });
+    _hitQueue.push({ type: 'hit', isLoad: isLoad, firstSection: firstSection });
     if (!_hitRunning) _flushHits();
+  }
+
+  function _enqueueEvent(evt) {
+    if (!CONFIG.ghToken) return;
+    _hitQueue.push(evt);
+    if (!_hitRunning) _flushHits();
+  }
+
+  function trackSearch(query) {
+    var term = query.trim().toLowerCase();
+    if (term.length < 3) return;
+    clearTimeout(_searchTimer);
+    _searchTimer = setTimeout(function() { _enqueueEvent({ type: 'search', term: term }); }, 1000);
+  }
+
+  function trackVOBClick(id) {
+    _enqueueEvent({ type: 'vobClick', id: String(id) });
   }
 
   function _applyHits(data, pending) {
@@ -311,11 +339,46 @@
     if (!data.daily) data.daily = {};
     if (!data.dailyHits) data.dailyHits = {};
     if (!data.firstClicks) data.firstClicks = {};
+    if (!data.dwellTime) data.dwellTime = {};
+    if (!data.searchTerms) data.searchTerms = {};
+    if (!data.dailyNew) data.dailyNew = {};
+    if (!data.dailyReturning) data.dailyReturning = {};
+    if (!data.devices) data.devices = { mobile: 0, desktop: 0 };
+    if (!data.districtLookups) data.districtLookups = {};
+    if (!data.vobClicks) data.vobClicks = {};
+    if (!data.scorecardViews) data.scorecardViews = {};
     if (!data.startDate) data.startDate = today;
     pending.forEach(function(h) {
-      if (h.isLoad) data.daily[today] = (data.daily[today] || 0) + 1;
-      data.dailyHits[today] = (data.dailyHits[today] || 0) + 1;
-      if (h.firstSection) data.firstClicks[h.firstSection] = (data.firstClicks[h.firstSection] || 0) + 1;
+      var type = h.type || 'hit';
+      if (type === 'hit') {
+        if (h.isLoad) data.daily[today] = (data.daily[today] || 0) + 1;
+        data.dailyHits[today] = (data.dailyHits[today] || 0) + 1;
+        if (h.firstSection) data.firstClicks[h.firstSection] = (data.firstClicks[h.firstSection] || 0) + 1;
+      } else if (type === 'dwell') {
+        data.dwellTime[h.section] = (data.dwellTime[h.section] || 0) + h.secs;
+      } else if (type === 'search') {
+        data.searchTerms[h.term] = (data.searchTerms[h.term] || 0) + 1;
+        // Prune to top 150 terms to avoid file bloat
+        var keys = Object.keys(data.searchTerms);
+        if (keys.length > 200) {
+          keys.sort(function(a, b) { return data.searchTerms[b] - data.searchTerms[a]; });
+          var pruned = {};
+          keys.slice(0, 150).forEach(function(t) { pruned[t] = data.searchTerms[t]; });
+          data.searchTerms = pruned;
+        }
+      } else if (type === 'visitor') {
+        if (h.isNew) data.dailyNew[today] = (data.dailyNew[today] || 0) + 1;
+        else data.dailyReturning[today] = (data.dailyReturning[today] || 0) + 1;
+      } else if (type === 'device') {
+        if (h.mobile) data.devices.mobile = (data.devices.mobile || 0) + 1;
+        else data.devices.desktop = (data.devices.desktop || 0) + 1;
+      } else if (type === 'district') {
+        data.districtLookups[h.num] = (data.districtLookups[h.num] || 0) + 1;
+      } else if (type === 'vobClick') {
+        data.vobClicks[h.id] = (data.vobClicks[h.id] || 0) + 1;
+      } else if (type === 'scorecard') {
+        data.scorecardViews[h.id] = (data.scorecardViews[h.id] || 0) + 1;
+      }
     });
     return data;
   }
@@ -582,6 +645,14 @@
     window.scrollTo(0, 0);
     if (!skipHash) window.location.hash = section;
 
+    // dwell time: record time spent on previous section
+    if (_dwellSection && _dwellStart) {
+      var secs = Math.round((Date.now() - _dwellStart) / 1000);
+      if (secs >= 3 && secs < 3600) _enqueueEvent({ type: 'dwell', section: _dwellSection, secs: secs });
+    }
+    _dwellSection = section;
+    _dwellStart = Date.now();
+
     if (!skipHash) {
       var isFirstNav = !sessionStorage.getItem('azvlc_first_nav');
       if (isFirstNav) sessionStorage.setItem('azvlc_first_nav', section);
@@ -684,6 +755,7 @@
   // ── Policies ──
   function searchPolicies(query) {
     currentPolicySearch = query.toLowerCase().trim();
+    trackSearch(query);
     renderPolicies();
   }
 
@@ -838,6 +910,7 @@
 
   function searchPoliticians(query) {
     currentPoliticianSearch = stripAccents(query.toLowerCase().trim());
+    trackSearch(query);
     renderPoliticians();
   }
 
@@ -1760,7 +1833,7 @@
           (b.address ? '<div>📍 ' + esc(b.address) + '</div>' : '') +
           (b.phone ? '<div>📞 ' + esc(b.phone) + '</div>' : '') +
           (b.hours ? '<div>🕐 ' + esc(b.hours) + '</div>' : '') +
-          (b.website ? '<div>🌐 <a href="' + esc(b.website) + '" target="_blank" rel="noopener">' + esc(b.website) + '</a></div>' : '') +
+          (b.website ? '<div>🌐 <a href="' + esc(b.website) + '" target="_blank" rel="noopener" onclick="AZVLC.trackVOBClick(' + b.id + ')">' + esc(b.website) + '</a></div>' : '') +
         '</div>' +
         '<div class="kudos-bar">' +
           '<button class="kudos-btn' + (voted ? ' voted' : '') + '" onclick="AZVLC.giveKudos(' + b.id + ',\'vob\')" ' + (voted ? 'disabled' : '') + '>' +
@@ -1776,6 +1849,7 @@
 
   function searchVOB(query) {
     vobCurrentSearch = query.toLowerCase().trim();
+    trackSearch(query);
     renderVOB();
   }
 
@@ -2439,6 +2513,7 @@
     filterVOB: filterVOB,
     sortVOB: sortVOB,
     toggleVOBDesc: toggleVOBDesc,
+    trackVOBClick: trackVOBClick,
     requestVOBEdit: requestVOBEdit,
     openVOBSubmitModal: openVOBSubmitModal,
     closeVOBSubmitModal: closeVOBSubmitModal,

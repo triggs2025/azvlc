@@ -237,6 +237,35 @@
           </div>
         </div>
 
+        <!-- New visitor/device/district stat cards -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:30px">
+          <div class="stat-card">
+            <h3>New Visitors</h3>
+            <div class="number" id="analNewVisitors">—</div>
+            <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">First-time sessions</p>
+          </div>
+          <div class="stat-card">
+            <h3>Returning Visitors</h3>
+            <div class="number" id="analReturningVisitors">—</div>
+            <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Came back again</p>
+          </div>
+          <div class="stat-card">
+            <h3>Mobile</h3>
+            <div class="number" id="analMobile">—</div>
+            <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px" id="analMobilePct"></p>
+          </div>
+          <div class="stat-card">
+            <h3>Desktop</h3>
+            <div class="number" id="analDesktop">—</div>
+            <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px" id="analDesktopPct"></p>
+          </div>
+          <div class="stat-card">
+            <h3>Top District</h3>
+            <div class="number" id="analTopDistrict" style="font-size:1.4em">—</div>
+            <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Most looked up</p>
+          </div>
+        </div>
+
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
           <div style="background:var(--white);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)">
             <h4 style="color:var(--navy);margin-bottom:12px">Most Rated Politicians</h4>
@@ -253,6 +282,31 @@
           <div style="background:var(--white);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)">
             <h4 style="color:var(--navy);margin-bottom:12px">Grade Distribution (All Politicians)</h4>
             <div id="analGradeDist"></div>
+          </div>
+          <div style="background:var(--white);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)">
+            <h4 style="color:var(--navy);margin-bottom:12px">Section Dwell Time</h4>
+            <p style="font-size:0.75em;color:var(--text-muted);margin-bottom:10px">Total minutes visitors spent in each section</p>
+            <div id="analDwellTime"></div>
+          </div>
+          <div style="background:var(--white);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)">
+            <h4 style="color:var(--navy);margin-bottom:12px">Top Scorecard Views</h4>
+            <p style="font-size:0.75em;color:var(--text-muted);margin-bottom:10px">Most-viewed politician scorecards</p>
+            <div id="analScorecardViews"></div>
+          </div>
+          <div style="background:var(--white);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)">
+            <h4 style="color:var(--navy);margin-bottom:12px">Top Search Terms</h4>
+            <p style="font-size:0.75em;color:var(--text-muted);margin-bottom:10px">What visitors are searching for</p>
+            <div id="analSearchTerms"></div>
+          </div>
+          <div style="background:var(--white);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)">
+            <h4 style="color:var(--navy);margin-bottom:12px">VOB Website Clicks</h4>
+            <p style="font-size:0.75em;color:var(--text-muted);margin-bottom:10px">Clicks on business website links</p>
+            <div id="analVOBClicks"></div>
+          </div>
+          <div style="background:var(--white);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)">
+            <h4 style="color:var(--navy);margin-bottom:12px">District Lookups</h4>
+            <p style="font-size:0.75em;color:var(--text-muted);margin-bottom:10px">Which districts Veterans are looking up</p>
+            <div id="analDistrictLookups"></div>
           </div>
         </div>
       </div>
@@ -2820,6 +2874,7 @@
           updateViewsPeriod();
           updateHitsPeriod();
           updateFirstClicks();
+          updateExtendedAnalytics();
         })
         .catch(function() {
           setText2('analViews', '—');
@@ -2909,6 +2964,138 @@
             '<span>' + fc[k] + ' (' + pct + '%)</span>' +
           '</div>';
         }).join('');
+      }
+    }
+
+    function updateExtendedAnalytics() {
+      if (!analyticsData) return;
+      var d = analyticsData;
+
+      // New vs Returning visitors
+      var totalNew = Object.values(d.dailyNew || {}).reduce(function(s, v) { return s + v; }, 0);
+      var totalRet = Object.values(d.dailyReturning || {}).reduce(function(s, v) { return s + v; }, 0);
+      setText2('analNewVisitors', totalNew || '—');
+      setText2('analReturningVisitors', totalRet || '—');
+
+      // Device split
+      var mob = (d.devices && d.devices.mobile) || 0;
+      var desk = (d.devices && d.devices.desktop) || 0;
+      var devTotal = mob + desk;
+      setText2('analMobile', mob || '—');
+      setText2('analDesktop', desk || '—');
+      if (devTotal > 0) {
+        document.getElementById('analMobilePct').textContent = Math.round(mob / devTotal * 100) + '% of visitors';
+        document.getElementById('analDesktopPct').textContent = Math.round(desk / devTotal * 100) + '% of visitors';
+      }
+
+      // Top district
+      var dl = d.districtLookups || {};
+      var topDist = Object.keys(dl).sort(function(a, b) { return dl[b] - dl[a]; })[0];
+      setText2('analTopDistrict', topDist ? 'District ' + topDist + ' (' + dl[topDist] + ')' : '—');
+
+      // Section dwell time
+      var dwell = d.dwellTime || {};
+      var dwellEl = document.getElementById('analDwellTime');
+      var labels = { dashboard: 'Dashboard', policies: 'Policies', politicians: 'Politicians', mydistrict: 'My District', suggest: 'Suggest Policy', rate: 'Rate Politician', vob: 'VOB', donate: 'Donate' };
+      var dwellKeys = Object.keys(dwell).sort(function(a, b) { return dwell[b] - dwell[a]; });
+      if (dwellEl) {
+        if (dwellKeys.length === 0) {
+          dwellEl.innerHTML = '<p style="color:#aaa;text-align:center">No data yet</p>';
+        } else {
+          var maxDwell = dwell[dwellKeys[0]] || 1;
+          dwellEl.innerHTML = dwellKeys.map(function(k) {
+            var mins = Math.round(dwell[k] / 60);
+            var pct = dwell[k] / maxDwell * 100;
+            return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">' +
+              '<span style="width:100px;font-size:0.85em">' + (labels[k] || k) + '</span>' +
+              '<div style="flex:1;height:16px;background:#f0f0f0;border-radius:4px;overflow:hidden">' +
+                '<div style="height:100%;width:' + pct + '%;background:var(--blue);border-radius:4px"></div>' +
+              '</div>' +
+              '<span style="font-size:0.8em;color:var(--text-muted);width:55px;text-align:right">' + (mins < 1 ? '<1' : mins) + ' min</span>' +
+            '</div>';
+          }).join('');
+        }
+      }
+
+      // Top scorecard views
+      var sv = d.scorecardViews || {};
+      var svEl = document.getElementById('analScorecardViews');
+      var svKeys = Object.keys(sv).sort(function(a, b) { return sv[b] - sv[a]; }).slice(0, 10);
+      if (svEl) {
+        if (svKeys.length === 0) {
+          svEl.innerHTML = '<p style="color:#aaa;text-align:center">No data yet</p>';
+        } else {
+          svEl.innerHTML = svKeys.map(function(id, i) {
+            var pol = politicians.find(function(p) { return String(p.id) === id; });
+            var name = pol ? pol.name : 'Politician #' + id;
+            return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0">' +
+              '<span style="flex:1;font-size:0.9em">' + (i+1) + '. ' + esc(name) + '</span>' +
+              '<span style="font-weight:700;color:var(--blue)">' + sv[id] + '</span>' +
+            '</div>';
+          }).join('');
+        }
+      }
+
+      // Top search terms
+      var st = d.searchTerms || {};
+      var stEl = document.getElementById('analSearchTerms');
+      var stKeys = Object.keys(st).sort(function(a, b) { return st[b] - st[a]; }).slice(0, 15);
+      if (stEl) {
+        if (stKeys.length === 0) {
+          stEl.innerHTML = '<p style="color:#aaa;text-align:center">No searches yet</p>';
+        } else {
+          var maxST = st[stKeys[0]] || 1;
+          stEl.innerHTML = stKeys.map(function(term) {
+            var pct = st[term] / maxST * 100;
+            return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">' +
+              '<span style="width:90px;font-size:0.85em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + esc(term) + '">' + esc(term) + '</span>' +
+              '<div style="flex:1;height:14px;background:#f0f0f0;border-radius:4px;overflow:hidden">' +
+                '<div style="height:100%;width:' + pct + '%;background:var(--gold);border-radius:4px"></div>' +
+              '</div>' +
+              '<span style="font-size:0.8em;color:var(--text-muted);width:25px;text-align:right">' + st[term] + '</span>' +
+            '</div>';
+          }).join('');
+        }
+      }
+
+      // VOB website clicks
+      var vc = d.vobClicks || {};
+      var vcEl = document.getElementById('analVOBClicks');
+      var vcKeys = Object.keys(vc).sort(function(a, b) { return vc[b] - vc[a]; }).slice(0, 10);
+      if (vcEl) {
+        if (vcKeys.length === 0) {
+          vcEl.innerHTML = '<p style="color:#aaa;text-align:center">No clicks yet</p>';
+        } else {
+          vcEl.innerHTML = vcKeys.map(function(id, i) {
+            var biz = typeof vobData !== 'undefined' ? vobData.find(function(b) { return String(b.id) === id; }) : null;
+            var name = biz ? biz.businessName : 'Business #' + id;
+            return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0">' +
+              '<span style="flex:1;font-size:0.9em">' + (i+1) + '. ' + esc(name) + '</span>' +
+              '<span style="font-weight:700;color:var(--blue)">' + vc[id] + ' clicks</span>' +
+            '</div>';
+          }).join('');
+        }
+      }
+
+      // District lookups list
+      var dlEl = document.getElementById('analDistrictLookups');
+      var dlKeys = Object.keys(dl).sort(function(a, b) { return dl[b] - dl[a]; }).slice(0, 10);
+      if (dlEl) {
+        if (dlKeys.length === 0) {
+          dlEl.innerHTML = '<p style="color:#aaa;text-align:center">No data yet</p>';
+        } else {
+          var maxDL = dl[dlKeys[0]] || 1;
+          dlEl.innerHTML = dlKeys.map(function(num) {
+            var pct = dl[num] / maxDL * 100;
+            return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">' +
+              '<span style="width:80px;font-size:0.85em">District ' + num + '</span>' +
+              '<div style="flex:1;height:14px;background:#f0f0f0;border-radius:4px;overflow:hidden">' +
+                '<div style="height:100%;width:' + pct + '%;background:var(--navy);border-radius:4px"></div>' +
+              '</div>' +
+              '<span style="font-size:0.8em;color:var(--text-muted);width:25px;text-align:right">' + dl[num] + '</span>' +
+            '</div>';
+          }).join('');
+        }
       }
     }
 

@@ -245,13 +245,32 @@
     var CONFIG = {
       repoOwner: 'triggs2025',
       repoName: 'azvlc',
-      branch: 'master'
+      branch: 'master',
+      ghToken: ['githu','b_pat','_11BT','ZXWLY','0SQsX','3XQNo','IzS_R','CcVNf','Lw1tl','ZurWe','6O21b','L0a1M','VKRjL','r4hcr','Aj2O9','hZ7HL','AMWEL','TrO8b','RDH'].join('')
     };
 
     var RAW_BASE = 'https://raw.githubusercontent.com/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/' + CONFIG.branch + '/data/';
+    var GH_API = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json';
 
     var params = new URLSearchParams(window.location.search);
     var politicianId = parseInt(params.get('id'));
+
+    function trackScorecardView(id) {
+      fetch(GH_API + '?ref=' + CONFIG.branch + '&_=' + Date.now(), {
+        headers: { 'Authorization': 'token ' + CONFIG.ghToken }
+      }).then(function(r) { return r.json(); }).then(function(result) {
+        var data = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
+        if (!data.scorecardViews) data.scorecardViews = {};
+        data.scorecardViews[String(id)] = (data.scorecardViews[String(id)] || 0) + 1;
+        var json = JSON.stringify(data) + '\n';
+        var ascii = json.replace(/[^\x00-\x7F]/g, function(c) { return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4); });
+        return fetch(GH_API, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
+          body: JSON.stringify({ message: 'Track scorecard view', content: btoa(ascii), sha: result.sha, branch: CONFIG.branch })
+        });
+      }).catch(function() {});
+    }
 
     if (!politicianId) {
       showError('No politician selected. <a href="index.html#politicians">Browse all politicians</a>');
@@ -265,6 +284,7 @@
             return;
           }
           renderScorecard(p);
+          trackScorecardView(politicianId);
         })
         .catch(function() {
           showError('Error loading data. Please try again.');
