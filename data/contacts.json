@@ -632,16 +632,5 @@
     "category": "Security",
     "phone": "+17472629196",
     "timestamp": "2026-07-08T22:13:13.865Z"
-  },
-  {
-    "email": "triggs@needthese.com",
-    "name": "Tony Riggs",
-    "source": "VOB: NeedThese",
-    "date": "2026-07-09",
-    "type": "vob-submission",
-    "businessName": "NeedThese",
-    "category": "Consulting",
-    "phone": "",
-    "timestamp": "2026-07-09T17:24:06.757Z"
   }
 ]
