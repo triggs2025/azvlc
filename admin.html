@@ -1613,7 +1613,7 @@
       var el = document.getElementById('adminVOBFriendlyList');
       if (!el) return;
       if (adminVOBFriendly.length === 0) {
-        el.innerHTML = '<div class="admin-empty"><p>No Veteran Friendly businesses yet. Move approved listings here using the button on each card.</p></div>';
+        el.innerHTML = '<div class="admin-empty"><p>No Veteran Friendly businesses yet. Move pending submissions here using the Vet Friendly button on each pending card.</p></div>';
         return;
       }
       el.innerHTML = adminVOBFriendly.map(function(b, idx) {
@@ -1621,20 +1621,26 @@
           '<div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%">' +
             '<div>' +
               '<h4>' + esc(b.businessName) + '</h4>' +
-              '<p><span class="badge badge-category">' + esc(b.category) + '</span>' +
-              (b.discount ? ' <span class="badge" style="background:#fff3e0;color:#e65100">🎖 ' + esc(b.discount) + '</span>' : '') + '</p>' +
+              '<p><span class="badge badge-category">' + esc(b.category) + '</span></p>' +
             '</div>' +
             '<div class="admin-item-actions">' +
               '<button class="btn btn-sm btn-success" onclick="moveVOBFriendlyToApproved(' + idx + ')" title="Move to public VOB page">Make Public</button>' +
               '<button class="btn btn-sm btn-danger" onclick="deleteVOBFriendly(' + idx + ')">Delete</button>' +
             '</div>' +
           '</div>' +
-          '<div style="margin-top:8px;font-size:0.85em;color:var(--text-muted);line-height:1.6">' +
-            '<p>' + esc((b.description || '').substring(0, 150)) + (b.description && b.description.length > 150 ? '...' : '') + '</p>' +
-            (b.address ? '<p>📍 ' + esc(b.address) + '</p>' : '') +
-            (b.phone ? '<p>📞 ' + esc(b.phone) + '</p>' : '') +
-            (b.website ? '<p>🌐 <a href="' + esc(b.website) + '" target="_blank">' + esc(b.website) + '</a></p>' : '') +
-            '<p style="margin-top:4px;color:#999"><strong>Owner:</strong> ' + esc(b.ownerName || '') + ' | ' + esc(b.ownerEmail || '') + '</p>' +
+          '<div style="margin-top:10px;background:#f8f9fa;border-radius:6px;padding:10px;font-size:0.85em;line-height:1.7">' +
+            (b.description ? '<p><strong>Description:</strong> ' + esc(b.description) + '</p>' : '') +
+            (b.address ? '<p><strong>Address:</strong> ' + esc(b.address) + (b.zip ? ', ' + esc(b.zip) : '') + '</p>' : (b.zip ? '<p><strong>Zip:</strong> ' + esc(b.zip) + '</p>' : '')) +
+            (b.phone ? '<p><strong>Business Phone:</strong> ' + esc(b.phone) + '</p>' : '') +
+            (b.hours ? '<p><strong>Hours:</strong> ' + esc(b.hours) + '</p>' : '') +
+            (b.discount ? '<p><strong>Veteran Discount:</strong> ' + esc(b.discount) + '</p>' : '') +
+            (b.website ? '<p><strong>Website:</strong> <a href="' + esc(b.website) + '" target="_blank">' + esc(b.website) + '</a></p>' : '') +
+          '</div>' +
+          '<div style="margin-top:8px;background:#fff8e1;border-radius:6px;padding:10px;font-size:0.85em;line-height:1.7">' +
+            '<p><strong>Owner:</strong> ' + esc(b.ownerName || '—') + '</p>' +
+            (b.ownerEmail ? '<p><strong>Email:</strong> ' + esc(b.ownerEmail) + '</p>' : '') +
+            (b.ownerPhone ? '<p><strong>Phone:</strong> ' + esc(b.ownerPhone) + '</p>' : '') +
+            (b.submittedAt ? '<p><strong>Submitted:</strong> ' + esc(b.submittedAt) + '</p>' : '') +
           '</div>' +
         '</div>';
       }).join('');
@@ -1669,13 +1675,19 @@
         address: s.address || '', zip: s.zip || '', phone: s.phone || '', hours: s.hours || '',
         discount: s.discount || '', website: s.website || '',
         ownerName: s.ownerName || '', ownerEmail: s.ownerEmail || '', ownerPhone: s.ownerPhone || '',
-        kudos: 0
+        submittedAt: s.submittedAt || '', kudos: 0
       };
       adminVOBFriendly.push(entry);
       vobSubmissions.splice(idx, 1);
+      // Save friendly list
       saveFileToGitHub('data/vob-friendly.json', adminVOBFriendly, vobFriendlySha)
         .then(function(r) { if (r.content) vobFriendlySha = r.content.sha; renderAdminVOBFriendly(); });
-      saveFileToGitHub('data/vob-submissions.json', vobSubmissions, vobSubmissionsShaAdmin)
+      // Fetch fresh SHA for submissions before saving to avoid conflict
+      loadFileFromGitHub('data/vob-submissions.json')
+        .then(function(result) {
+          vobSubmissionsShaAdmin = result.sha;
+          return saveFileToGitHub('data/vob-submissions.json', vobSubmissions, vobSubmissionsShaAdmin);
+        })
         .then(function(r) { if (r.content) vobSubmissionsShaAdmin = r.content.sha; renderVOBSubmissions(); updateVOBBadge(); });
     }
 
