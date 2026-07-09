@@ -10,7 +10,7 @@
     repoOwner: 'triggs2025',
     repoName: 'azvlc',
     branch: 'master',
-    ghToken: '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'
+    ghToken: ''
   };
 
   // ── State ──
@@ -37,9 +37,7 @@
 
   // ── Sponsor ──
   function loadSponsor() {
-    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/sponsor.json?ref=' + CONFIG.branch, {
-        headers: { 'Authorization': 'token ' + CONFIG.ghToken }
-      })
+    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/sponsor.json?ref=' + CONFIG.branch, {})
       .then(function(r) { return r.json(); })
       .then(function(result) {
         if (!result.content) return null;
@@ -71,9 +69,7 @@
 
   // ── Ticker ──
   function loadTicker() {
-    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/ticker.json?ref=' + CONFIG.branch, {
-        headers: { 'Authorization': 'token ' + CONFIG.ghToken }
-      })
+    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/ticker.json?ref=' + CONFIG.branch, {})
       .then(function(r) { return r.json(); })
       .then(function(result) {
         if (!result.content) return null;
