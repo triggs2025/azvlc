@@ -255,7 +255,9 @@
     var params = new URLSearchParams(window.location.search);
     var politicianId = parseInt(params.get('id'));
 
-    function trackScorecardView(id) {
+    function trackScorecardView(id, attempt) {
+      attempt = attempt || 1;
+      if (attempt > 5) return;
       fetch(GH_API + '?ref=' + CONFIG.branch + '&_=' + Date.now(), {
         headers: { 'Authorization': 'token ' + CONFIG.ghToken }
       }).then(function(r) { return r.json(); }).then(function(result) {
@@ -269,7 +271,11 @@
           headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
           body: JSON.stringify({ message: 'Track scorecard view', content: btoa(ascii), sha: result.sha, branch: CONFIG.branch })
         });
-      }).catch(function() {});
+      }).then(function(r) {
+        if (r && !r.ok) setTimeout(function() { trackScorecardView(id, attempt + 1); }, 1500);
+      }).catch(function() {
+        setTimeout(function() { trackScorecardView(id, attempt + 1); }, 1500);
+      });
     }
 
     if (!politicianId) {
