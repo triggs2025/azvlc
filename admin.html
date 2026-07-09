@@ -197,43 +197,47 @@
       <div id="panel-analytics" class="admin-panel active">
         <h3 style="color:var(--navy);margin-bottom:20px">Site Analytics</h3>
 
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:30px">
-          <div class="stat-card"><h3>Total Ratings</h3><div class="number" id="analRatings">0</div></div>
-          <div class="stat-card"><h3>Total Kudos</h3><div class="number" id="analKudos">0</div></div>
-          <div class="stat-card"><h3>Politicians Rated</h3><div class="number" id="analPoliticiansRated">0</div></div>
-          <div class="stat-card"><h3>Policy Suggestions</h3><div class="number" id="analSuggestions">0</div></div>
-          <div class="stat-card"><h3>Corrections</h3><div class="number" id="analCorrections">0</div></div>
-          <div class="stat-card">
-            <h3>Page Views</h3>
-            <div class="number" id="analViews">—</div>
-            <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Unique sessions</p>
-            <select id="viewsPeriod" onchange="updateViewsPeriod()" style="margin-top:8px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:0.75em">
-              <option value="today">Today</option>
-              <option value="7days">Last 7 Days</option>
-              <option value="month">This Month</option>
-              <option value="year">Year to Date</option>
-              <option value="all" selected>All Time</option>
-            </select>
-            <button onclick="loadPageViews()" style="margin-top:6px;background:none;border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:0.7em;cursor:pointer;color:var(--text-muted)">&#x21bb; Refresh</button>
-            <p id="viewsStartDate" style="font-size:0.65em;color:var(--text-muted);margin-top:4px"></p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:30px">
+          <!-- Left: small stat cards in a sub-grid -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;align-content:start">
+            <div class="stat-card"><h3>Total Ratings</h3><div class="number" id="analRatings">0</div></div>
+            <div class="stat-card"><h3>Total Kudos</h3><div class="number" id="analKudos">0</div></div>
+            <div class="stat-card"><h3>Politicians Rated</h3><div class="number" id="analPoliticiansRated">0</div></div>
+            <div class="stat-card"><h3>Policy Suggestions</h3><div class="number" id="analSuggestions">0</div></div>
+            <div class="stat-card"><h3>Corrections</h3><div class="number" id="analCorrections">0</div></div>
+            <div class="stat-card">
+              <h3>Page Views</h3>
+              <div class="number" id="analViews">—</div>
+              <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Unique sessions</p>
+              <select id="viewsPeriod" onchange="updateViewsPeriod()" style="margin-top:8px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:0.75em">
+                <option value="today">Today</option>
+                <option value="7days">Last 7 Days</option>
+                <option value="month">This Month</option>
+                <option value="year">Year to Date</option>
+                <option value="all" selected>All Time</option>
+              </select>
+              <button onclick="loadPageViews()" style="margin-top:6px;background:none;border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:0.7em;cursor:pointer;color:var(--text-muted)">&#x21bb; Refresh</button>
+              <p id="viewsStartDate" style="font-size:0.65em;color:var(--text-muted);margin-top:4px"></p>
+            </div>
+            <div class="stat-card">
+              <h3>Total Hits</h3>
+              <div class="number" id="analHits">—</div>
+              <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Every page &amp; section load</p>
+              <select id="hitsPeriod" onchange="updateHitsPeriod()" style="margin-top:8px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:0.75em">
+                <option value="today">Today</option>
+                <option value="7days">Last 7 Days</option>
+                <option value="month">This Month</option>
+                <option value="year">Year to Date</option>
+                <option value="all" selected>All Time</option>
+              </select>
+            </div>
           </div>
-          <div class="stat-card">
-            <h3>Total Hits</h3>
-            <div class="number" id="analHits">—</div>
-            <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Every page &amp; section load</p>
-            <select id="hitsPeriod" onchange="updateHitsPeriod()" style="margin-top:8px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:0.75em">
-              <option value="today">Today</option>
-              <option value="7days">Last 7 Days</option>
-              <option value="month">This Month</option>
-              <option value="year">Year to Date</option>
-              <option value="all" selected>All Time</option>
-            </select>
-          </div>
-          <div class="stat-card">
+          <!-- Right: Top First Click takes the full right column -->
+          <div class="stat-card" style="display:flex;flex-direction:column">
             <h3>Top First Click</h3>
-            <div class="number" id="analFirstClickSection" style="font-size:1.3em;text-transform:capitalize">—</div>
-            <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Most visited section first</p>
-            <div id="analFirstClickList" style="margin-top:10px;font-size:0.78em;color:var(--text-muted);text-align:left;line-height:1.8"></div>
+            <div class="number" id="analFirstClickSection" style="font-size:1.6em;text-transform:capitalize;margin-bottom:4px">—</div>
+            <p style="font-size:0.7em;color:var(--text-muted);margin-bottom:16px">Most visited section first</p>
+            <div id="analFirstClickList" style="flex:1;font-size:0.88em;color:var(--text-muted);text-align:left;line-height:2"></div>
           </div>
         </div>
 
