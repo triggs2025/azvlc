@@ -10,8 +10,16 @@
     repoOwner: 'triggs2025',
     repoName: 'azvlc',
     branch: 'master',
-    ghToken: (function(){ return ['ghp_Nasd','q4h2pgHt','BJUHcbyo','8uIAOpy','Wid21ZgHx'].join(''); })()
+    proxyUrl: 'https://api.azvlc.org/submit.php'
   };
+
+  function ghProxy(method, path, data) {
+    return fetch(CONFIG.proxyUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'github', method: method, path: path, data: data || null })
+    }).then(function(r) { return r.json(); });
+  }
 
   // ── State ──
   var policies = [];
@@ -212,7 +220,7 @@
   }
 
   function saveContact(email, name, source, details, attempt) {
-    if (!email || !CONFIG.ghToken) return;
+    if (!email) return;
     attempt = attempt || 0;
 
     var entry = {
@@ -227,29 +235,19 @@
       }
     }
 
-    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/contacts.json?ref=' + CONFIG.branch, {
-      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
-    })
-    .then(function(r) { return r.json(); })
+    ghProxy('GET', '/contents/data/contacts.json?ref=' + CONFIG.branch)
     .then(function(result) {
       var freshSha = result.sha;
       var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
       var contacts = JSON.parse(decoded);
       contacts.push(entry);
       var content = btoa(unescape(encodeURIComponent(JSON.stringify(contacts, null, 2) + '\n')));
-      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/contacts.json', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'token ' + CONFIG.ghToken
-        },
-        body: JSON.stringify({
-          message: 'New contact from ' + source,
-          content: content,
-          sha: freshSha,
-          branch: CONFIG.branch
-        })
-      }).then(function(r) { return r.json(); }).then(function(putResult) {
+      return ghProxy('PUT', '/contents/data/contacts.json', {
+        message: 'New contact from ' + source,
+        content: content,
+        sha: freshSha,
+        branch: CONFIG.branch
+      }).then(function(putResult) {
         if (putResult.content) {
           contactsSha = putResult.content.sha;
         } else if (attempt < 3) {
@@ -309,13 +307,13 @@
   }
 
   function _enqueueHit(isLoad, firstSection) {
-    if (!CONFIG.ghToken) return;
+    if (!CONFIG.proxyUrl) return;
     _hitQueue.push({ type: 'hit', isLoad: isLoad, firstSection: firstSection });
     if (!_hitRunning) _flushHits();
   }
 
   function _enqueueEvent(evt) {
-    if (!CONFIG.ghToken) return;
+    if (!CONFIG.proxyUrl) return;
     _hitQueue.push(evt);
     if (!_hitRunning) _flushHits();
   }
@@ -390,14 +388,11 @@
   }
 
   function _doWrite(data, sha, pending) {
-    var apiBase = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json';
     var json = JSON.stringify(data) + '\n';
     var ascii = json.replace(/[^\x00-\x7F]/g, function(c) { return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4); });
-    return fetch(apiBase, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
-      body: JSON.stringify({ message: 'Track hit', content: btoa(ascii), sha: sha, branch: CONFIG.branch })
-    }).then(function(r) { return r.json(); }).then(function(result) {
+    return ghProxy('PUT', '/contents/data/analytics.json', {
+      message: 'Track hit', content: btoa(ascii), sha: sha, branch: CONFIG.branch
+    }).then(function(result) {
       if (result.content && result.content.sha) {
         // Store fresh SHA and data from PUT response — no GET needed next time
         _analyticsSha = result.content.sha;
@@ -423,7 +418,6 @@
     _hitRunning = true;
 
     var pending = _hitQueue.splice(0, _hitQueue.length);
-    var apiBase = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/analytics.json';
 
     if (_analyticsSha && _analyticsCache) {
       // Use cached SHA+data from last PUT — no GET needed, no 409 possible
@@ -431,10 +425,7 @@
       _applyHits(data, pending);
       _doWrite(data, _analyticsSha, pending);
     } else {
-      fetch(apiBase + '?ref=' + CONFIG.branch + '&t=' + Date.now(), {
-        headers: { 'Authorization': 'token ' + CONFIG.ghToken }
-      })
-        .then(function(r) { return r.json(); })
+      ghProxy('GET', '/contents/data/analytics.json?ref=' + CONFIG.branch + '&t=' + Date.now())
         .then(function(result) {
           var data = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
           _applyHits(data, pending);
@@ -520,30 +511,17 @@
   }
 
   function savePoliticiansToGitHub(allPoliticians) {
-    if (!CONFIG.ghToken) {
-      console.log('No GitHub token configured. Rating saved locally only.');
-      return Promise.resolve({ content: { sha: politiciansSha } });
-    }
     var json = JSON.stringify(allPoliticians, null, 2) + '\n';
     var ascii = json.replace(/[^\x00-\x7F]/g, function(c) {
       return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
     });
     var content = btoa(ascii);
-    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/politicians.json', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'token ' + CONFIG.ghToken
-      },
-      body: JSON.stringify({
-        message: 'Update rating via public site',
-        content: content,
-        sha: politiciansSha,
-        branch: CONFIG.branch
-      })
-    })
-    .then(function (r) { return r.json(); })
-    .then(function (result) {
+    return ghProxy('PUT', '/contents/data/politicians.json', {
+      message: 'Update rating via public site',
+      content: content,
+      sha: politiciansSha,
+      branch: CONFIG.branch
+    }).then(function (result) {
       if (result.content) politiciansSha = result.content.sha;
       return result;
     });
@@ -563,25 +541,13 @@
   }
 
   function savePoliciesToGitHub(allPolicies) {
-    if (!CONFIG.ghToken) {
-      return Promise.resolve({ content: { sha: policiesSha } });
-    }
     var content = btoa(unescape(encodeURIComponent(JSON.stringify(allPolicies, null, 2) + '\n')));
-    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/policies.json', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'token ' + CONFIG.ghToken
-      },
-      body: JSON.stringify({
-        message: 'New policy suggestion via public site',
-        content: content,
-        sha: policiesSha,
-        branch: CONFIG.branch
-      })
-    })
-    .then(function (r) { return r.json(); })
-    .then(function (result) {
+    return ghProxy('PUT', '/contents/data/policies.json', {
+      message: 'New policy suggestion via public site',
+      content: content,
+      sha: policiesSha,
+      branch: CONFIG.branch
+    }).then(function (result) {
       if (result.content) policiesSha = result.content.sha;
       return result;
     });
@@ -1052,12 +1018,9 @@
 
     if (type !== 'vob') renderDashboard();
 
-    // save to GitHub — fetch fresh SHA from API (cache-busted) to avoid stale SHA conflicts
-    var apiBase = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/';
-    var apiHeaders = { 'Authorization': 'token ' + CONFIG.ghToken };
+    // save to GitHub — fetch fresh SHA via proxy (cache-busted) to avoid stale SHA conflicts
     if (type === 'vob') {
-      fetch(apiBase + 'vob.json?ref=' + CONFIG.branch + '&_=' + Date.now(), { headers: apiHeaders })
-        .then(function(r) { return r.json(); })
+      ghProxy('GET', '/contents/data/vob.json?ref=' + CONFIG.branch + '&_=' + Date.now())
         .then(function(result) {
           var all = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
           vobSha = result.sha;
@@ -1066,8 +1029,7 @@
           return saveVOBToGitHub(all);
         }).catch(function(err) { console.error('VOB kudos save error:', err); });
     } else if (type === 'politician') {
-      fetch(apiBase + 'politicians.json?ref=' + CONFIG.branch + '&_=' + Date.now(), { headers: apiHeaders })
-        .then(function(r) { return r.json(); })
+      ghProxy('GET', '/contents/data/politicians.json?ref=' + CONFIG.branch + '&_=' + Date.now())
         .then(function(result) {
           var all = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
           politiciansSha = result.sha;
@@ -1076,8 +1038,7 @@
           return savePoliticiansToGitHub(all);
         }).catch(function(err) { console.error('Kudos save error:', err); });
     } else {
-      fetch(apiBase + 'policies.json?ref=' + CONFIG.branch + '&_=' + Date.now(), { headers: apiHeaders })
-        .then(function(r) { return r.json(); })
+      ghProxy('GET', '/contents/data/policies.json?ref=' + CONFIG.branch + '&_=' + Date.now())
         .then(function(result) {
           var all = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
           policiesSha = result.sha;
@@ -1254,38 +1215,24 @@
       corrections.push(correction);
 
       var content = btoa(unescape(encodeURIComponent(JSON.stringify(corrections, null, 2) + '\n')));
-      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/corrections.json', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'token ' + CONFIG.ghToken
-        },
-        body: JSON.stringify({
-          message: 'Policy correction submitted for: ' + correction.originalName,
-          content: content,
-          sha: correctionsSha,
-          branch: CONFIG.branch
-        })
+      return ghProxy('PUT', '/contents/data/corrections.json', {
+        message: 'Policy correction submitted for: ' + correction.originalName,
+        content: content,
+        sha: correctionsSha,
+        branch: CONFIG.branch
       });
-    }).then(function (r) { return r.json(); }).then(function (result) {
+    }).then(function (result) {
       if (result.content) {
         correctionsSha = result.content.sha;
 
-        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'token ' + CONFIG.ghToken
-          },
-          body: JSON.stringify({
-            title: 'Policy Correction: ' + correction.originalName,
-            body: '**Policy:** ' + correction.originalName + '\n' +
-              '**Reason:** ' + correction.reason + '\n' +
-              '**Submitted by:** ' + (correction.submitterEmail || 'Anonymous') + '\n' +
-              '**Date:** ' + correction.submittedAt + '\n\n' +
-              'Review this correction in the [Admin Panel](https://azvlc.org/admin.html).',
-            labels: ['correction']
-          })
+        ghProxy('POST', '/issues', {
+          title: 'Policy Correction: ' + correction.originalName,
+          body: '**Policy:** ' + correction.originalName + '\n' +
+            '**Reason:** ' + correction.reason + '\n' +
+            '**Submitted by:** ' + (correction.submitterEmail || 'Anonymous') + '\n' +
+            '**Date:** ' + correction.submittedAt + '\n\n' +
+            'Review this correction in the [Admin Panel](https://azvlc.org/admin.html).',
+          labels: ['correction']
         }).catch(function () {});
 
         var successEl = document.getElementById('correctionSuccess');
@@ -1371,41 +1318,27 @@
       submissions.push(submission);
 
       var content = btoa(unescape(encodeURIComponent(JSON.stringify(submissions, null, 2) + '\n')));
-      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/politician-submissions.json', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'token ' + CONFIG.ghToken
-        },
-        body: JSON.stringify({
-          message: 'Politician submission: ' + submission.name,
-          content: content,
-          sha: polSubmissionsSha,
-          branch: CONFIG.branch
-        })
+      return ghProxy('PUT', '/contents/data/politician-submissions.json', {
+        message: 'Politician submission: ' + submission.name,
+        content: content,
+        sha: polSubmissionsSha,
+        branch: CONFIG.branch
       });
-    }).then(function (r) { return r.json(); }).then(function (result) {
+    }).then(function (result) {
       if (result.content) {
         polSubmissionsSha = result.content.sha;
 
-        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'token ' + CONFIG.ghToken
-          },
-          body: JSON.stringify({
-            title: 'New Politician Submission: ' + submission.name,
-            body: '**Name:** ' + submission.name + '\n' +
-              '**Position:** ' + submission.position + '\n' +
-              '**Party:** ' + submission.party + '\n' +
-              '**District:** ' + (submission.district || 'N/A') + '\n' +
-              '**Veteran:** ' + (submission.veteran ? 'Yes' : 'No') + '\n' +
-              '**Submitted by:** ' + (submission.submitterEmail || 'Anonymous') + '\n' +
-              '**Date:** ' + submission.submittedAt + '\n\n' +
-              'Review this submission in the [Admin Panel](https://azvlc.org/admin.html).',
-            labels: ['politician-submission']
-          })
+        ghProxy('POST', '/issues', {
+          title: 'New Politician Submission: ' + submission.name,
+          body: '**Name:** ' + submission.name + '\n' +
+            '**Position:** ' + submission.position + '\n' +
+            '**Party:** ' + submission.party + '\n' +
+            '**District:** ' + (submission.district || 'N/A') + '\n' +
+            '**Veteran:** ' + (submission.veteran ? 'Yes' : 'No') + '\n' +
+            '**Submitted by:** ' + (submission.submitterEmail || 'Anonymous') + '\n' +
+            '**Date:** ' + submission.submittedAt + '\n\n' +
+            'Review this submission in the [Admin Panel](https://azvlc.org/admin.html).',
+          labels: ['politician-submission']
         }).catch(function () {});
 
         var successEl = document.getElementById('addPoliticianSuccess');
@@ -1495,40 +1428,26 @@
       submissions.push(submission);
 
       var content = btoa(unescape(encodeURIComponent(JSON.stringify(submissions, null, 2) + '\n')));
-      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/politician-submissions.json', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'token ' + CONFIG.ghToken
-        },
-        body: JSON.stringify({
-          message: (submission.type === 'delete' ? 'Delete request' : 'Modify request') + ': ' + submission.originalName,
-          content: content,
-          sha: polSubmissionsSha,
-          branch: CONFIG.branch
-        })
+      return ghProxy('PUT', '/contents/data/politician-submissions.json', {
+        message: (submission.type === 'delete' ? 'Delete request' : 'Modify request') + ': ' + submission.originalName,
+        content: content,
+        sha: polSubmissionsSha,
+        branch: CONFIG.branch
       });
-    }).then(function(r) { return r.json(); }).then(function(result) {
+    }).then(function(result) {
       if (result.content) {
         polSubmissionsSha = result.content.sha;
 
         var actionLabel = submission.type === 'delete' ? 'Deletion Request' : 'Modification Request';
-        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'token ' + CONFIG.ghToken
-          },
-          body: JSON.stringify({
-            title: 'Politician ' + actionLabel + ': ' + submission.originalName,
-            body: '**Action:** ' + actionLabel + '\n' +
-              '**Politician:** ' + submission.originalName + '\n' +
-              '**Reason:** ' + submission.reason + '\n' +
-              '**Submitted by:** ' + (submission.submitterEmail || 'Anonymous') + '\n' +
-              '**Date:** ' + submission.submittedAt + '\n\n' +
-              'Review this in the [Admin Panel](https://azvlc.org/admin.html).',
-            labels: ['politician-submission']
-          })
+        ghProxy('POST', '/issues', {
+          title: 'Politician ' + actionLabel + ': ' + submission.originalName,
+          body: '**Action:** ' + actionLabel + '\n' +
+            '**Politician:** ' + submission.originalName + '\n' +
+            '**Reason:** ' + submission.reason + '\n' +
+            '**Submitted by:** ' + (submission.submitterEmail || 'Anonymous') + '\n' +
+            '**Date:** ' + submission.submittedAt + '\n\n' +
+            'Review this in the [Admin Panel](https://azvlc.org/admin.html).',
+          labels: ['politician-submission']
         }).catch(function() {});
 
         var successEl = document.getElementById('modifyPoliticianSuccess');
@@ -1723,42 +1642,26 @@
   var vobCurrentSort = 'name';
 
   function loadVOBSha() {
-    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/vob.json?ref=' + CONFIG.branch, {
-      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
-    })
-    .then(function(r) { return r.json(); })
+    return ghProxy('GET', '/contents/data/vob.json?ref=' + CONFIG.branch)
     .then(function(result) { vobSha = result.sha; })
     .catch(function() { vobSha = ''; });
   }
 
   function saveVOBToGitHub(data) {
-    if (!CONFIG.ghToken) return Promise.resolve({ content: { sha: vobSha } });
     var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2) + '\n')));
-    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/vob.json', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'token ' + CONFIG.ghToken
-      },
-      body: JSON.stringify({
-        message: 'Update VOB kudos',
-        content: content,
-        sha: vobSha,
-        branch: CONFIG.branch
-      })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(result) {
+    return ghProxy('PUT', '/contents/data/vob.json', {
+      message: 'Update VOB kudos',
+      content: content,
+      sha: vobSha,
+      branch: CONFIG.branch
+    }).then(function(result) {
       if (result.content) vobSha = result.content.sha;
       return result;
     });
   }
 
   function loadVOBSubmissionsSha() {
-    return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/vob-submissions.json?ref=' + CONFIG.branch, {
-      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
-    })
-    .then(function(r) { return r.json(); })
+    return ghProxy('GET', '/contents/data/vob-submissions.json?ref=' + CONFIG.branch)
     .then(function(result) { vobSubmissionsSha = result.sha; })
     .catch(function() { vobSubmissionsSha = ''; });
   }
@@ -1976,39 +1879,25 @@
     fetch('data/vob-submissions.json').then(function(r) { return r.json(); }).then(function(submissions) {
       submissions.push(submission);
       var content = btoa(unescape(encodeURIComponent(JSON.stringify(submissions, null, 2) + '\n')));
-      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/vob-submissions.json', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'token ' + CONFIG.ghToken
-        },
-        body: JSON.stringify({
-          message: 'VOB submission: ' + submission.businessName,
-          content: content,
-          sha: vobSubmissionsSha,
-          branch: CONFIG.branch
-        })
+      return ghProxy('PUT', '/contents/data/vob-submissions.json', {
+        message: 'VOB submission: ' + submission.businessName,
+        content: content,
+        sha: vobSubmissionsSha,
+        branch: CONFIG.branch
       });
-    }).then(function(r) { return r.json(); }).then(function(result) {
+    }).then(function(result) {
       if (result.content) {
         vobSubmissionsSha = result.content.sha;
 
-        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'token ' + CONFIG.ghToken
-          },
-          body: JSON.stringify({
-            title: 'VOB Submission: ' + submission.businessName,
-            body: '**Business:** ' + submission.businessName + '\n' +
-              '**Category:** ' + submission.category + '\n' +
-              '**Owner:** ' + submission.ownerName + '\n' +
-              '**Contact:** ' + (submission.ownerEmail || 'N/A') + ' / ' + (submission.ownerPhone || 'N/A') + '\n' +
-              '**Date:** ' + submission.submittedAt + '\n\n' +
-              'Review in the [Admin Panel](https://azvlc.org/admin.html).',
-            labels: ['vob-submission']
-          })
+        ghProxy('POST', '/issues', {
+          title: 'VOB Submission: ' + submission.businessName,
+          body: '**Business:** ' + submission.businessName + '\n' +
+            '**Category:** ' + submission.category + '\n' +
+            '**Owner:** ' + submission.ownerName + '\n' +
+            '**Contact:** ' + (submission.ownerEmail || 'N/A') + ' / ' + (submission.ownerPhone || 'N/A') + '\n' +
+            '**Date:** ' + submission.submittedAt + '\n\n' +
+            'Review in the [Admin Panel](https://azvlc.org/admin.html).',
+          labels: ['vob-submission']
         }).catch(function() {});
 
         var successEl = document.getElementById('vobSubmitSuccess');
@@ -2053,20 +1942,13 @@
       timestamp: new Date().toISOString()
     });
 
-    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'token ' + CONFIG.ghToken
-      },
-      body: JSON.stringify({
-        title: 'Donation Interest: ' + name,
-        body: '**Name:** ' + name + '\n' +
-          '**Email:** ' + email + '\n' +
-          '**Phone:** ' + phone + '\n' +
-          '**Date:** ' + new Date().toISOString(),
-        labels: ['donate-interest']
-      })
+    ghProxy('POST', '/issues', {
+      title: 'Donation Interest: ' + name,
+      body: '**Name:** ' + name + '\n' +
+        '**Email:** ' + email + '\n' +
+        '**Phone:** ' + phone + '\n' +
+        '**Date:** ' + new Date().toISOString(),
+      labels: ['donate-interest']
     }).catch(function() {});
 
     setTimeout(function() {
@@ -2109,39 +1991,25 @@
     fetch('data/policy-submissions.json').then(function(r) { return r.json(); }).then(function(submissions) {
       submissions.push(submission);
       var content = btoa(unescape(encodeURIComponent(JSON.stringify(submissions, null, 2) + '\n')));
-      return fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/policy-submissions.json', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'token ' + CONFIG.ghToken
-        },
-        body: JSON.stringify({
-          message: 'Policy suggestion: ' + submission.name,
-          content: content,
-          sha: policySubmissionsSha,
-          branch: CONFIG.branch
-        })
+      return ghProxy('PUT', '/contents/data/policy-submissions.json', {
+        message: 'Policy suggestion: ' + submission.name,
+        content: content,
+        sha: policySubmissionsSha,
+        branch: CONFIG.branch
       });
-    }).then(function(r) { return r.json(); }).then(function(result) {
+    }).then(function(result) {
       if (result.content) {
         policySubmissionsSha = result.content.sha;
 
-        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'token ' + CONFIG.ghToken
-          },
-          body: JSON.stringify({
-            title: 'Policy Suggestion: ' + submission.name,
-            body: '**Policy:** ' + submission.name + '\n' +
-              '**Sponsor:** ' + submission.sponsor + '\n' +
-              '**Description:** ' + submission.description + '\n' +
-              '**Submitted by:** ' + (submission.submitterEmail || 'Anonymous') + '\n' +
-              '**Date:** ' + submission.submittedAt + '\n\n' +
-              'Review this in the [Admin Panel](https://azvlc.org/admin.html).',
-            labels: ['policy-suggestion']
-          })
+        ghProxy('POST', '/issues', {
+          title: 'Policy Suggestion: ' + submission.name,
+          body: '**Policy:** ' + submission.name + '\n' +
+            '**Sponsor:** ' + submission.sponsor + '\n' +
+            '**Description:** ' + submission.description + '\n' +
+            '**Submitted by:** ' + (submission.submitterEmail || 'Anonymous') + '\n' +
+            '**Date:** ' + submission.submittedAt + '\n\n' +
+            'Review this in the [Admin Panel](https://azvlc.org/admin.html).',
+          labels: ['policy-suggestion']
         }).catch(function() {});
 
         var successEl = document.getElementById('policySuccess');
@@ -2248,9 +2116,8 @@
     submitBtn.textContent = 'Submitting...';
 
     // need all politicians (including unapproved) for the save
-    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/politicians.json?ref=' + CONFIG.branch, {
-      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
-    }).then(function(r) { return r.json(); }).then(function(result) {
+    ghProxy('GET', '/contents/data/politicians.json?ref=' + CONFIG.branch)
+    .then(function(result) {
       politiciansSha = result.sha;
       return JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g,'')))));
     }).then(function(allPoliticians) {
@@ -2284,23 +2151,16 @@
           timestamp: new Date().toISOString()
         }); }, 2000);
 
-        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'token ' + CONFIG.ghToken
-          },
-          body: JSON.stringify({
-            title: 'Politician Rating: ' + politicianName + ' (' + newGrade + ')',
-            body: '**Politician:** ' + politicianName + '\n' +
-              '**Position:** ' + politicianPosition + '\n' +
-              '**Grade:** ' + newGrade + (prevGrade ? ' (changed from ' + prevGrade + ')' : '') + '\n' +
-              '**Reason:** ' + (ratingReason || 'Not provided') + '\n' +
-              '**Zip:** ' + zip + '\n' +
-              '**Submitted by:** ' + (raterName || 'Anonymous') + ' (' + raterEmail + ')\n' +
-              '**Date:** ' + new Date().toISOString(),
-            labels: ['rating']
-          })
+        ghProxy('POST', '/issues', {
+          title: 'Politician Rating: ' + politicianName + ' (' + newGrade + ')',
+          body: '**Politician:** ' + politicianName + '\n' +
+            '**Position:** ' + politicianPosition + '\n' +
+            '**Grade:** ' + newGrade + (prevGrade ? ' (changed from ' + prevGrade + ')' : '') + '\n' +
+            '**Reason:** ' + (ratingReason || 'Not provided') + '\n' +
+            '**Zip:** ' + zip + '\n' +
+            '**Submitted by:** ' + (raterName || 'Anonymous') + ' (' + raterEmail + ')\n' +
+            '**Date:** ' + new Date().toISOString(),
+          labels: ['rating']
         }).catch(function() {});
       } else {
         throw new Error(result.message || 'Save failed');
