@@ -148,21 +148,12 @@
   <!-- Login screen -->
   <div id="loginScreen" class="admin-login">
     <h2>AZVLC Admin</h2>
-    <p style="color:var(--text-muted);margin-bottom:20px">Authenticate with your GitHub token to access the admin panel. Your token is saved on this device — you only need to enter it once.</p>
-    <input type="password" id="ghToken" placeholder="GitHub Token (ghp_...)" autofocus>
+    <p style="color:var(--text-muted);margin-bottom:20px">Enter your admin password to access the panel. You only need to do this once per device.</p>
+    <input type="password" id="ghToken" placeholder="Password" autofocus>
     <button class="btn btn-blue" style="width:100%" onclick="tryToken()">Authenticate</button>
     <p id="tokenError" style="color:var(--red);margin-top:12px;display:none"></p>
-    <div id="authLoading" style="display:none;text-align:center;margin-top:16px;color:var(--blue)">Verifying identity...</div>
+    <div id="authLoading" style="display:none;text-align:center;margin-top:16px;color:var(--blue)">Verifying...</div>
     <a href="index.html" class="btn btn-sm" style="width:100%;margin-top:12px;background:#eee;color:var(--navy);text-align:center">&larr; Go to Website</a>
-    <div style="margin-top:20px;text-align:left" class="setup-box">
-      <strong>How to get a token:</strong><br>
-      1. Go to <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a><br>
-      2. Name it "AZVLC Admin"<br>
-      3. Set expiration to <strong>No expiration</strong><br>
-      4. Check the <code>repo</code> scope<br>
-      5. Click "Generate token" and paste it above<br><br>
-      <strong>Security:</strong> Only the <code>triggs2025</code> GitHub account is authorized. Your GitHub 2FA protects token creation.
-    </div>
   </div>
 
   <!-- Admin dashboard -->
@@ -764,77 +755,54 @@
     var REPO_OWNER = 'triggs2025';
     var REPO_NAME = 'azvlc';
     var BRANCH = 'master';
-    var ALLOWED_USERS = ['triggs2025'];
-    var TOKEN_KEY = 'azvlc_gh_token';
+    var PROXY_URL = 'https://api.azvlc.org/submit.php';
+    var AUTH_KEY = 'azvlc_admin_auth';
+    var PASS_HASH = 'a830da35c3f54f889fe6572201c662a4043e0432feee62feb36d764b8af774ea';
 
-    var ghToken = '';
     var policies = [];
     var politicians = [];
     var policiesSha = '';
     var politiciansSha = '';
 
     // ── Auth ──
-    function verifyAndLogin(token) {
-      ghToken = token;
-      return fetch('https://api.github.com/user', {
-        headers: {
-          'Authorization': 'token ' + token,
-          'Accept': 'application/vnd.github.v3+json'
-        }
-      })
-      .then(function(r) {
-        if (!r.ok) throw new Error('Invalid token');
-        return r.json();
-      })
-      .then(function(user) {
-        if (ALLOWED_USERS.indexOf(user.login) === -1) {
-          throw new Error('Unauthorized: account "' + user.login + '" is not authorized for admin access.');
-        }
-        return ghAPI('GET', '/repos/' + REPO_OWNER + '/' + REPO_NAME);
-      })
-      .then(function() {
-        localStorage.setItem(TOKEN_KEY, token);
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('adminDashboard').style.display = 'block';
-        loadAllData();
+    function hashPassword(password) {
+      var encoder = new TextEncoder();
+      var data = encoder.encode(password);
+      return crypto.subtle.digest('SHA-256', data).then(function(buf) {
+        return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
       });
     }
 
-    // auto-login from saved token
-    (function() {
-      var savedToken = localStorage.getItem(TOKEN_KEY);
-      if (savedToken) {
-        document.getElementById('authLoading').style.display = 'block';
-        document.getElementById('ghToken').style.display = 'none';
-        document.querySelector('#loginScreen .btn-blue').style.display = 'none';
-        document.querySelector('#loginScreen > p').textContent = 'Authenticating...';
+    function showDashboard() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminDashboard').style.display = 'block';
+      loadAllData();
+    }
 
-        verifyAndLogin(savedToken)
-          .catch(function() {
-            localStorage.removeItem(TOKEN_KEY);
-            ghToken = '';
-            document.getElementById('authLoading').style.display = 'none';
-            document.getElementById('ghToken').style.display = '';
-            document.querySelector('#loginScreen .btn-blue').style.display = '';
-            document.querySelector('#loginScreen > p').textContent = 'Your saved token has expired. Please enter a new one.';
-          });
+    // auto-login if already authenticated
+    (function() {
+      if (localStorage.getItem(AUTH_KEY) === '1') {
+        showDashboard();
       }
     })();
 
     function tryToken() {
-      var token = document.getElementById('ghToken').value.trim();
-      if (!token) return;
+      var password = document.getElementById('ghToken').value.trim();
+      if (!password) return;
 
       document.getElementById('tokenError').style.display = 'none';
       document.getElementById('authLoading').style.display = 'block';
 
-      verifyAndLogin(token)
-        .catch(function(err) {
-          ghToken = '';
-          document.getElementById('authLoading').style.display = 'none';
-          document.getElementById('tokenError').textContent = err.message || 'Invalid token. Make sure you checked the "repo" scope.';
+      hashPassword(password).then(function(hash) {
+        document.getElementById('authLoading').style.display = 'none';
+        if (hash === PASS_HASH) {
+          localStorage.setItem(AUTH_KEY, '1');
+          showDashboard();
+        } else {
+          document.getElementById('tokenError').textContent = 'Incorrect password.';
           document.getElementById('tokenError').style.display = 'block';
-        });
+        }
+      });
     }
 
     document.getElementById('ghToken').addEventListener('keydown', function(e) {
@@ -842,28 +810,22 @@
     });
 
     function logout() {
-      ghToken = '';
-      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(AUTH_KEY);
       document.getElementById('adminDashboard').style.display = 'none';
       document.getElementById('loginScreen').style.display = 'block';
     }
 
-    // ── GitHub API ──
+    // ── GitHub API (via proxy) ──
     function ghAPI(method, path, body) {
-      var opts = {
-        method: method,
-        headers: {
-          'Authorization': 'token ' + ghToken,
-          'Accept': 'application/vnd.github.v3+json'
-        }
-      };
-      if (body) {
-        opts.headers['Content-Type'] = 'application/json';
-        opts.body = JSON.stringify(body);
-      }
-      return fetch('https://api.github.com' + path, opts).then(function(r) {
-        if (!r.ok) return r.json().then(function(err) { throw new Error(err.message || r.statusText); });
-        return r.json();
+      // Strip the /repos/owner/name prefix — proxy only wants /contents/... or /issues
+      var proxyPath = path.replace('/repos/' + REPO_OWNER + '/' + REPO_NAME, '');
+      return fetch(PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'github', method: method, path: proxyPath, data: body || null })
+      }).then(function(r) { return r.json(); }).then(function(result) {
+        if (result.error) throw new Error(result.error);
+        return result;
       });
     }
 
