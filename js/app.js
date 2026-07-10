@@ -117,14 +117,21 @@
         var line2 = document.getElementById('tickerLine2');
         if (!bar || !line1 || !line2) return;
 
+        function tickerHtml(msgs) {
+          return msgs.map(function(m) {
+            return esc(m).replace(/https?:\/\/\S+/g, function(url) {
+              return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>';
+            });
+          }).join('  ★  ') + '  ★  ';
+        }
+
         var separator = '  ★  ';
         var half = Math.ceil(msgs.length / 2);
-        var text1 = msgs.slice(0, half).join(separator) + separator;
-        var text2 = msgs.slice(half).join(separator) + separator;
-        if (msgs.length < 2) { text2 = text1; }
+        var html1 = tickerHtml(msgs.slice(0, half));
+        var html2 = msgs.length >= 2 ? tickerHtml(msgs.slice(half)) : html1;
 
-        line1.textContent = text1 + text1;
-        line2.textContent = text2 + text2;
+        line1.innerHTML = html1 + html1;
+        line2.innerHTML = html2 + html2;
 
         var speedMultiplier = data.speed || 1;
         var baseSpeed1 = Math.max(10, text1.length * 0.32);
