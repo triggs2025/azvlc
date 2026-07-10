@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": 1783712713825,
+    "businessName": "NeedThese",
+    "category": "Education",
+    "description": "ssdf sdf",
+    "website": "",
+    "address": "PO Box 7400",
+    "zip": "85281",
+    "phone": "14804605199",
+    "hours": "",
+    "discount": "",
+    "ownerName": "Tony Riggs",
+    "ownerEmail": "triggs@needthese.com",
+    "ownerPhone": "",
+    "submittedAt": "2026-07-10T19:45:13.825Z"
+  }
+]
