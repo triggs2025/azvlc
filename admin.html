@@ -793,7 +793,7 @@
         return ghAPI('GET', '/repos/' + REPO_OWNER + '/' + REPO_NAME);
       })
       .then(function() {
-        sessionStorage.setItem(TOKEN_KEY, token);
+        localStorage.setItem(TOKEN_KEY, token);
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('adminDashboard').style.display = 'block';
         loadAllData();
@@ -802,7 +802,7 @@
 
     // auto-login from saved token
     (function() {
-      var savedToken = sessionStorage.getItem(TOKEN_KEY);
+      var savedToken = localStorage.getItem(TOKEN_KEY);
       if (savedToken) {
         document.getElementById('authLoading').style.display = 'block';
         document.getElementById('ghToken').style.display = 'none';
@@ -811,7 +811,7 @@
 
         verifyAndLogin(savedToken)
           .catch(function() {
-            sessionStorage.removeItem(TOKEN_KEY);
+            localStorage.removeItem(TOKEN_KEY);
             ghToken = '';
             document.getElementById('authLoading').style.display = 'none';
             document.getElementById('ghToken').style.display = '';
@@ -843,7 +843,7 @@
 
     function logout() {
       ghToken = '';
-      sessionStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(TOKEN_KEY);
       document.getElementById('adminDashboard').style.display = 'none';
       document.getElementById('loginScreen').style.display = 'block';
     }
