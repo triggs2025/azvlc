@@ -93,14 +93,14 @@
       repoOwner: 'triggs2025',
       repoName: 'azvlc',
       branch: 'master',
-      ghToken: ['githu','b_pat','_11BT','ZXWLY','0SQsX','3XQNo','IzS_R','CcVNf','Lw1tl','ZurWe','6O21b','L0a1M','VKRjL','r4hcr','Aj2O9','hZ7HL','AMWEL','TrO8b','RDH'].join('')
+      ghToken: ''
     };
 
     var API = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/';
 
     function fetchJSON(file) {
       return fetch(API + file + '?ref=' + CONFIG.branch, {
-          headers: { 'Authorization': 'token ' + CONFIG.ghToken }
+          headers: {}
         })
         .then(function(r) { return r.json(); })
         .then(function(result) {
