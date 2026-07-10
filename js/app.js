@@ -127,6 +127,8 @@
 
         var separator = '  ★  ';
         var half = Math.ceil(msgs.length / 2);
+        var text1 = msgs.slice(0, half).join(separator) + separator;
+        var text2 = msgs.length >= 2 ? msgs.slice(half).join(separator) + separator : text1;
         var html1 = tickerHtml(msgs.slice(0, half));
         var html2 = msgs.length >= 2 ? tickerHtml(msgs.slice(half)) : html1;
 
