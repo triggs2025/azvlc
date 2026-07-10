@@ -119,6 +119,9 @@
 
         function tickerHtml(msgs) {
           return msgs.map(function(m) {
+            // If message already contains HTML tags, render as-is (admin-controlled content)
+            // Otherwise auto-link bare URLs
+            if (/<[a-z]/i.test(m)) return m;
             return esc(m).replace(/https?:\/\/\S+/g, function(url) {
               return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>';
             });
