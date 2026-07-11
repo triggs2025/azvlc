@@ -643,5 +643,20 @@
     "category": "IT & Technology",
     "phone": "4803955754",
     "timestamp": "2026-07-11T08:17:54.251Z"
+  },
+  {
+    "email": "triggs@triggsgroup.com",
+    "name": "Anonymous",
+    "source": "Rated: Quang H Nguyen (A)",
+    "date": "2026-07-11",
+    "type": "politician-rating",
+    "politician": "Quang H Nguyen",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted for 2 Veteran Bills, both failed but still voted for them.",
+    "zip": "85045",
+    "anonymous": true,
+    "timestamp": "2026-07-11T21:23:06.278Z"
   }
 ]
