@@ -658,16 +658,5 @@
     "zip": "85045",
     "anonymous": true,
     "timestamp": "2026-07-11T21:23:06.278Z"
-  },
-  {
-    "email": "triggs@needthese.com",
-    "name": "Tony Riggs",
-    "source": "VOB: NeedThese",
-    "date": "2026-07-12",
-    "type": "vob-submission",
-    "businessName": "NeedThese",
-    "category": "Consulting",
-    "phone": "",
-    "timestamp": "2026-07-12T03:11:44.433Z"
   }
 ]
