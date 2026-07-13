@@ -691,5 +691,20 @@
     "category": "Construction",
     "phone": "6025605364",
     "timestamp": "2026-07-13T16:14:01.726Z"
+  },
+  {
+    "email": "unknown_vampire@hotmail.com",
+    "name": "Anonymous",
+    "source": "Rated: Jake Hoffman (F)",
+    "date": "2026-07-13",
+    "type": "politician-rating",
+    "politician": "Jake Hoffman",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Always votes no on veterans ",
+    "zip": "85629",
+    "anonymous": true,
+    "timestamp": "2026-07-13T19:09:02.092Z"
   }
 ]
