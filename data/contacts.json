@@ -658,16 +658,5 @@
     "zip": "85045",
     "anonymous": true,
     "timestamp": "2026-07-11T21:23:06.278Z"
-  },
-  {
-    "email": "triggs@skilledvets.com",
-    "name": "Tony Riggs",
-    "source": "VOB: Skilled Vets, LLC",
-    "date": "2026-07-13",
-    "type": "vob-submission",
-    "businessName": "Skilled Vets, LLC",
-    "category": "Food & Beverage",
-    "phone": "",
-    "timestamp": "2026-07-13T03:23:22.967Z"
   }
 ]
