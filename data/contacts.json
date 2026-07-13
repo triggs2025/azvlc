@@ -658,5 +658,16 @@
     "zip": "85045",
     "anonymous": true,
     "timestamp": "2026-07-11T21:23:06.278Z"
+  },
+  {
+    "email": "info@jambargroup.com",
+    "name": "Ibrahima Diallo",
+    "source": "VOB: Jambar Group, LLC",
+    "date": "2026-07-13",
+    "type": "vob-submission",
+    "businessName": "Jambar Group, LLC",
+    "category": "IT & Technology",
+    "phone": "5202559347",
+    "timestamp": "2026-07-13T04:31:12.450Z"
   }
 ]
