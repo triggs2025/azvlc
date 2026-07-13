@@ -184,5 +184,21 @@
     "ownerEmail": "marcbeilin@quantumideastech.com",
     "ownerPhone": "4803955754",
     "approvedAt": "2026-07-11T14:20:23.648Z"
+  },
+  {
+    "id": 12,
+    "businessName": "Jambar Group, LLC",
+    "category": "IT & Technology",
+    "description": "IT consulting company.",
+    "website": "https://jambargroup.com",
+    "address": "",
+    "zip": "85641",
+    "phone": "",
+    "hours": "",
+    "discount": "",
+    "ownerName": "Ibrahima Diallo",
+    "ownerEmail": "info@jambargroup.com",
+    "ownerPhone": "5202559347",
+    "approvedAt": "2026-07-13T14:01:59.654Z"
   }
 ]
