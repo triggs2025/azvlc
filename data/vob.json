@@ -217,5 +217,21 @@
     "ownerEmail": "jerryb@aztechproducts.com",
     "ownerPhone": "480-545-6690",
     "approvedAt": "2026-07-13T21:04:24.655Z"
+  },
+  {
+    "id": 14,
+    "businessName": "Desert Veterans LLC",
+    "category": "Construction",
+    "description": "Desert Veterans is an Arizona Veteran-owned contractor providing commercial demolition, construction support, pressure washing, facility maintenance, and property services throughout Arizona. We help general contractors, property managers, municipalities, and commercial clients complete projects safely, efficiently, and on schedule. Our mission is simple: deliver reliable service, quality workmanship, and a professional workforce that makes every project easier for our clients.",
+    "website": "https://www.DesertDog.Dog",
+    "address": "5610 N. 51st Ave",
+    "zip": "85301",
+    "phone": "16025605364",
+    "hours": "Mon-Fri, 7AM - 4PM",
+    "discount": "10% for all Veterans and their families",
+    "ownerName": "Anthony Calderon",
+    "ownerEmail": "Anthony@DesertDog.Dog",
+    "ownerPhone": "6025605364",
+    "approvedAt": "2026-07-13T21:04:35.503Z"
   }
 ]
