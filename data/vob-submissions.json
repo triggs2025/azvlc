@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": 1783917072449,
+    "businessName": "Jambar Group, LLC",
+    "category": "IT & Technology",
+    "description": "IT consulting company.",
+    "website": "https://jambargroup.com",
+    "address": "",
+    "zip": "85641",
+    "phone": "",
+    "hours": "",
+    "discount": "",
+    "ownerName": "Ibrahima Diallo",
+    "ownerEmail": "info@jambargroup.com",
+    "ownerPhone": "5202559347",
+    "submittedAt": "2026-07-13T04:31:12.450Z"
+  }
+]
