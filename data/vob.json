@@ -37,7 +37,7 @@
     "id": 3,
     "businessName": "Standing Watch Insurance",
     "category": "Finance",
-    "description": "Standing Watch Insurance, Disabled Veteran owned. My specialty is Medicare and VA health. I do all Medicare but know the VA system, how it works and doesn’t work with the VA. vets need to understand that they could be penalized for life if they do not sign up in time or get the right Medicare. Especially for TCFL and Champ VA. Also if their spouse turns 65 before the veteran what the spouse needs to continue to be covered by Champ VA and TCFL. You may also qualify for a Medicare give back as well. I help with future life planning as well.",
+    "description": "Standing Watch Insurance, Disabled Veteran owned. My specialty is Medicare and VA health. I do all Medicare but know the VA system, how it works and doesn\u2019t work with the VA. vets need to understand that they could be penalized for life if they do not sign up in time or get the right Medicare. Especially for TCFL and Champ VA. Also if their spouse turns 65 before the veteran what the spouse needs to continue to be covered by Champ VA and TCFL. You may also qualify for a Medicare give back as well. I help with future life planning as well.",
     "website": "https://standingwatchinsurance.com/",
     "address": "",
     "zip": "85395",
@@ -54,7 +54,7 @@
     "id": 4,
     "businessName": "The Husband & Wife Home Team - FindHappyAZ.com",
     "category": "Real Estate",
-    "description": "The Husband & Wife Home Team is a Veteran-led Arizona real estate team serving buyers and sellers with clear guidance, strong negotiation, and trusted market expertise. Veterans benefit from our VA Loan Certification, military-minded service, and understanding of VA financing, appraisals, concessions, and offer strategy—helping them buy or sell with confidence. Agent: Elizabeth Dine - Keller Williams Realty Phoenix",
+    "description": "The Husband & Wife Home Team is a Veteran-led Arizona real estate team serving buyers and sellers with clear guidance, strong negotiation, and trusted market expertise. Veterans benefit from our VA Loan Certification, military-minded service, and understanding of VA financing, appraisals, concessions, and offer strategy\u2014helping them buy or sell with confidence. Agent: Elizabeth Dine - Keller Williams Realty Phoenix",
     "website": "https://FindHappyAZ.com",
     "address": "6400 East McDowell Rd. Scottsdale, AZ",
     "zip": "85257",
@@ -250,5 +250,21 @@
     "ownerEmail": "matt@little6llc.com",
     "ownerPhone": "9288305311",
     "approvedAt": "2026-07-13T21:04:45.412Z"
+  },
+  {
+    "id": 16,
+    "businessName": "Triggs Group",
+    "category": "Consulting",
+    "description": "Triggs Group is a veteran-owned consulting and business development firm specializing in the SLED (State, Local Government, and Education) market. We help companies expand through strategic partnerships, sales development, government contracting, procurement guidance, and market access. With decades of experience in public sector technology and services, we connect organizations with decision-makers and develop strategies that drive sustainable growth and long-term success.",
+    "website": "https://triggsgroup.com/",
+    "address": "",
+    "zip": "85045",
+    "phone": "",
+    "hours": "Mon-Fri, 8am-5pm",
+    "discount": "",
+    "ownerName": "Tony Riggs",
+    "ownerEmail": "triggs@triggsgroup.com",
+    "ownerPhone": "",
+    "approvedAt": "2026-07-14T17:40:05.930Z"
   }
 ]
