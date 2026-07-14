@@ -454,13 +454,8 @@
   var RAW_BASE = 'https://raw.githubusercontent.com/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/' + CONFIG.branch + '/data/';
 
   function fetchGHData(file) {
-    return fetch(GH_API_BASE + file + '?ref=' + CONFIG.branch, {})
-    .then(function(r) { return r.json(); })
-    .then(function(result) {
-      if (!result.content) throw new Error('No content');
-      var decoded = decodeURIComponent(escape(atob(result.content.replace(/\n/g, ''))));
-      return JSON.parse(decoded);
-    });
+    return fetch(RAW_BASE + file + '?t=' + Date.now())
+    .then(function(r) { return r.json(); });
   }
 
   function loadData() {
