@@ -717,5 +717,16 @@
     "category": "Manufacturing",
     "phone": "9288305311",
     "timestamp": "2026-07-13T20:25:37.774Z"
+  },
+  {
+    "email": "triggs@triggsgroup.com",
+    "name": "Tony Riggs",
+    "source": "VOB: Triggs Group",
+    "date": "2026-07-14",
+    "type": "vob-submission",
+    "businessName": "Triggs Group",
+    "category": "Consulting",
+    "phone": "",
+    "timestamp": "2026-07-14T17:38:14.373Z"
   }
 ]
