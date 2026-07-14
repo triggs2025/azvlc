@@ -728,5 +728,16 @@
     "category": "Consulting",
     "phone": "",
     "timestamp": "2026-07-14T17:38:14.373Z"
+  },
+  {
+    "email": "info@majoropinion.com",
+    "name": "Tony Riggs",
+    "source": "VOB: Major Opinion",
+    "date": "2026-07-14",
+    "type": "vob-submission",
+    "businessName": "Major Opinion",
+    "category": "Consulting",
+    "phone": "",
+    "timestamp": "2026-07-14T17:58:46.646Z"
   }
 ]
