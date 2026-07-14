@@ -913,5 +913,113 @@
   </script>
 
   <script src="js/app.js?v=20260709g"></script>
+
+  <!-- ── Report a Problem ── -->
+  <button id="reportBtn" onclick="openReportModal()" title="Report a Problem or Suggestion" style="position:fixed;bottom:24px;right:24px;z-index:500;background:var(--navy);color:#fff;border:none;border-radius:50px;padding:12px 20px;font-size:0.85em;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.25);display:flex;align-items:center;gap:8px;transition:background 0.2s">
+    ⚑ Report / Suggest
+  </button>
+
+  <div id="reportModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:600;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto">
+    <div style="background:#fff;border-radius:12px;max-width:500px;width:100%;margin:0 auto;padding:32px;position:relative">
+      <button onclick="closeReportModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.5em;cursor:pointer;color:#666">&times;</button>
+      <h3 style="color:var(--navy);margin-bottom:8px">Report a Problem or Suggestion</h3>
+      <p style="color:var(--text-muted);font-size:0.9em;margin-bottom:20px">Found a bug or have an idea? Let us know and we'll look into it.</p>
+      <form id="reportForm" onsubmit="submitReport(event)">
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-weight:600;margin-bottom:6px;font-size:0.9em">Your Name <span style="color:var(--text-muted);font-weight:400">(optional)</span></label>
+          <input type="text" id="reportName" autocomplete="name" placeholder="Your name" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.95em;box-sizing:border-box">
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-weight:600;margin-bottom:6px;font-size:0.9em">Your Email <span style="color:var(--text-muted);font-weight:400">(optional — if you want a reply)</span></label>
+          <input type="email" id="reportEmail" autocomplete="email" placeholder="your@email.com" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.95em;box-sizing:border-box">
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-weight:600;margin-bottom:6px;font-size:0.9em">What's the problem or suggestion? *</label>
+          <textarea id="reportMessage" rows="5" placeholder="Describe the bug or what you'd like to see..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.95em;box-sizing:border-box;resize:vertical"></textarea>
+        </div>
+        <div style="margin-bottom:20px">
+          <label style="display:block;font-weight:600;margin-bottom:6px;font-size:0.9em"><span id="reportCaptchaLabel">What is 2 + 3?</span> *</label>
+          <input type="number" id="reportCaptchaAnswer" autocomplete="off" placeholder="Your answer" style="width:120px;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.95em">
+        </div>
+        <div id="reportError" style="display:none;color:var(--red);margin-bottom:12px;font-size:0.9em"></div>
+        <div id="reportSuccess" style="display:none;color:#27ae60;margin-bottom:12px;font-weight:600">Thanks! We received your message.</div>
+        <div style="display:flex;gap:10px">
+          <button type="submit" class="btn btn-blue" style="flex:1">Send</button>
+          <button type="button" class="btn" style="background:#eee;color:var(--text)" onclick="closeReportModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    var _rCaptchaA = 0, _rCaptchaB = 0;
+    function _genReportCaptcha() {
+      _rCaptchaA = Math.floor(Math.random() * 10) + 1;
+      _rCaptchaB = Math.floor(Math.random() * 10) + 1;
+      var el = document.getElementById('reportCaptchaLabel');
+      if (el) el.textContent = 'What is ' + _rCaptchaA + ' + ' + _rCaptchaB + '?';
+      var ans = document.getElementById('reportCaptchaAnswer');
+      if (ans) ans.value = '';
+    }
+    function openReportModal() {
+      _genReportCaptcha();
+      document.getElementById('reportError').style.display = 'none';
+      document.getElementById('reportSuccess').style.display = 'none';
+      document.getElementById('reportForm').reset();
+      var m = document.getElementById('reportModal');
+      m.style.display = 'flex';
+    }
+    function closeReportModal() {
+      document.getElementById('reportModal').style.display = 'none';
+    }
+    function submitReport(e) {
+      e.preventDefault();
+      var msg = document.getElementById('reportMessage').value.trim();
+      var ans = parseInt(document.getElementById('reportCaptchaAnswer').value);
+      var errEl = document.getElementById('reportError');
+
+      if (!msg) { errEl.textContent = 'Please describe the problem or suggestion.'; errEl.style.display = 'block'; return; }
+      if (ans !== (_rCaptchaA + _rCaptchaB)) {
+        errEl.textContent = 'Incorrect answer. Please solve the math problem.';
+        errEl.style.display = 'block';
+        _genReportCaptcha();
+        return;
+      }
+      errEl.style.display = 'none';
+
+      var btn = e.target.querySelector('[type=submit]');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      fetch('https://api.azvlc.org/submit.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'report',
+          name: document.getElementById('reportName').value.trim(),
+          email: document.getElementById('reportEmail').value.trim(),
+          message: msg
+        })
+      }).then(function(r) { return r.json(); }).then(function(result) {
+        if (result.success) {
+          document.getElementById('reportSuccess').style.display = 'block';
+          document.getElementById('reportForm').reset();
+          setTimeout(closeReportModal, 2500);
+        } else {
+          errEl.textContent = result.error || 'Something went wrong. Please try again.';
+          errEl.style.display = 'block';
+        }
+      }).catch(function() {
+        errEl.textContent = 'Could not send. Please try again.';
+        errEl.style.display = 'block';
+      }).finally(function() {
+        btn.disabled = false;
+        btn.textContent = 'Send';
+      });
+    }
+    document.getElementById('reportModal').addEventListener('click', function(e) {
+      if (e.target === this) closeReportModal();
+    });
+  </script>
 </body>
 </html>
