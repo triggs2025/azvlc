@@ -739,5 +739,16 @@
     "category": "Consulting",
     "phone": "",
     "timestamp": "2026-07-14T17:58:46.646Z"
+  },
+  {
+    "email": "admin@azvlc.org",
+    "name": "Tony Riggs",
+    "source": "VOB: Arizona Veteran Leadership Council (AZLVC)",
+    "date": "2026-07-14",
+    "type": "vob-submission",
+    "businessName": "Arizona Veteran Leadership Council (AZLVC)",
+    "category": "Non-Profit",
+    "phone": "",
+    "timestamp": "2026-07-14T21:55:26.997Z"
   }
 ]
