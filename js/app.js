@@ -13,11 +13,11 @@
     proxyUrl: 'https://api.azvlc.org/submit.php'
   };
 
-  function ghProxy(method, path, data) {
+  function ghProxy(method, path, data, source) {
     return fetch(CONFIG.proxyUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'github', method: method, path: path, data: data || null })
+      body: JSON.stringify({ type: 'github', method: method, path: path, data: data || null, source: source || '' })
     }).then(function(r) { return r.json(); });
   }
 
@@ -404,7 +404,7 @@
     var ascii = json.replace(/[^\x00-\x7F]/g, function(c) { return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4); });
     return ghProxy('PUT', '/contents/data/analytics.json', {
       message: 'Track hit', content: btoa(ascii), sha: sha, branch: CONFIG.branch
-    }).then(function(result) {
+    }, 'analytics').then(function(result) {
       if (result.content && result.content.sha) {
         // Store fresh SHA and data from PUT response — no GET needed next time
         _analyticsSha = result.content.sha;
