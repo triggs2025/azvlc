@@ -795,5 +795,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-15T03:06:48.409Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Alma Hernandez (D)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "Alma Hernandez",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Does not Sponsor, co-sponsor nor are they active in Veteran initiatives",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:09:01.653Z"
   }
 ]
