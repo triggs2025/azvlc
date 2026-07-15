@@ -780,5 +780,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-15T03:04:56.151Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Laurin Hendrix (D)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "Laurin Hendrix",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Does not Sponsor, co-sponsor nor are they active in Veteran initiatives",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:06:48.409Z"
   }
 ]
