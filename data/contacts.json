@@ -870,5 +870,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-15T03:16:03.137Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Nick Kupper (B)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "Nick Kupper",
+    "position": "State Representative",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "Sponsored HB4048 military children; special education; enrollment",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:17:28.901Z"
   }
 ]
