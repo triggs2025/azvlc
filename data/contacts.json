@@ -840,5 +840,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-15T03:12:19.955Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Rachel Keshel (B)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "Rachel Keshel",
+    "position": "State Representative",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "HB2373\tC\tincome tax; refunds; veterans' organizations",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:13:42.703Z"
   }
 ]
