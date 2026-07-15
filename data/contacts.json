@@ -930,5 +930,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-15T03:28:52.369Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Aaron Márquez (A)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "Aaron Márquez",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Sponsored or Co-sponsored the following\nHB2373\tincome tax; refunds; veterans' organizations\nHB2960\tveterans' court fund; grant program\nHB4054\tveterans' reinvestment fund; appropriation\nHB4055\tappropriation; veterans' services; mental health\nHB2599\tlaw enforcement; military protective orders\nHB2707\tmilitary spouse; preference; employment",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:32:22.601Z"
   }
 ]
