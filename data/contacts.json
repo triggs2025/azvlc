@@ -765,5 +765,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-15T03:02:37.351Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Ralph Heap (D)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "Ralph Heap",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Does not Sponsor, co-sponsor nor are they active in Veteran initiatives",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:04:56.151Z"
   }
 ]
