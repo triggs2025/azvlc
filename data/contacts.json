@@ -915,5 +915,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-15T03:25:55.302Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Elda Luna-Nájera (D)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "Elda Luna-Nájera",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veterans initiatives ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:28:52.369Z"
   }
 ]
