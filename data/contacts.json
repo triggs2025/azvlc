@@ -900,5 +900,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-15T03:22:54.453Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Chris Lopez (A)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "Chris Lopez",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Co - Sponsored HB2960\tveterans' court fund; grant program\n                          HB2961\tspecial plate; returning warrior",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:25:55.302Z"
   }
 ]
