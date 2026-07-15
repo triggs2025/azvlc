@@ -885,5 +885,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-15T03:17:28.901Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Sarah Liguori (D)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "Sarah Liguori",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Does not sponsor, co-sponsor nor support Veterans initiatives ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:22:54.453Z"
   }
 ]
