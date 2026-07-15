@@ -750,5 +750,20 @@
     "category": "Non-Profit",
     "phone": "",
     "timestamp": "2026-07-14T21:55:26.997Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Nancy Gutierrez (D)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "Nancy Gutierrez",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Does not Sponsor, co-sponsor nor are they active in Veteran initiatives",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:02:37.351Z"
   }
 ]
