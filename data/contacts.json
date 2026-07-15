@@ -810,5 +810,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-15T03:09:01.653Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Consuelo Hernandez (D)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "Consuelo Hernandez",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Does not Sponsor, co-sponsor nor are they active in Veteran initiatives",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:10:34.367Z"
   }
 ]
