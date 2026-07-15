@@ -960,5 +960,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-15T03:34:41.901Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Teresa Martinez (A)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "Teresa Martinez",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Co-sponsored: \nHB2961 special plate; returning warrior\nHB2373 income tax; refunds; veterans' organizations\nHB2960 veterans' court fund; grant program",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:37:11.435Z"
   }
 ]
