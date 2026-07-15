@@ -945,5 +945,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-15T03:32:22.601Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: David Marshall, Sr. (A)",
+    "date": "2026-07-15",
+    "type": "politician-rating",
+    "politician": "David Marshall, Sr.",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "HB2373\tincome tax; refunds; veterans' organizations\nHB2960\tveterans' court fund; grant program",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-15T03:34:41.901Z"
   }
 ]
