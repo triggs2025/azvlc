@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": 1784166339880,
+    "businessName": "The Mourning Cafe",
+    "category": "Health & Wellness",
+    "description": "The Mourning Café, LLC is a veteran-owned grief coaching and life transition company that helps individuals navigate loss with compassion, hope, and practical support. Through one-on-one coaching, support groups, workshops, speaking engagements, and educational resources, we empower people to process grief and embrace healing using our signature L.I.V.E. Framework®—Let Yourself Feel, Identify Support, Value Your Journey, and Embrace New Beginnings. Our mission is to help people Grieve Out Loud.",
+    "website": "https://mourningcafe.com",
+    "address": "51 E. Monroe Avenue, 274",
+    "zip": "85326",
+    "phone": "13602929198",
+    "hours": "schedule a discovery call at https://calendly.com/themourningcafe",
+    "discount": "Special offers for Veterans only-2 free coaching calls in addition to discovery call.",
+    "ownerName": "Tamara Vanderpool",
+    "ownerEmail": "tamara@mourningcafe.com",
+    "ownerPhone": "",
+    "submittedAt": "2026-07-16T01:45:39.880Z"
+  }
+]
