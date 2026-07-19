@@ -1031,5 +1031,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T19:16:15.687Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Beverly Pingerelli (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Beverly Pingerelli",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veteran legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T19:18:26.583Z"
   }
 ]
