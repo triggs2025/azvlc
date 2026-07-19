@@ -1271,5 +1271,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T20:46:03.815Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Shawnna Bolick (A)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Shawnna Bolick",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Sponsored SB1413\ttechnical correction; veterans; tuition deferment",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T20:48:27.032Z"
   }
 ]
