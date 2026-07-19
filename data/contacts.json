@@ -1136,5 +1136,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T19:40:40.319Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: James Taylor (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "James Taylor",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veteran Legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T19:42:12.771Z"
   }
 ]
