@@ -1316,5 +1316,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T21:09:42.567Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Eva Diaz (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Eva Diaz",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veteran legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T21:12:59.997Z"
   }
 ]
