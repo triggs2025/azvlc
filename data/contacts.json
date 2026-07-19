@@ -1541,5 +1541,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T22:13:08.811Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Janae Shamp (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Janae Shamp",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veteran Legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T22:19:16.387Z"
   }
 ]
