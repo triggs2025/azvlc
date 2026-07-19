@@ -1361,5 +1361,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T21:18:54.281Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: David C. Farnsworth (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "David C. Farnsworth",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veterans legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T21:23:29.153Z"
   }
 ]
