@@ -1241,5 +1241,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T20:42:37.483Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lela Alston (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Lela Alston",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Does not Sponsor, co-sponsor nor supports veterans' legislation",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T20:44:58.216Z"
   }
 ]
