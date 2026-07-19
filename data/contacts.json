@@ -1436,5 +1436,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T21:32:33.196Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lauren Kuby (B)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Lauren Kuby",
+    "position": "State Senator",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "Co-sponsored HB4054\tveterans' reinvestment fund; appropriation",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T21:38:32.479Z"
   }
 ]
