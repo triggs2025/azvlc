@@ -1211,5 +1211,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T19:51:10.415Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Jeff Weninger (B)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Jeff Weninger",
+    "position": "State Representative",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "Voted for Veterans  Bills",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T20:38:31.365Z"
   }
 ]
