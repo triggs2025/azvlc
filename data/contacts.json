@@ -1076,5 +1076,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T19:24:19.270Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Tony Rivero (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Tony Rivero",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veteran Legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T19:26:15.962Z"
   }
 ]
