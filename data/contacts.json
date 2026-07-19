@@ -1376,5 +1376,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T21:23:29.153Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Brian Fernandez (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Brian Fernandez",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veteran legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T21:25:44.904Z"
   }
 ]
