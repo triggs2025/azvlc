@@ -1421,5 +1421,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T21:30:07.246Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Theresa Hatathlie (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Theresa Hatathlie",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veteran Legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T21:32:33.196Z"
   }
 ]
