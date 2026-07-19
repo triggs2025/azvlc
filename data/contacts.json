@@ -1256,5 +1256,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T20:44:58.216Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Hildy Angius (B)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Hildy Angius",
+    "position": "State Senator",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "co-sponsored HB2960\tveterans' court fund; grant program",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T20:46:03.815Z"
   }
 ]
