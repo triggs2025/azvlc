@@ -1001,5 +1001,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T19:09:34.704Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Michele Peña (A)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Michele Peña",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Sponsored HB2663\tleaves of absence; military training",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T19:12:05.287Z"
   }
 ]
