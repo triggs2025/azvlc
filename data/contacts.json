@@ -1046,5 +1046,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T19:18:26.583Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Khyl Powell (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Khyl Powell",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor does not support Veteran legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T19:21:48.638Z"
   }
 ]
