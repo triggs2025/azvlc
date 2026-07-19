@@ -1016,5 +1016,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T19:12:05.287Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Mae Peshlakai (A)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Mae Peshlakai",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Sponsored HB4055\tappropriation; veterans' services; mental health",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T19:16:15.687Z"
   }
 ]
