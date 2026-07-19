@@ -1481,5 +1481,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T21:52:52.912Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Catherine Miranda (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Catherine Miranda",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veteran Legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T21:55:17.265Z"
   }
 ]
