@@ -1226,5 +1226,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T20:38:31.365Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Julie Willoughby (A)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Julie Willoughby",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "sponsored HB2406\tP\tdepartment of veterans' services; study\nco-sponsored HB2960\tC\tveterans' court fund; grant program",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T20:42:37.483Z"
   }
 ]
