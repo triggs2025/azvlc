@@ -1511,5 +1511,20 @@
     "zip": "85395",
     "anonymous": false,
     "timestamp": "2026-07-19T21:56:55.804Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Warren Petersen (C)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Warren Petersen",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Sponsored SB1232\tmilitary compatibility permit zoning",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T22:10:08.214Z"
   }
 ]
