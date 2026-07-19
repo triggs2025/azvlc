@@ -1331,5 +1331,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T21:12:59.997Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Timothy Dunn (A)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Timothy Dunn",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Co-Sponsor HB2960\tveterans' court fund; grant program\nCo SponsorHB2961  \tspecial plate; returning warrior",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T21:15:36.245Z"
   }
 ]
