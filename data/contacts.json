@@ -1301,5 +1301,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T20:50:18.241Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Frank Carroll (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Frank Carroll",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support veteran legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T21:09:42.567Z"
   }
 ]
