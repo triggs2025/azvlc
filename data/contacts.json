@@ -1106,5 +1106,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T19:33:54.385Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Stephanie Simacek (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Stephanie Simacek",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veteran Legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T19:37:19.655Z"
   }
 ]
