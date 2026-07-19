@@ -1151,5 +1151,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T19:42:12.771Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Myron Tsosie (A)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Myron Tsosie",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Sponsored HB2884\tappropriation; Black Mesa; veterans center",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T19:43:40.865Z"
   }
 ]
