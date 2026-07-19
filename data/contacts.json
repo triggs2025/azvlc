@@ -1466,5 +1466,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T21:42:48.947Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: J.D. Mesnard (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "J.D. Mesnard",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veteran Legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T21:52:52.912Z"
   }
 ]
