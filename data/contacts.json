@@ -1286,5 +1286,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T20:48:27.032Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Flavio Bravo (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Flavio Bravo",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support veteran legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T20:50:18.241Z"
   }
 ]
