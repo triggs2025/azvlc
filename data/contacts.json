@@ -1061,5 +1061,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T19:21:48.638Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Cody Reim (D)",
+    "date": "2026-07-19",
+    "type": "politician-rating",
+    "politician": "Cody Reim",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Did not sponsor, co-sponsor nor support Veteran Legislation ",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-19T19:24:19.270Z"
   }
 ]
