@@ -1822,5 +1822,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:38:18.622Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Mark Finchem (A)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Mark Finchem",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes to SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:38:46.422Z"
   }
 ]
