@@ -1747,5 +1747,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:34:26.961Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lupe Diaz (A)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Lupe Diaz",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:35:01.368Z"
   }
 ]
