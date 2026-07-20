@@ -1586,5 +1586,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T01:51:11.378Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Aaron Márquez (A)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Aaron Márquez",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Y on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T01:51:58.928Z"
   }
 ]
