@@ -1702,5 +1702,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:31:41.234Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Shawnna Bolick (A)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Shawnna Bolick",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes to SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:32:36.601Z"
   }
 ]
