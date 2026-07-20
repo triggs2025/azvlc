@@ -1661,5 +1661,16 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T01:55:06.002Z"
+  },
+  {
+    "email": "zach@redcanyondev.com",
+    "name": "Zachary Speck",
+    "source": "VOB: Red Canyon Development LLC",
+    "date": "2026-07-20",
+    "type": "vob-submission",
+    "businessName": "Red Canyon Development LLC",
+    "category": "Construction",
+    "phone": "6028094969",
+    "timestamp": "2026-07-20T03:26:06.606Z"
   }
 ]
