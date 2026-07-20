@@ -1616,5 +1616,20 @@
     "zip": "85395",
     "anonymous": false,
     "timestamp": "2026-07-20T01:52:50.093Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Betty J Villegas (C)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Betty J Villegas",
+    "position": "State Representative",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted yes on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T01:53:44.322Z"
   }
 ]
