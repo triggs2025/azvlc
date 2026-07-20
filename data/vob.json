@@ -315,5 +315,21 @@
     "ownerEmail": "tamara@mourningcafe.com",
     "ownerPhone": "",
     "approvedAt": "2026-07-17T00:08:34.196Z"
+  },
+  {
+    "id": 20,
+    "businessName": "Red Canyon Development LLC",
+    "category": "Construction",
+    "description": "We specialize in desining and building custom homes built from Omni-block in Arizona.",
+    "website": "",
+    "address": "41220 N Parker Ln",
+    "zip": "85086",
+    "phone": "",
+    "hours": "7am - 5pm",
+    "discount": "",
+    "ownerName": "Zachary Speck",
+    "ownerEmail": "zach@redcanyondev.com",
+    "ownerPhone": "6028094969",
+    "approvedAt": "2026-07-20T05:08:41.467Z"
   }
 ]
