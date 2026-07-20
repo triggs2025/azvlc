@@ -1852,5 +1852,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:39:31.697Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Sally Ann Gonzales (F)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Sally Ann Gonzales",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted NO on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:40:05.367Z"
   }
 ]
