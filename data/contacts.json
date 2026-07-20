@@ -1792,5 +1792,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:36:58.536Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: David C. Farnsworth (C)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "David C. Farnsworth",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted Yes on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:37:34.851Z"
   }
 ]
