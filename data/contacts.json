@@ -1807,5 +1807,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:37:34.851Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Brian Fernandez (D)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Brian Fernandez",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted Not Voting on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:38:18.622Z"
   }
 ]
