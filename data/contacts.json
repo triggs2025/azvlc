@@ -1762,5 +1762,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:35:01.368Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Timothy Dunn (A)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Timothy Dunn",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes to SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:36:23.762Z"
   }
 ]
