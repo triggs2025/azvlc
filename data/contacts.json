@@ -1687,5 +1687,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:30:35.792Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Hildy Angius (B)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Hildy Angius",
+    "position": "State Senator",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "Voted Yes on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:31:41.234Z"
   }
 ]
