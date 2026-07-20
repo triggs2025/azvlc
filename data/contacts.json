@@ -1897,20 +1897,5 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:41:17.825Z"
-  },
-  {
-    "email": "triggs@needthese.com",
-    "name": "Harold A Riggs",
-    "source": "Rated: Anna Abeytia (D)",
-    "date": "2026-07-20",
-    "type": "politician-rating",
-    "politician": "Anna Abeytia",
-    "position": "State Representative",
-    "grade": "D",
-    "previousGrade": "D",
-    "reason": "sdf ss",
-    "zip": "85045",
-    "anonymous": false,
-    "timestamp": "2026-07-20T05:10:43.276Z"
   }
 ]
