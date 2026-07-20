@@ -1556,5 +1556,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-19T22:19:16.387Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: John Gillette (A)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "John Gillette",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Y on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T01:50:35.475Z"
   }
 ]
