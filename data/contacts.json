@@ -1717,5 +1717,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:32:36.601Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Flavio Bravo (D)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Flavio Bravo",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted Not Voting on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:33:30.151Z"
   }
 ]
