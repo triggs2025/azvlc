@@ -1777,5 +1777,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:36:23.762Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Denise Epstein (F)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Denise Epstein",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted No on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:36:58.536Z"
   }
 ]
