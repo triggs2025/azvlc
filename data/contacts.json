@@ -1672,5 +1672,20 @@
     "category": "Construction",
     "phone": "6028094969",
     "timestamp": "2026-07-20T03:26:06.606Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lela Alston (F)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Lela Alston",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted no on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:30:35.792Z"
   }
 ]
