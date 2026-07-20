@@ -1646,5 +1646,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T01:54:24.661Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Walt Blackman (A)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Walt Blackman",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes to SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T01:55:06.002Z"
   }
 ]
