@@ -1732,5 +1732,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:33:30.151Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Frank Carroll (C)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Frank Carroll",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted Yes on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:34:26.961Z"
   }
 ]
