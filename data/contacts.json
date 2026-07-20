@@ -1837,5 +1837,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:38:46.422Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Rosanna Gabaldón (D)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Rosanna Gabaldón",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted not Voting on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:39:31.697Z"
   }
 ]
