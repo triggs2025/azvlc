@@ -1601,5 +1601,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T01:51:58.928Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Stephanie Stahl Hamilton (D)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Stephanie Stahl Hamilton",
+    "position": "State Representative",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted present only on SB1050",
+    "zip": "85395",
+    "anonymous": false,
+    "timestamp": "2026-07-20T01:52:50.093Z"
   }
 ]
