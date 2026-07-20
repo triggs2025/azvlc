@@ -1867,5 +1867,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:40:05.367Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: David Gowan (A)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "David Gowan",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T03:40:35.654Z"
   }
 ]
