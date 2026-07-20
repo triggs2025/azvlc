@@ -1631,5 +1631,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T01:53:44.322Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lisa Fink (C)",
+    "date": "2026-07-20",
+    "type": "politician-rating",
+    "politician": "Lisa Fink",
+    "position": "State Representative",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted Yes on SB1050",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-20T01:54:24.661Z"
   }
 ]
