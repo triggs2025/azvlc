@@ -1897,5 +1897,16 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-20T03:41:17.825Z"
+  },
+  {
+    "email": "jared@specifiedmanufacturing.com",
+    "name": "Jared Giannini",
+    "source": "VOB: Specified Manufacturing",
+    "date": "2026-07-21",
+    "type": "vob-submission",
+    "businessName": "Specified Manufacturing",
+    "category": "Manufacturing",
+    "phone": "4802822215",
+    "timestamp": "2026-07-21T04:36:10.003Z"
   }
 ]
