@@ -1908,5 +1908,16 @@
     "category": "Manufacturing",
     "phone": "4802822215",
     "timestamp": "2026-07-21T04:36:10.003Z"
+  },
+  {
+    "email": "tony.riggs2@gmail.com",
+    "name": "Tony Riggs",
+    "source": "VOB: DTF Edge",
+    "date": "2026-07-22",
+    "type": "vob-submission",
+    "businessName": "DTF Edge",
+    "category": "Retail",
+    "phone": "",
+    "timestamp": "2026-07-22T20:58:53.628Z"
   }
 ]
