@@ -1979,5 +1979,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-23T02:46:11.286Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: John Kavanagh (C)",
+    "date": "2026-07-23",
+    "type": "politician-rating",
+    "politician": "John Kavanagh",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted Yes on \nBill Number: SB1050\nveterans; lifetime state park pass\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-23T02:46:48.222Z"
   }
 ]
