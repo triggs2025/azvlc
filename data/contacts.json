@@ -1949,5 +1949,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-23T02:44:28.704Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Eva Diaz (F)",
+    "date": "2026-07-23",
+    "type": "politician-rating",
+    "politician": "Eva Diaz",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted No on Bill Number: SB1050\nveterans; lifetime state park pass\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-23T02:45:29.537Z"
   }
 ]
