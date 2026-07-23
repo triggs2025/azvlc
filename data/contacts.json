@@ -1919,5 +1919,20 @@
     "category": "Retail",
     "phone": "",
     "timestamp": "2026-07-22T20:58:53.628Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Jake Hoffman (D)",
+    "date": "2026-07-23",
+    "type": "politician-rating",
+    "politician": "Jake Hoffman",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted Yes on a Veterans bill",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-23T02:43:01.027Z"
   }
 ]
