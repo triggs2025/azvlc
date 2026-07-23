@@ -2069,5 +2069,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-23T02:52:10.576Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Shawnna Bolick (A)",
+    "date": "2026-07-23",
+    "type": "politician-rating",
+    "politician": "Shawnna Bolick",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes to Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-23T02:52:45.835Z"
   }
 ]
