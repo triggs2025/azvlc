@@ -2084,5 +2084,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-23T02:52:45.835Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Flavio Bravo (F)",
+    "date": "2026-07-23",
+    "type": "politician-rating",
+    "politician": "Flavio Bravo",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "F",
+    "reason": "Voted no to Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-23T02:53:26.202Z"
   }
 ]
