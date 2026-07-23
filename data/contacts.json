@@ -2099,5 +2099,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-23T02:53:26.202Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Frank Carroll (B)",
+    "date": "2026-07-23",
+    "type": "politician-rating",
+    "politician": "Frank Carroll",
+    "position": "State Senator",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "Voted Yes to \nBill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-23T02:54:04.333Z"
   }
 ]
