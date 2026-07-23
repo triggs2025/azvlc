@@ -2114,5 +2114,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-23T02:54:04.333Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Eva Diaz (F)",
+    "date": "2026-07-23",
+    "type": "politician-rating",
+    "politician": "Eva Diaz",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "F",
+    "reason": "Voted NO to Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-23T02:54:48.034Z"
   }
 ]
