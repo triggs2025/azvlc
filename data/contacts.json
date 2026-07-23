@@ -2009,5 +2009,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-23T02:47:44.478Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Wendy Rogers (A)",
+    "date": "2026-07-23",
+    "type": "politician-rating",
+    "politician": "Wendy Rogers",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1050\nveterans; lifetime state park pass\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-23T02:48:22.218Z"
   }
 ]
