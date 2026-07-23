@@ -2039,5 +2039,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-23T02:49:04.883Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lela Alston (C)",
+    "date": "2026-07-23",
+    "type": "politician-rating",
+    "politician": "Lela Alston",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted Yes to Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-23T02:51:21.319Z"
   }
 ]
