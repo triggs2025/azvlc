@@ -2024,5 +2024,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-23T02:48:22.218Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Jake Hoffman (C)",
+    "date": "2026-07-23",
+    "type": "politician-rating",
+    "politician": "Jake Hoffman",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "D",
+    "reason": "Voted Yes on Bill Number: SB1050\nveterans; lifetime state park pass\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-23T02:49:04.883Z"
   }
 ]
