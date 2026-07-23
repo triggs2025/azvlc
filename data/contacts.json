@@ -1964,5 +1964,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-23T02:45:29.537Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: David C. Farnsworth (B)",
+    "date": "2026-07-23",
+    "type": "politician-rating",
+    "politician": "David C. Farnsworth",
+    "position": "State Senator",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "Voted Yes on \nBill Number: SB1050\nveterans; lifetime state park pass\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-23T02:46:11.286Z"
   }
 ]
