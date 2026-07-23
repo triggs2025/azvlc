@@ -1994,5 +1994,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-23T02:46:48.222Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lauren Kuby (D)",
+    "date": "2026-07-23",
+    "type": "politician-rating",
+    "politician": "Lauren Kuby",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted no on Bill Number: SB1050\nveterans; lifetime state park pass\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-23T02:47:44.478Z"
   }
 ]
