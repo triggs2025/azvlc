@@ -1026,8 +1026,11 @@
     if (type !== 'vob') renderDashboard();
 
     // save to GitHub — fetch fresh SHA via proxy (cache-busted) to avoid stale SHA conflicts
+    var apiBase = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/';
+    var apiHeaders = { 'Authorization': 'token ' + CONFIG.ghToken };
     if (type === 'vob') {
-      ghProxy('GET', '/contents/data/vob.json?ref=' + CONFIG.branch + '&_=' + Date.now())
+      fetch(apiBase + 'vob.json?ref=' + CONFIG.branch + '&_=' + Date.now(), { headers: apiHeaders })
+        .then(function(r) { return r.json(); })
         .then(function(result) {
           var all = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
           vobSha = result.sha;
@@ -1036,7 +1039,8 @@
           return saveVOBToGitHub(all);
         }).catch(function(err) { console.error('VOB kudos save error:', err); });
     } else if (type === 'politician') {
-      ghProxy('GET', '/contents/data/politicians.json?ref=' + CONFIG.branch + '&_=' + Date.now())
+      fetch(apiBase + 'politicians.json?ref=' + CONFIG.branch + '&_=' + Date.now(), { headers: apiHeaders })
+        .then(function(r) { return r.json(); })
         .then(function(result) {
           var all = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
           politiciansSha = result.sha;
@@ -1045,7 +1049,8 @@
           return savePoliticiansToGitHub(all);
         }).catch(function(err) { console.error('Kudos save error:', err); });
     } else {
-      ghProxy('GET', '/contents/data/policies.json?ref=' + CONFIG.branch + '&_=' + Date.now())
+      fetch(apiBase + 'policies.json?ref=' + CONFIG.branch + '&_=' + Date.now(), { headers: apiHeaders })
+        .then(function(r) { return r.json(); })
         .then(function(result) {
           var all = JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g, '')))));
           policiesSha = result.sha;
