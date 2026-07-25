@@ -2129,5 +2129,16 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-23T02:54:48.034Z"
+  },
+  {
+    "email": "triggs@embriggs.com",
+    "name": "Tony Riggs",
+    "source": "VOB: Embriggs",
+    "date": "2026-07-25",
+    "type": "vob-submission",
+    "businessName": "Embriggs",
+    "category": "Other",
+    "phone": "",
+    "timestamp": "2026-07-25T03:43:10.268Z"
   }
 ]
