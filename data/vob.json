@@ -37,7 +37,7 @@
     "id": 3,
     "businessName": "Standing Watch Insurance",
     "category": "Finance",
-    "description": "Standing Watch Insurance, Disabled Veteran owned. My specialty is Medicare and VA health. I do all Medicare but know the VA system, how it works and doesn’t work with the VA. vets need to understand that they could be penalized for life if they do not sign up in time or get the right Medicare. Especially for TCFL and Champ VA. Also if their spouse turns 65 before the veteran what the spouse needs to continue to be covered by Champ VA and TCFL. You may also qualify for a Medicare give back as well. I help with future life planning as well.",
+    "description": "Standing Watch Insurance, Disabled Veteran owned. My specialty is Medicare and VA health. I do all Medicare but know the VA system, how it works and doesn\u2019t work with the VA. vets need to understand that they could be penalized for life if they do not sign up in time or get the right Medicare. Especially for TCFL and Champ VA. Also if their spouse turns 65 before the veteran what the spouse needs to continue to be covered by Champ VA and TCFL. You may also qualify for a Medicare give back as well. I help with future life planning as well.",
     "website": "https://standingwatchinsurance.com/",
     "address": "",
     "zip": "85395",
@@ -54,7 +54,7 @@
     "id": 4,
     "businessName": "The Husband & Wife Home Team - FindHappyAZ.com",
     "category": "Real Estate",
-    "description": "The Husband & Wife Home Team is a Veteran-led Arizona real estate team serving buyers and sellers with clear guidance, strong negotiation, and trusted market expertise. Veterans benefit from our VA Loan Certification, military-minded service, and understanding of VA financing, appraisals, concessions, and offer strategy—helping them buy or sell with confidence. Agent: Elizabeth Dine - Keller Williams Realty Phoenix",
+    "description": "The Husband & Wife Home Team is a Veteran-led Arizona real estate team serving buyers and sellers with clear guidance, strong negotiation, and trusted market expertise. Veterans benefit from our VA Loan Certification, military-minded service, and understanding of VA financing, appraisals, concessions, and offer strategy\u2014helping them buy or sell with confidence. Agent: Elizabeth Dine - Keller Williams Realty Phoenix",
     "website": "https://FindHappyAZ.com",
     "address": "6400 East McDowell Rd. Scottsdale, AZ",
     "zip": "85257",
@@ -308,7 +308,7 @@
     "id": 19,
     "businessName": "The Mourning Cafe",
     "category": "Health & Wellness",
-    "description": "The Mourning Café, LLC is a veteran-owned grief coaching and life transition company that helps individuals navigate loss with compassion, hope, and practical support. Through one-on-one coaching, support groups, workshops, speaking engagements, and educational resources, we empower people to process grief and embrace healing using our signature L.I.V.E. Framework®—Let Yourself Feel, Identify Support, Value Your Journey, and Embrace New Beginnings. Our mission is to help people Grieve Out Loud.",
+    "description": "The Mourning Caf\u00e9, LLC is a veteran-owned grief coaching and life transition company that helps individuals navigate loss with compassion, hope, and practical support. Through one-on-one coaching, support groups, workshops, speaking engagements, and educational resources, we empower people to process grief and embrace healing using our signature L.I.V.E. Framework\u00ae\u2014Let Yourself Feel, Identify Support, Value Your Journey, and Embrace New Beginnings. Our mission is to help people Grieve Out Loud.",
     "website": "https://mourningcafe.com",
     "address": "51 E. Monroe Avenue, 274",
     "zip": "85326",
@@ -371,5 +371,21 @@
     "ownerPhone": "",
     "approvedAt": "2026-07-22T21:05:42.411Z",
     "kudos": 2
+  },
+  {
+    "id": 23,
+    "businessName": "Embriggs",
+    "category": "Other",
+    "description": "EMBRIGGS is a Veteran-owned custom apparel company specializing in high-quality branded clothing and merchandise for businesses, organizations, schools, teams, and events. From custom designs and professional mockups to reliable production and delivery, EMBRIGGS makes it easy to bring your brand to life.",
+    "website": "https://embriggs.com/",
+    "address": "",
+    "zip": "85040",
+    "phone": "",
+    "hours": "24/7, 365 Days",
+    "discount": "10% off for all Veteran Orders",
+    "ownerName": "Tony Riggs",
+    "ownerEmail": "triggs@embriggs.com",
+    "ownerPhone": "",
+    "approvedAt": "2026-07-25T03:55:50.604Z"
   }
 ]
