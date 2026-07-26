@@ -2275,5 +2275,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-26T17:39:12.539Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: John Kavanagh (B)",
+    "date": "2026-07-26",
+    "type": "politician-rating",
+    "politician": "John Kavanagh",
+    "position": "State Senator",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-26T17:40:51.989Z"
   }
 ]
