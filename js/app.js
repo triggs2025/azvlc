@@ -2128,7 +2128,10 @@
     submitBtn.textContent = 'Submitting...';
 
     // need all politicians (including unapproved) for the save
-    ghProxy('GET', '/contents/data/politicians.json?ref=' + CONFIG.branch)
+    fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/contents/data/politicians.json?ref=' + CONFIG.branch, {
+      headers: { 'Authorization': 'token ' + CONFIG.ghToken }
+    })
+    .then(function(r) { return r.json(); })
     .then(function(result) {
       politiciansSha = result.sha;
       return JSON.parse(decodeURIComponent(escape(atob(result.content.replace(/\n/g,'')))));
@@ -2163,16 +2166,20 @@
           timestamp: new Date().toISOString()
         }); }, 2000);
 
-        ghProxy('POST', '/issues', {
-          title: 'Politician Rating: ' + politicianName + ' (' + newGrade + ')',
-          body: '**Politician:** ' + politicianName + '\n' +
-            '**Position:** ' + politicianPosition + '\n' +
-            '**Grade:** ' + newGrade + (prevGrade ? ' (changed from ' + prevGrade + ')' : '') + '\n' +
-            '**Reason:** ' + (ratingReason || 'Not provided') + '\n' +
-            '**Zip:** ' + zip + '\n' +
-            '**Submitted by:** ' + (raterName || 'Anonymous') + ' (' + raterEmail + ')\n' +
-            '**Date:** ' + new Date().toISOString(),
-          labels: ['rating']
+        fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + CONFIG.ghToken },
+          body: JSON.stringify({
+            title: 'Politician Rating: ' + politicianName + ' (' + newGrade + ')',
+            body: '**Politician:** ' + politicianName + '\n' +
+              '**Position:** ' + politicianPosition + '\n' +
+              '**Grade:** ' + newGrade + (prevGrade ? ' (changed from ' + prevGrade + ')' : '') + '\n' +
+              '**Reason:** ' + (ratingReason || 'Not provided') + '\n' +
+              '**Zip:** ' + zip + '\n' +
+              '**Submitted by:** ' + (raterName || 'Anonymous') + ' (' + raterEmail + ')\n' +
+              '**Date:** ' + new Date().toISOString(),
+            labels: ['rating']
+          })
         }).catch(function() {});
       } else {
         throw new Error(result.message || 'Save failed');
