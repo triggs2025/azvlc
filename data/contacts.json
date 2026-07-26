@@ -2200,5 +2200,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-26T17:34:26.685Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Rosanna Gabaldón (D)",
+    "date": "2026-07-26",
+    "type": "politician-rating",
+    "politician": "Rosanna Gabaldón",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted Not Voting on Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-26T17:35:16.983Z"
   }
 ]
