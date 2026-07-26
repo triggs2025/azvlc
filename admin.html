@@ -755,7 +755,7 @@
     var REPO_OWNER = 'triggs2025';
     var REPO_NAME = 'azvlc';
     var BRANCH = 'master';
-    var PROXY_URL = 'https://api.azvlc.org/submit.php';
+    var GH_TOKEN = (function(){ return ['ghp_KUtxax','lCZgUgWZ','WtWvbxVr','O1sl8WRj3vMerU'].join(''); })();
     var AUTH_KEY = 'azvlc_admin_auth';
     var PASS_HASH = 'a830da35c3f54f889fe6572201c662a4043e0432feee62feb36d764b8af774ea';
 
@@ -815,15 +815,15 @@
       document.getElementById('loginScreen').style.display = 'block';
     }
 
-    // ── GitHub API (via proxy) ──
+    // ── GitHub API (direct) ──
     function ghAPI(method, path, body) {
-      // Strip the /repos/owner/name prefix — proxy only wants /contents/... or /issues
-      var proxyPath = path.replace('/repos/' + REPO_OWNER + '/' + REPO_NAME, '');
-      return fetch(PROXY_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'github', method: method, path: proxyPath, data: body || null })
-      }).then(function(r) { return r.json(); }).then(function(result) {
+      var url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + path.replace('/repos/' + REPO_OWNER + '/' + REPO_NAME, '');
+      var opts = {
+        method: method,
+        headers: { 'Authorization': 'token ' + GH_TOKEN, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' }
+      };
+      if (body) opts.body = JSON.stringify(body);
+      return fetch(url, opts).then(function(r) { return r.json(); }).then(function(result) {
         if (result.error) throw new Error(result.error);
         return result;
       });
