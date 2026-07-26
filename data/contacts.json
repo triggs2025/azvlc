@@ -2335,5 +2335,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-26T17:43:32.440Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Catherine Miranda (C)",
+    "date": "2026-07-26",
+    "type": "politician-rating",
+    "politician": "Catherine Miranda",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-26T17:44:14.579Z"
   }
 ]
