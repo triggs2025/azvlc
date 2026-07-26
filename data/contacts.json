@@ -2230,5 +2230,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-26T17:36:05.162Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: David Gowan (A)",
+    "date": "2026-07-26",
+    "type": "politician-rating",
+    "politician": "David Gowan",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-26T17:37:33.027Z"
   }
 ]
