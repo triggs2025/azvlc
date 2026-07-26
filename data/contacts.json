@@ -2170,5 +2170,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-26T17:32:47.725Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Brian Fernandez (D)",
+    "date": "2026-07-26",
+    "type": "politician-rating",
+    "politician": "Brian Fernandez",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted Not Voting on Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-26T17:33:46.707Z"
   }
 ]
