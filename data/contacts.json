@@ -2215,5 +2215,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-26T17:35:16.983Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Sally Ann Gonzales (F)",
+    "date": "2026-07-26",
+    "type": "politician-rating",
+    "politician": "Sally Ann Gonzales",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted no on Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-26T17:36:05.162Z"
   }
 ]
