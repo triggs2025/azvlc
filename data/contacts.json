@@ -2290,5 +2290,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-26T17:40:51.989Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lauren Kuby (D)",
+    "date": "2026-07-26",
+    "type": "politician-rating",
+    "politician": "Lauren Kuby",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted No on Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-26T17:41:33.432Z"
   }
 ]
