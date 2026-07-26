@@ -13,12 +13,14 @@
     proxyUrl: 'https://api.azvlc.org/submit.php'
   };
 
-  function ghProxy(method, path, data, source) {
-    return fetch(CONFIG.proxyUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'github', method: method, path: path, data: data || null, source: source || '' })
-    }).then(function(r) { return r.json(); });
+  function ghProxy(method, path, data) {
+    var url = 'https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + path;
+    var opts = {
+      method: method,
+      headers: { 'Authorization': 'token ' + CONFIG.ghToken, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' }
+    };
+    if (data) opts.body = JSON.stringify(data);
+    return fetch(url, opts).then(function(r) { return r.json(); });
   }
 
   // ── State ──
