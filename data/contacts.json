@@ -2185,5 +2185,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-26T17:33:46.707Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Mark Finchem (A)",
+    "date": "2026-07-26",
+    "type": "politician-rating",
+    "politician": "Mark Finchem",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes on  Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-26T17:34:26.685Z"
   }
 ]
