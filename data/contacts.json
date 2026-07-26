@@ -2155,5 +2155,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-26T17:30:17.058Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: David C. Farnsworth (B)",
+    "date": "2026-07-26",
+    "type": "politician-rating",
+    "politician": "David C. Farnsworth",
+    "position": "State Senator",
+    "grade": "B",
+    "previousGrade": "B",
+    "reason": "Voted Yes on Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-26T17:32:47.725Z"
   }
 ]
