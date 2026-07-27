@@ -2380,5 +2380,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-27T04:19:08.747Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Janae Shamp (C)",
+    "date": "2026-07-27",
+    "type": "politician-rating",
+    "politician": "Janae Shamp",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted Yes to Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-27T04:20:32.119Z"
   }
 ]
