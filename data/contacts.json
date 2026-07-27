@@ -2365,5 +2365,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-26T17:45:15.307Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Wendy Rogers (A)",
+    "date": "2026-07-27",
+    "type": "politician-rating",
+    "politician": "Wendy Rogers",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes to Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-27T04:19:08.747Z"
   }
 ]
