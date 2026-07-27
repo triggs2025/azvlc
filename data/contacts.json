@@ -2410,5 +2410,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-27T04:21:48.747Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Warren Petersen (B)",
+    "date": "2026-07-27",
+    "type": "politician-rating",
+    "politician": "Warren Petersen",
+    "position": "State Senator",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "Voted Yes to Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-27T04:23:46.537Z"
   }
 ]
