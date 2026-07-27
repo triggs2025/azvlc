@@ -2395,5 +2395,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-27T04:20:32.119Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Priya Sundareshan (F)",
+    "date": "2026-07-27",
+    "type": "politician-rating",
+    "politician": "Priya Sundareshan",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted No to Bill Number: SB1065\nappropriation; hyperbaric oxygen therapy; veterans\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-27T04:21:48.747Z"
   }
 ]
