@@ -2425,5 +2425,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-27T04:23:46.537Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lela Alston (D)",
+    "date": "2026-07-29",
+    "type": "politician-rating",
+    "politician": "Lela Alston",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted No on Bill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-29T03:36:11.534Z"
   }
 ]
