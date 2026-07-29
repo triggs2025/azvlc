@@ -2575,5 +2575,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-29T03:49:47.022Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lauren Kuby (F)",
+    "date": "2026-07-29",
+    "type": "politician-rating",
+    "politician": "Lauren Kuby",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted No to Bill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-29T03:51:15.338Z"
   }
 ]
