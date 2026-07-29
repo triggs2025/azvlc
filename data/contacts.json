@@ -2545,5 +2545,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-29T03:45:44.620Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: David Gowan (A)",
+    "date": "2026-07-29",
+    "type": "politician-rating",
+    "politician": "David Gowan",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-29T03:47:09.537Z"
   }
 ]
