@@ -2455,5 +2455,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-29T03:37:26.996Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Frank Carroll (A)",
+    "date": "2026-07-29",
+    "type": "politician-rating",
+    "politician": "Frank Carroll",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-29T03:38:53.638Z"
   }
 ]
