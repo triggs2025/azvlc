@@ -2530,5 +2530,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-29T03:44:26.505Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Rosanna Gabaldón (F)",
+    "date": "2026-07-29",
+    "type": "politician-rating",
+    "politician": "Rosanna Gabaldón",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted No on Bill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-29T03:45:44.620Z"
   }
 ]
