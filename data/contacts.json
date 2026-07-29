@@ -2560,5 +2560,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-29T03:47:09.537Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Jake Hoffman (F)",
+    "date": "2026-07-29",
+    "type": "politician-rating",
+    "politician": "Jake Hoffman",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted No on Bill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-29T03:49:47.022Z"
   }
 ]
