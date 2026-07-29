@@ -2485,5 +2485,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-07-29T03:40:31.154Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Denise Epstein (F)",
+    "date": "2026-07-29",
+    "type": "politician-rating",
+    "politician": "Denise Epstein",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted No on Bill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-07-29T03:42:10.539Z"
   }
 ]
