@@ -43,7 +43,7 @@
     "Maricopa County": {
       "assessor": "https://mcassessor.maricopa.gov/",
       "filing": "https://mcassessor.maricopa.gov/faq/property_exemptions/",
-      "search": "https://mcassessor.maricopa.gov/mcs.php?q={address}"
+      "search": "https://mcassessor.maricopa.gov/"
     },
     "Mohave County": {
       "assessor": "https://www.mohave.gov/departments/assessor/",

@@ -83,7 +83,7 @@
         searchUrl = searchUrl.replace('{address}', encodeURIComponent(data.matchedAddress));
       }
       var lookupBtn = searchUrl
-        ? '<br><a href="' + escapeHtml(searchUrl) + '" target="_blank" rel="noopener" class="btn btn-blue" style="display:inline-flex;margin-top:12px;text-decoration:none">Look Up Your Property Record on ' + escapeHtml(data.county) + ' Assessor &rarr;</a>'
+        ? '<br><a href="' + escapeHtml(searchUrl) + '" target="_blank" rel="noopener" class="btn btn-blue" style="display:inline-flex;margin-top:12px;text-decoration:none">Open ' + escapeHtml(data.county) + ' Assessor &rarr;</a><br><span style="font-size:.82em;color:#215c3a;display:block;margin-top:6px">Search for the matched address above to find your annual tax bill and Net Assessed Value.</span>'
         : '';
 
       result.innerHTML = '<strong>Address matched:</strong> ' + escapeHtml(data.matchedAddress) + '<br><strong>County:</strong> ' + escapeHtml(data.county) + lookupBtn;
