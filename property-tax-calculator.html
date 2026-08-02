@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2027 Veteran Property Tax Savings Calculator | AZVLC</title>
+  <meta name="description" content="Estimate the 2027 Arizona property tax exemption for a disabled Veteran or eligible surviving spouse using actual property tax figures.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/property-tax-calculator.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html#dashboard" class="navbar-brand">
+        <img src="assets/logo.png" alt="AZVLC Logo">
+        <div class="navbar-brand-text">
+          <h1>AZVLC</h1>
+          <strong>Arizona Veteran Leadership Council</strong>
+          <span>The Voice of Arizona Veterans</span>
+        </div>
+      </a>
+      <a href="index.html#dashboard" class="btn btn-primary tax-back-link">Back to AZVLC</a>
+    </div>
+  </nav>
+
+  <header class="tax-hero">
+    <div class="container">
+      <span class="tax-year-badge">Effective January 1, 2027</span>
+      <h1>Arizona Veteran Property Tax Savings Calculator</h1>
+      <p>Use an Arizona property address and figures from its most recent tax record to estimate the disabled Veteran property tax exemption.</p>
+    </div>
+  </header>
+
+  <main class="container tax-main">
+    <div class="privacy-strip"><strong>Privacy:</strong> AZVLC does not save your address, VA rating, property values, tax amounts, or calculation result. Only the calculator's separate anonymous Submit counter is increased.</div>
+
+    <form id="propertyTaxForm" class="tax-calculator" novalidate>
+      <section class="tax-panel">
+        <div class="tax-step">1</div>
+        <div class="tax-panel-content">
+          <h2>Property</h2>
+          <p class="tax-help">Enter the property's physical address. We use it only to identify the Arizona county and provide the correct county filing links.</p>
+
+          <label for="propertyAddress">Arizona property address</label>
+          <input id="propertyAddress" name="propertyAddress" type="text" autocomplete="street-address" placeholder="123 Main Street, Phoenix, AZ 85001" required>
+          <div class="tax-address-row">
+            <button type="button" id="verifyAddressButton" class="btn btn-blue">Verify Address and County</button>
+            <span id="addressStatus" class="tax-status" role="status"></span>
+          </div>
+          <input id="countyName" type="hidden">
+          <div id="verifiedAddress" class="verified-address" hidden></div>
+        </div>
+      </section>
+
+      <section class="tax-panel">
+        <div class="tax-step">2</div>
+        <div class="tax-panel-content">
+          <h2>Veteran eligibility</h2>
+          <div class="tax-grid two">
+            <div>
+              <label for="applicantType">Applicant</label>
+              <select id="applicantType" required>
+                <option value="veteran">Veteran</option>
+                <option value="spouse">Surviving spouse</option>
+              </select>
+            </div>
+            <div>
+              <label for="vaRating">VA disability rating</label>
+              <select id="vaRating" required>
+                <option value="">Select rating</option>
+                <option value="10">10%</option><option value="20">20%</option><option value="30">30%</option>
+                <option value="40">40%</option><option value="50">50%</option><option value="60">60%</option>
+                <option value="70">70%</option><option value="80">80%</option><option value="90">90%</option>
+                <option value="100">100%</option>
+              </select>
+            </div>
+          </div>
+          <div class="tax-checks">
+            <label><input id="serviceConnected" type="checkbox" checked> The VA rating is service-connected</label>
+            <label><input id="tdiu" type="checkbox"> The Veteran receives Total Disability based on Individual Unemployability (TDIU)</label>
+            <label><input id="primaryResidence" type="checkbox" checked> This property is or will be the applicant's primary residence</label>
+            <label id="notRemarriedRow" hidden><input id="notRemarried" type="checkbox"> The surviving spouse has not remarried</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="tax-panel">
+        <div class="tax-step">3</div>
+        <div class="tax-panel-content">
+          <h2>Actual property tax figures</h2>
+          <p class="tax-help">Use the most recent county tax statement. These two figures let us use the property's real effective tax rate instead of a statewide average.</p>
+          <div class="tax-grid two">
+            <div>
+              <label for="annualTax">Annual property tax <span class="required">*</span></label>
+              <div class="money-input"><span>$</span><input id="annualTax" inputmode="decimal" placeholder="2,450.00" required></div>
+            </div>
+            <div>
+              <label for="netAssessedValue">Net Assessed Value (NAV) <span class="required">*</span></label>
+              <div class="money-input"><span>$</span><input id="netAssessedValue" inputmode="decimal" placeholder="28,500" required></div>
+            </div>
+          </div>
+          <p class="tax-note">Do not enter the home's market value. Enter the Net Assessed Value shown by the county. Fixed fees or special assessments may remain after an exemption.</p>
+        </div>
+      </section>
+
+      <div id="formError" class="tax-error" hidden role="alert"></div>
+      <button id="calculateButton" class="tax-submit" type="submit">Calculate My Estimated 2027 Savings</button>
+    </form>
+
+    <section id="taxResults" class="tax-results" hidden aria-live="polite">
+      <div class="result-heading">
+        <div><span class="result-label">Projected 2027 result</span><h2 id="resultTitle">Estimated property tax savings</h2></div>
+        <button type="button" id="startOverButton" class="btn btn-blue">Start Over</button>
+      </div>
+      <div class="result-grid">
+        <div class="result-card savings"><span>Estimated annual savings</span><strong id="estimatedSavings">$0</strong></div>
+        <div class="result-card"><span>Estimated tax after exemption</span><strong id="estimatedRemaining">$0</strong></div>
+        <div class="result-card"><span>Estimated monthly savings</span><strong id="monthlySavings">$0</strong></div>
+      </div>
+      <div id="resultExplanation" class="result-explanation"></div>
+      <div id="countyActions" class="county-actions"></div>
+      <div class="tax-disclaimer">
+        <strong>Important:</strong> This is an educational estimate, not a tax determination or legal advice. Arizona and county officials make the final eligibility and exemption decisions. The projected 2027 exemption base will be updated when the Arizona Department of Revenue publishes the official inflation-adjusted amount. Future assessed values, tax rates, fixed fees, ownership, and classification can change the final bill.
+      </div>
+    </section>
+
+    <section class="law-summary">
+      <h2>What changed for 2027?</h2>
+      <p>Arizona's enacted law provides a full primary-residence property tax exemption for qualifying Veterans rated 100% service-connected and Veterans receiving TDIU. Veterans below 100% generally receive a proportional assessed-value exemption. Eligible surviving spouses may continue the applicable exemption. Income limits no longer apply to disabled Veterans and their eligible surviving spouses beginning in tax year 2027.</p>
+      <a id="lawSourceLink" href="https://www.azleg.gov/legtext/57leg/2R/summary/S.1861-4168ATT_ASENACTED.DOCX.htm" target="_blank" rel="noopener">Read the enacted Arizona legislative summary</a>
+    </section>
+  </main>
+
+  <footer class="footer"><p>&copy; 2027 Arizona Veteran Leadership Council. All rights reserved.</p></footer>
+  <script src="js/property-tax-calculator.js"></script>
+</body>
+</html>
