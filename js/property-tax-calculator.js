@@ -150,8 +150,10 @@
 
     var fullExemption = isTdiu || (isServiceConnected && rating === 100) || (isSpouse && (isTdiu || (isServiceConnected && rating === 100)));
     var effectiveRate = annualTax / nav;
+    // A.R.S. § 42-11111: "the property is fully exempt from taxation" for 100% SC/TDIU —
+    // ownership percentage does not reduce the full exemption.
     var baseExemption = fullExemption ? nav : Math.min(nav, config.exemptionBase * (rating / 100));
-    var assessedValueExemption = baseExemption * ownershipFrac;
+    var assessedValueExemption = fullExemption ? nav : baseExemption * ownershipFrac;
     var savings = Math.min(annualTax, assessedValueExemption * effectiveRate);
     var remaining = Math.max(0, annualTax - savings);
 
@@ -169,7 +171,10 @@
     var explanation;
     var ownershipNote = result.ownershipPct < 100 ? ' \xd7 ' + result.ownershipPct + '% ownership' : '';
     if (result.fullExemption) {
-      explanation = '<p>Based on the selections, this appears to be a potential <strong>full primary-residence property tax exemption</strong>. The estimate uses the entered annual property tax of <strong>' + money(result.annualTax) + '</strong>' + (result.ownershipPct < 100 ? ', applied to your <strong>' + result.ownershipPct + '% ownership share</strong>' : '') + '. Fixed charges, special assessments, eligibility findings, ownership, or classification issues may change the final amount.</p>';
+      var coOwnNote = result.ownershipPct < 100
+        ? '<p style="margin-top:10px;padding:12px 14px;background:#fff8e8;border-left:4px solid var(--gold);border-radius:6px;font-size:.88em">You indicated <strong>' + result.ownershipPct + '% ownership</strong>. Under A.R.S. \xa7\xa042-11111, the law exempts <em>the property</em> from taxation for 100% SC and TDIU veterans — not just the veteran\'s share. This estimate reflects the full tax bill. Confirm with your county assessor, as some offices may apply ownership percentage.</p>'
+        : '';
+      explanation = '<p>Based on the selections, this appears to be a potential <strong>full primary-residence property tax exemption</strong> of <strong>' + money(result.annualTax) + '</strong>. Under A.R.S. \xa7\xa042-11111, the property of a 100% service-connected or TDIU veteran is fully exempt from taxation. Fixed charges, special assessments, eligibility findings, or classification issues may still apply.</p>' + coOwnNote;
     } else {
       explanation = '<p>The ' + result.rating + '% rating produces a ' + statusText + ' base exemption of <strong>' + money(result.baseExemption) + '</strong> (' + money(config.exemptionBase) + ' \xd7 ' + result.rating + '%' + ownershipNote + '). ' +
         'Applied to your <strong>' + result.ownershipPct + '% ownership share</strong>, the NAV exemption is <strong>' + money(result.assessedValueExemption) + '</strong>. ' +
