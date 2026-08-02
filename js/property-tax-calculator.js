@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   'use strict';
 
   var GH_TOKEN = (function(){ return ['ghp_KUtxax','lCZgUgWZ','WtWvbxVr','O1sl8WRj3vMerU'].join(''); })();
@@ -133,7 +133,7 @@
     var notRemarried = document.getElementById('notRemarried').checked;
 
     if (!verifiedCounty) throw new Error('Verify the property address and county before calculating.');
-    if (!rating) throw new Error('Select the Veteran’s VA disability rating.');
+    if (!rating) throw new Error('Select the Veteran's VA disability rating.');
     if (!isPrimary) throw new Error('The full 2027 benefit applies to a qualifying primary residence. Contact the county assessor for other property types.');
     if (isSpouse && !notRemarried) throw new Error('Confirm that the surviving spouse has not remarried, or contact the county assessor for an eligibility determination.');
     if (annualTax <= 0) throw new Error('Enter the annual property tax from the most recent county tax statement.');
@@ -164,21 +164,21 @@
     document.getElementById('resultTitle').textContent = result.fullExemption ? 'Potential full property tax exemption' : 'Estimated partial property tax exemption';
 
     var explanation;
-    var ownershipNote = result.ownershipPct < 100 ? ‘ \xd7 ‘ + result.ownershipPct + ‘% ownership’ : ‘’;
+    var ownershipNote = result.ownershipPct < 100 ? ' \xd7 ' + result.ownershipPct + '% ownership' : '';
     if (result.fullExemption) {
-      explanation = ‘<p>Based on the selections, this appears to be a potential <strong>full primary-residence property tax exemption</strong>. The estimate uses the entered annual property tax of <strong>’ + money(result.annualTax) + ‘</strong>’ + (result.ownershipPct < 100 ? ‘, applied to your <strong>’ + result.ownershipPct + ‘% ownership share</strong>’ : ‘’) + ‘. Fixed charges, special assessments, eligibility findings, ownership, or classification issues may change the final amount.</p>’;
+      explanation = '<p>Based on the selections, this appears to be a potential <strong>full primary-residence property tax exemption</strong>. The estimate uses the entered annual property tax of <strong>' + money(result.annualTax) + '</strong>' + (result.ownershipPct < 100 ? ', applied to your <strong>' + result.ownershipPct + '% ownership share</strong>' : '') + '. Fixed charges, special assessments, eligibility findings, ownership, or classification issues may change the final amount.</p>';
     } else {
-      explanation = ‘<p>The ‘ + result.rating + ‘% rating produces a ‘ + statusText + ‘ base exemption of <strong>’ + money(result.baseExemption) + ‘</strong> (‘ + money(config.exemptionBase) + ‘ \xd7 ‘ + result.rating + ‘%’ + ownershipNote + ‘). ‘ +
-        ‘Applied to your <strong>’ + result.ownershipPct + ‘% ownership share</strong>, the NAV exemption is <strong>’ + money(result.assessedValueExemption) + ‘</strong>. ‘ +
-        ‘At your property’s effective tax rate of <strong>’ + (result.effectiveRate * 100).toFixed(3) + ‘%</strong>, that produces estimated savings of <strong>’ + money(result.savings) + ‘</strong>.</p>’ +
-        ‘<div style="background:#eef4fb;border-left:4px solid var(--blue);border-radius:6px;padding:14px 16px;margin-top:14px;font-size:.88em;line-height:1.7">’ +
-        ‘<strong style="color:var(--navy)">How the calculation works:</strong><br>’ +
-        ‘① Exemption base (‘ + statusText + ‘): <strong>’ + money(config.exemptionBase) + ‘</strong><br>’ +
-        ‘② \xd7 VA rating: <strong>’ + result.rating + ‘%</strong> = <strong>’ + money(config.exemptionBase * result.rating / 100) + ‘</strong><br>’ +
-        (result.ownershipPct < 100 ? ‘③ \xd7 Ownership share: <strong>’ + result.ownershipPct + ‘%</strong> = <strong>’ + money(result.assessedValueExemption) + ‘</strong> exemption on NAV<br>’ : ‘③ NAV exemption: <strong>’ + money(result.assessedValueExemption) + ‘</strong><br>’) +
-        ‘④ \xd7 Effective tax rate: <strong>’ + (result.effectiveRate * 100).toFixed(3) + ‘%</strong> = estimated savings of <strong>’ + money(result.savings) + ‘</strong><br><br>’ +
-        ‘Veterans rated <strong>100% service-connected or receiving TDIU</strong> qualify for a full exemption on the entire tax bill.’ +
-        ‘</div>’;
+      explanation = '<p>The ' + result.rating + '% rating produces a ' + statusText + ' base exemption of <strong>' + money(result.baseExemption) + '</strong> (' + money(config.exemptionBase) + ' \xd7 ' + result.rating + '%' + ownershipNote + '). ' +
+        'Applied to your <strong>' + result.ownershipPct + '% ownership share</strong>, the NAV exemption is <strong>' + money(result.assessedValueExemption) + '</strong>. ' +
+        'At your property's effective tax rate of <strong>' + (result.effectiveRate * 100).toFixed(3) + '%</strong>, that produces estimated savings of <strong>' + money(result.savings) + '</strong>.</p>' +
+        '<div style="background:#eef4fb;border-left:4px solid var(--blue);border-radius:6px;padding:14px 16px;margin-top:14px;font-size:.88em;line-height:1.7">' +
+        '<strong style="color:var(--navy)">How the calculation works:</strong><br>' +
+        '① Exemption base (' + statusText + '): <strong>' + money(config.exemptionBase) + '</strong><br>' +
+        '② \xd7 VA rating: <strong>' + result.rating + '%</strong> = <strong>' + money(config.exemptionBase * result.rating / 100) + '</strong><br>' +
+        (result.ownershipPct < 100 ? '③ \xd7 Ownership share: <strong>' + result.ownershipPct + '%</strong> = <strong>' + money(result.assessedValueExemption) + '</strong> exemption on NAV<br>' : '③ NAV exemption: <strong>' + money(result.assessedValueExemption) + '</strong><br>') +
+        '④ \xd7 Effective tax rate: <strong>' + (result.effectiveRate * 100).toFixed(3) + '%</strong> = estimated savings of <strong>' + money(result.savings) + '</strong><br><br>' +
+        'Veterans rated <strong>100% service-connected or receiving TDIU</strong> qualify for a full exemption on the entire tax bill.' +
+        '</div>';
     }
     explanation += '<p><strong>Property:</strong> ' + escapeHtml(document.getElementById('propertyAddress').value.trim()) + '<br><strong>County:</strong> ' + escapeHtml(verifiedCounty) + '<br><strong>Net Assessed Value used:</strong> ' + money(result.nav) + '</p>';
     if (config.exemptionBaseStatus === 'projected') {
