@@ -185,9 +185,11 @@ function lookupCountyParcel($county, $lon, $lat) {
 }
 
 function arcgisPointQuery($endpoint, $lon, $lat, $field) {
+    // Use a tiny envelope (~15m buffer) — point queries fail on some polygon layers
+    $d = 0.00015;
     $url = rtrim($endpoint, '/') . '/query?' . http_build_query([
-        'geometry'       => $lon . ',' . $lat,
-        'geometryType'   => 'esriGeometryPoint',
+        'geometry'       => ($lon-$d) . ',' . ($lat-$d) . ',' . ($lon+$d) . ',' . ($lat+$d),
+        'geometryType'   => 'esriGeometryEnvelope',
         'inSR'           => '4326',
         'spatialRel'     => 'esriSpatialRelIntersects',
         'outFields'      => $field,
