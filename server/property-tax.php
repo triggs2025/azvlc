@@ -88,7 +88,7 @@ function lookupArizonaAddress($address) {
     $lat = $match['coordinates']['y'] ?? null;
     $result = ['matchedAddress' => $match['matchedAddress'], 'county' => $county];
     if ($lon && $lat) {
-        $parcel = lookupCountyParcel($county, $lon, $lat);
+        $parcel = lookupCountyParcel($county, $lon, $lat, $match['matchedAddress']);
         if ($parcel) {
             $result['apn']        = $parcel['apn'] ?? null;
             $result['parcelUrl']  = $parcel['parcelUrl'] ?? null;
@@ -99,7 +99,7 @@ function lookupArizonaAddress($address) {
 }
 
 // ── County parcel lookup registry ──
-function lookupCountyParcel($county, $lon, $lat) {
+function lookupCountyParcel($county, $lon, $lat, $matchedAddress = '') {
     $counties = [
         'Maricopa County' => [
             'endpoint'  => 'https://gis.maricopa.gov/arcgis/rest/services/IndividualService/Parcel/MapServer/1',
@@ -177,9 +177,9 @@ function lookupCountyParcel($county, $lon, $lat) {
     if (!isset($counties[$county])) return null;
     $cfg = $counties[$county];
 
-    // Maricopa: use county geocoder for address-point coords, then exact point query
+    // Maricopa: geocode the matched address string directly for parcel-accurate coords
     if ($county === 'Maricopa County' && !empty($cfg['geocoder'])) {
-        $apn = maricopaGeocodeAndLookup($cfg, $lon, $lat);
+        $apn = maricopaGeocodeAndLookup($cfg, $matchedAddress);
     } else {
         $apn = arcgisPointQuery($cfg['endpoint'], $lon, $lat, $cfg['field']);
     }
@@ -191,31 +191,27 @@ function lookupCountyParcel($county, $lon, $lat) {
     return ['apn' => $apn, 'parcelUrl' => $parcelUrl, 'assessorUrl' => $assessorUrl];
 }
 
-function wgs84ToWebMercator($lon, $lat) {
-    $x = $lon * 20037508.34 / 180.0;
-    $y = log(tan((90.0 + $lat) * M_PI / 360.0)) / (M_PI / 180.0) * 20037508.34 / 180.0;
-    return [$x, $y];
-}
-
-function maricopaGeocodeAndLookup($cfg, $lon, $lat) {
-    // Convert WGS84 to Web Mercator for Maricopa's native geocoder SR.
-    // Census geocoder places coords on the street centerline; reverseGeocode
-    // snaps back to the actual address point inside the parcel polygon.
-    [$mx, $my] = wgs84ToWebMercator($lon, $lat);
-    $base = str_replace('findAddressCandidates', 'reverseGeocode', $cfg['geocoder']);
-    $geocodeUrl = $base . '?' . http_build_query([
-        'location' => $mx . ',' . $my,
-        'distance' => 50,
-        'outSR'    => 102100,
-        'f'        => 'json',
+function maricopaGeocodeAndLookup($cfg, $address) {
+    // Geocode the address string directly with Maricopa's own geocoder.
+    // This returns coords inside the parcel polygon (PointAddress type),
+    // unlike the Census geocoder which interpolates to the street centerline.
+    $geocodeUrl = $cfg['geocoder'] . '?' . http_build_query([
+        'SingleLine' => $address,
+        'outFields'  => '',
+        'outSR'      => 102100,
+        'f'          => 'json',
     ]);
     $ch = curl_init($geocodeUrl);
     curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 10,
         CURLOPT_USERAGENT => 'AZVLC property tax calculator (azvlc.org)']);
     $raw = curl_exec($ch); curl_close($ch);
     $data = json_decode($raw, true);
-    $x = $data['location']['x'] ?? null;
-    $y = $data['location']['y'] ?? null;
+    $candidates = $data['candidates'] ?? [];
+    if (!$candidates) return null;
+    $best = $candidates[0];
+    if (($best['score'] ?? 0) < 80) return null;
+    $x = $best['location']['x'] ?? null;
+    $y = $best['location']['y'] ?? null;
     if (!$x || !$y) return null;
 
     // Exact point query in native SR
