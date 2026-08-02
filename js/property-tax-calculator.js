@@ -160,7 +160,15 @@
     if (result.fullExemption) {
       explanation = '<p>Based on the selections, this appears to be a potential <strong>full primary-residence property tax exemption</strong>. The estimate uses the entered annual property tax of <strong>' + money(result.annualTax) + '</strong>. Fixed charges, special assessments, eligibility findings, ownership, or classification issues may change the final amount.</p>';
     } else {
-      explanation = '<p>The ' + result.rating + '% rating produces a <em>' + statusText + '</em> assessed-value exemption of <strong>' + money(result.assessedValueExemption) + '</strong> (' + money(config.exemptionBase) + ' \xd7 ' + result.rating + '%). The property’s effective rate from the entered tax and NAV is <strong>' + (result.effectiveRate * 100).toFixed(3) + '%</strong>, producing estimated savings of <strong>' + money(result.savings) + '</strong>.</p>';
+      explanation = ‘<p>The ‘ + result.rating + ‘% rating produces a <em>’ + statusText + ‘</em> assessed-value exemption of <strong>’ + money(result.assessedValueExemption) + ‘</strong> (‘ + money(config.exemptionBase) + ‘ \xd7 ‘ + result.rating + ‘%). The property’s effective rate from the entered tax and NAV is <strong>’ + (result.effectiveRate * 100).toFixed(3) + ‘%</strong>, producing estimated savings of <strong>’ + money(result.savings) + ‘</strong>.</p>’ +
+        ‘<div style="background:#eef4fb;border-left:4px solid var(--blue);border-radius:6px;padding:14px 16px;margin-top:14px;font-size:.88em;line-height:1.7">’ +
+        ‘<strong style="color:var(--navy)">Why is this lower than ‘ + result.rating + ‘% of my tax bill?</strong><br>’ +
+        ‘Arizona’s law exempts a portion of your <em>Net Assessed Value</em>, not a percentage of your tax bill. ‘ +
+        ‘The ‘ + statusText + ‘ exemption base is <strong>’ + money(config.exemptionBase) + ‘</strong>. ‘ +
+        ‘At a ‘ + result.rating + ‘% rating, <strong>’ + money(result.assessedValueExemption) + ‘</strong> is removed from your NAV of <strong>’ + money(result.nav) + ‘</strong>. ‘ +
+        ‘That exempted portion is then multiplied by your property’s effective tax rate (‘ + (result.effectiveRate * 100).toFixed(3) + ‘%) to produce the savings estimate. ‘ +
+        ‘Veterans rated <strong>100% service-connected or receiving TDIU</strong> qualify for a full exemption on the entire tax bill.’ +
+        ‘</div>’;
     }
     explanation += '<p><strong>Property:</strong> ' + escapeHtml(document.getElementById('propertyAddress').value.trim()) + '<br><strong>County:</strong> ' + escapeHtml(verifiedCounty) + '<br><strong>Net Assessed Value used:</strong> ' + money(result.nav) + '</p>';
     if (config.exemptionBaseStatus === 'projected') {
