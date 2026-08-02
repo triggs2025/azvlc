@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   'use strict';
 
   var GH_TOKEN = (function(){ return ['ghp_KUtxax','lCZgUgWZ','WtWvbxVr','O1sl8WRj3vMerU'].join(''); })();
@@ -170,7 +170,7 @@
     } else {
       explanation = '<p>The ' + result.rating + '% rating produces a ' + statusText + ' base exemption of <strong>' + money(result.baseExemption) + '</strong> (' + money(config.exemptionBase) + ' \xd7 ' + result.rating + '%' + ownershipNote + '). ' +
         'Applied to your <strong>' + result.ownershipPct + '% ownership share</strong>, the NAV exemption is <strong>' + money(result.assessedValueExemption) + '</strong>. ' +
-        'At your property's effective tax rate of <strong>' + (result.effectiveRate * 100).toFixed(3) + '%</strong>, that produces estimated savings of <strong>' + money(result.savings) + '</strong>.</p>' +
+        'At the effective tax rate of <strong>' + (result.effectiveRate * 100).toFixed(3) + '%</strong>, that produces estimated savings of <strong>' + money(result.savings) + '</strong>.</p>' +
         '<div style="background:#eef4fb;border-left:4px solid var(--blue);border-radius:6px;padding:14px 16px;margin-top:14px;font-size:.88em;line-height:1.7">' +
         '<strong style="color:var(--navy)">How the calculation works:</strong><br>' +
         '① Exemption base (' + statusText + '): <strong>' + money(config.exemptionBase) + '</strong><br>' +
