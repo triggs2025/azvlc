@@ -2691,5 +2691,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-02T23:50:28.323Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Priya Sundareshan (F)",
+    "date": "2026-08-02",
+    "type": "politician-rating",
+    "politician": "Priya Sundareshan",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted no on Bill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-02T23:51:31.321Z"
   }
 ]
