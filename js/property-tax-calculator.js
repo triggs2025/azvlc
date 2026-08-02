@@ -78,13 +78,15 @@
       document.getElementById('countyName').value = data.county;
 
       var countyInfo = (config && config.counties) ? config.counties[data.county] : null;
-      var searchUrl = countyInfo ? countyInfo.search : null;
-      if (searchUrl && searchUrl.indexOf('{address}') !== -1) {
-        searchUrl = searchUrl.replace('{address}', encodeURIComponent(data.matchedAddress));
+      var lookupBtn = '';
+      if (data.parcelUrl) {
+        // Direct parcel link (Maricopa)
+        lookupBtn = '<br><a href="' + escapeHtml(data.parcelUrl) + '" target="_blank" rel="noopener" class="btn btn-blue" style="display:inline-flex;margin-top:12px;text-decoration:none">View Your Property Tax Record &rarr;</a>' +
+          '<br><span style="font-size:.82em;color:#215c3a;display:block;margin-top:6px">Opens your exact property on the ' + escapeHtml(data.county) + ' Treasurer site. Annual tax and Net Assessed Value are listed there.</span>';
+      } else if (countyInfo && countyInfo.search) {
+        lookupBtn = '<br><a href="' + escapeHtml(countyInfo.search) + '" target="_blank" rel="noopener" class="btn btn-blue" style="display:inline-flex;margin-top:12px;text-decoration:none">Open ' + escapeHtml(data.county) + ' Assessor &rarr;</a>' +
+          '<br><span style="font-size:.82em;color:#215c3a;display:block;margin-top:6px">Search for the matched address above to find your annual tax bill and Net Assessed Value.</span>';
       }
-      var lookupBtn = searchUrl
-        ? '<br><a href="' + escapeHtml(searchUrl) + '" target="_blank" rel="noopener" class="btn btn-blue" style="display:inline-flex;margin-top:12px;text-decoration:none">Open ' + escapeHtml(data.county) + ' Assessor &rarr;</a><br><span style="font-size:.82em;color:#215c3a;display:block;margin-top:6px">Search for the matched address above to find your annual tax bill and Net Assessed Value.</span>'
-        : '';
 
       result.innerHTML = '<strong>Address matched:</strong> ' + escapeHtml(data.matchedAddress) + '<br><strong>County:</strong> ' + escapeHtml(data.county) + lookupBtn;
       result.hidden = false;

@@ -84,7 +84,45 @@ function lookupArizonaAddress($address) {
     $counties = $match['geographies']['Counties'] ?? [];
     $county = $counties[0]['NAME'] ?? '';
     if (!$county || stripos($match['matchedAddress'] ?? '', ', AZ,') === false) return null;
-    return ['matchedAddress' => $match['matchedAddress'], 'county' => $county];
+    $lon = $match['coordinates']['x'] ?? null;
+    $lat = $match['coordinates']['y'] ?? null;
+    $result = ['matchedAddress' => $match['matchedAddress'], 'county' => $county];
+    // For Maricopa County, look up the parcel number via ArcGIS REST API
+    if ($county === 'Maricopa County' && $lon && $lat) {
+        $apn = lookupMaricopaAPN($lon, $lat);
+        if ($apn) {
+            $result['apn'] = $apn;
+            $result['parcelUrl'] = 'https://treasurer.maricopa.gov/PropertyTaxInformation/?Parcel=' . urlencode($apn);
+            $result['assessorUrl'] = 'https://mcassessor.maricopa.gov/mcs.php?q=' . urlencode($apn);
+        }
+    }
+    return $result;
+}
+
+function lookupMaricopaAPN($lon, $lat) {
+    $url = 'https://gis.maricopa.gov/data/arcgis/rest/services/Parcel/MapServer/0/query?' . http_build_query([
+        'geometry'     => $lon . ',' . $lat,
+        'geometryType' => 'esriGeometryPoint',
+        'inSR'         => '4326',
+        'spatialRel'   => 'esriSpatialRelWithin',
+        'outFields'    => 'APN',
+        'returnGeometry' => 'false',
+        'f'            => 'json',
+    ]);
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_USERAGENT => 'AZVLC property tax calculator (azvlc.org)',
+    ]);
+    $raw = curl_exec($ch);
+    curl_close($ch);
+    if (!$raw) return null;
+    $data = json_decode($raw, true);
+    $features = $data['features'] ?? [];
+    if (!$features) return null;
+    $apn = $features[0]['attributes']['APN'] ?? null;
+    return $apn ? preg_replace('/[^0-9]/', '', $apn) : null;
 }
 
 if ($action === 'count') {
