@@ -261,6 +261,14 @@
           </div>
         </div>
 
+        <!-- Property Tax Calculator Counter (separate from all other analytics) -->
+        <div class="stat-card" style="border:2px solid var(--gold);margin-bottom:30px">
+          <h3>Property Tax Calculator Submissions</h3>
+          <div class="number" id="analTaxCalc">—</div>
+          <p style="font-size:0.7em;color:var(--text-muted);margin-top:4px">Anonymous submissions only — no personal data stored</p>
+          <button onclick="loadTaxCalcCounter()" style="margin-top:10px;background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75em;cursor:pointer;color:var(--text-muted)">&#x21bb; Refresh</button>
+        </div>
+
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
           <div style="background:var(--white);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)">
             <h4 style="color:var(--navy);margin-bottom:12px">Most Rated Politicians</h4>
@@ -777,6 +785,7 @@
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('adminDashboard').style.display = 'block';
       loadAllData();
+      loadTaxCalcCounter();
     }
 
     // auto-login if already authenticated
@@ -880,6 +889,19 @@
         var badge = document.getElementById('contactsBadge');
         if (badge) badge.style.display = 'none';
       }
+    }
+
+    // ── Property Tax Calculator Counter ──
+    function loadTaxCalcCounter() {
+      var el = document.getElementById('analTaxCalc');
+      if (el) el.textContent = '…';
+      fetch('https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/data/property-tax-counter.json?ref=' + BRANCH + '&t=' + Date.now(), {
+        headers: { 'Authorization': 'token ' + GH_TOKEN, 'Accept': 'application/vnd.github+json' }
+      }).then(function(r) { return r.json(); }).then(function(file) {
+        if (!file.content) throw new Error('no content');
+        var data = JSON.parse(atob(file.content.replace(/\n/g, '')));
+        if (el) el.textContent = (data.calculatorSubmissions || 0).toLocaleString();
+      }).catch(function() { if (el) el.textContent = '—'; });
     }
 
     // ── Data loading ──

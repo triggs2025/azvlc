@@ -663,3 +663,13 @@ body {
   .stats-grid { grid-template-columns: 1fr; }
   .navbar-brand-text h1 { font-size: 1em; }
 }
+
+/* ── Property Tax Calculator Callout ── */
+.tax-callout { display:flex; align-items:center; gap:20px; background:linear-gradient(135deg,var(--navy),var(--blue)); color:#fff; border-radius:12px; padding:24px 28px; box-shadow:0 6px 24px rgba(26,58,82,.22); transition:transform .15s,box-shadow .15s; border:3px solid var(--gold); }
+.tax-callout-link:hover .tax-callout { transform:translateY(-2px); box-shadow:0 10px 32px rgba(26,58,82,.30); }
+.tax-callout-badge { flex-shrink:0; background:var(--gold); color:var(--navy); font-weight:800; font-size:.75em; text-transform:uppercase; letter-spacing:.06em; padding:5px 11px; border-radius:999px; white-space:nowrap; align-self:flex-start; }
+.tax-callout-body { flex:1; }
+.tax-callout-heading { color:#fff; font-size:1.25em; margin-bottom:6px; line-height:1.2; }
+.tax-callout-sub { color:rgba(255,255,255,.85); font-size:.92em; margin:0; }
+.tax-callout-action { flex-shrink:0; background:var(--gold); color:var(--navy); font-weight:900; font-size:1em; padding:13px 22px; border-radius:8px; white-space:nowrap; }
+@media(max-width:680px){.tax-callout{flex-direction:column;gap:14px;padding:20px}.tax-callout-action{width:100%;text-align:center}}
