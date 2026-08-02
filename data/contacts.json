@@ -2631,5 +2631,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-02T23:12:53.798Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Analise Ortiz (D)",
+    "date": "2026-08-02",
+    "type": "politician-rating",
+    "politician": "Analise Ortiz",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted yes on Bill Number: SB1803\nveterans' benefits; claims; prohibition\n\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-02T23:20:40.388Z"
   }
 ]
