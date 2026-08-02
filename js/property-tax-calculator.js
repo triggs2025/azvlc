@@ -133,7 +133,7 @@
     var notRemarried = document.getElementById('notRemarried').checked;
 
     if (!verifiedCounty) throw new Error('Verify the property address and county before calculating.');
-    if (!rating) throw new Error('Select the Veteran's VA disability rating.');
+    if (!rating) throw new Error('Select the Veteran’s VA disability rating.');
     if (!isPrimary) throw new Error('The full 2027 benefit applies to a qualifying primary residence. Contact the county assessor for other property types.');
     if (isSpouse && !notRemarried) throw new Error('Confirm that the surviving spouse has not remarried, or contact the county assessor for an eligibility determination.');
     if (annualTax <= 0) throw new Error('Enter the annual property tax from the most recent county tax statement.');
