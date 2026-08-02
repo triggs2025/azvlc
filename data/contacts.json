@@ -2616,5 +2616,20 @@
     "category": "Consulting",
     "phone": "4809301688",
     "timestamp": "2026-07-31T19:19:28.844Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: J.D. Mesnard (B)",
+    "date": "2026-08-02",
+    "type": "politician-rating",
+    "politician": "J.D. Mesnard",
+    "position": "State Senator",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "Voted for \nBill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-02T23:12:53.798Z"
   }
 ]
