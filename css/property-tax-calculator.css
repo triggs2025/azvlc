@@ -45,4 +45,16 @@
 .law-summary { margin-top:35px; padding:24px; border-radius:9px; background:#fff; box-shadow:var(--shadow); }
 .law-summary h2 { color:var(--navy); margin-bottom:8px; }.law-summary p { color:var(--text-muted); margin-bottom:10px; }
 .tax-back-link { color:var(--navy)!important; }
+.county-directory { margin-top:35px; padding:24px; border-radius:9px; background:#fff; box-shadow:var(--shadow); }
+.county-directory h2 { color:var(--navy); margin-bottom:6px; }
+.county-dir-select-row { margin-top:14px; }
+.county-dir-select-row select { width:100%; max-width:420px; min-height:48px; padding:11px 13px; border:1px solid #b9c2ca; border-radius:7px; font-size:1em; background:#fff; color:var(--navy); }
+.county-dir-card { margin-top:18px; padding:20px 22px; border-radius:8px; border:1px solid var(--border); background:#f4f7fa; }
+.county-dir-card h3 { color:var(--navy); margin-bottom:10px; font-size:1.15em; }
+.county-dir-meta { display:grid; gap:6px; margin-bottom:14px; font-size:.93em; color:var(--text); }
+.county-dir-meta span { display:flex; gap:8px; align-items:flex-start; }
+.county-dir-meta strong { color:var(--navy); min-width:68px; flex-shrink:0; }
+.county-dir-actions { display:flex; gap:10px; flex-wrap:wrap; }
+.county-dir-actions a { flex:1; min-width:160px; text-align:center; justify-content:center; font-size:.9em; }
+@media(max-width:680px){ .county-dir-actions a { min-width:140px; } }
 @media(max-width:680px){.tax-hero h1{font-size:1.75em}.tax-panel{grid-template-columns:1fr;padding:19px}.tax-step{width:38px;height:38px}.tax-grid.two,.result-grid{grid-template-columns:1fr}.result-heading{align-items:flex-start;flex-direction:column}.tax-back-link{padding:8px 10px;font-size:.78em}.navbar-brand-text strong,.navbar-brand-text span{display:none}}

@@ -44,6 +44,7 @@
       .then(function (data) {
         config = data;
         document.getElementById('lawSourceLink').href = data.lawUrl;
+        buildCountyDirectory(data.counties);
       });
   }
 
@@ -199,6 +200,35 @@
     var results = document.getElementById('taxResults');
     results.hidden = false;
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function buildCountyDirectory(counties) {
+    var sel = document.getElementById('countyDirectorySelect');
+    var card = document.getElementById('countyDirectoryCard');
+    if (!sel || !card) return;
+    Object.keys(counties).sort().forEach(function (name) {
+      var opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', function () {
+      var name = this.value;
+      if (!name) { card.hidden = true; return; }
+      var c = counties[name];
+      var meta = '';
+      if (c.address) meta += '<span><strong>Address:</strong> ' + escapeHtml(c.address) + '</span>';
+      if (c.phone)   meta += '<span><strong>Phone:</strong> <a href="tel:' + escapeHtml(c.phone.replace(/[^0-9+]/g,'')) + '">' + escapeHtml(c.phone) + '</a></span>';
+      if (c.email)   meta += '<span><strong>Email:</strong> <a href="mailto:' + escapeHtml(c.email) + '">' + escapeHtml(c.email) + '</a></span>';
+      var actions = '';
+      if (c.assessor) actions += '<a class="btn btn-blue" href="' + escapeHtml(c.assessor) + '" target="_blank" rel="noopener">Assessor Website</a>';
+      if (c.filing && c.filing !== c.assessor) actions += '<a class="btn btn-primary" href="' + escapeHtml(c.filing) + '" target="_blank" rel="noopener">Exemption Filing Info</a>';
+      if (c.search && c.search !== c.assessor) actions += '<a class="btn" style="background:#f4f7fa;color:var(--navy);border:1px solid var(--border)" href="' + escapeHtml(c.search) + '" target="_blank" rel="noopener">Property Search</a>';
+      card.innerHTML = '<h3>' + escapeHtml(name) + '</h3>' +
+        (meta ? '<div class="county-dir-meta">' + meta + '</div>' : '') +
+        '<div class="county-dir-actions">' + actions + '</div>';
+      card.hidden = false;
+    });
   }
 
   document.getElementById('ownershipPct').addEventListener('change', function () {

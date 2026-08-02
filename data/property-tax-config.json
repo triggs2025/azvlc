@@ -8,77 +8,108 @@
     "Apache County": {
       "assessor": "https://www.apachecountyaz.gov/Assessor",
       "filing": "https://www.apachecountyaz.gov/Assessor",
-      "search": "https://www.apachecountyaz.gov/Assessor"
+      "phone": "(928) 337-7624",
+      "email": "assessor@apachecountyaz.gov",
+      "address": "75 W Cleveland St, St. Johns, AZ 85936"
     },
     "Cochise County": {
-      "assessor": "https://www.cochise.az.gov/178/Assessor",
-      "filing": "https://www.cochise.az.gov/178/Assessor",
-      "search": "https://www.cochise.az.gov/178/Assessor"
+      "assessor": "https://asr.cochise.gov/",
+      "filing": "https://asr.cochise.gov/",
+      "search": "https://asr.cochise.gov/",
+      "phone": "(520) 432-8650",
+      "email": "assessor@cochise.az.gov",
+      "address": "1415 W Melody Ln Bldg B, Bisbee, AZ 85603"
     },
     "Coconino County": {
       "assessor": "https://www.coconino.az.gov/119/Assessor",
       "filing": "https://www.coconino.az.gov/119/Assessor",
-      "search": "https://maps.coconino.az.gov/Html5Viewer/index.html?viewer=CoconinoParcels"
+      "search": "https://maps.coconino.az.gov/Html5Viewer/index.html?viewer=CoconinoParcels",
+      "phone": "(928) 679-7962",
+      "email": "assessor@coconino.az.gov",
+      "address": "110 E Cherry Ave, Flagstaff, AZ 86001"
     },
     "Gila County": {
       "assessor": "https://www.gilacountyaz.gov/government/assessor/",
       "filing": "https://www.gilacountyaz.gov/government/assessor/",
-      "search": "https://www.gilacountyaz.gov/government/assessor/"
+      "search": "https://assessor.gilacountyaz.gov/assessor/web/",
+      "phone": "(928) 402-8714",
+      "email": "assessor@gilacountyaz.gov",
+      "address": "1400 E Ash St, Globe, AZ 85501"
     },
     "Graham County": {
       "assessor": "https://www.graham.az.gov/163/Assessor",
       "filing": "https://www.graham.az.gov/163/Assessor",
-      "search": "https://www.graham.az.gov/163/Assessor"
+      "phone": "(928) 428-3250",
+      "email": "assessor@graham.az.gov",
+      "address": "921 Thatcher Blvd, Safford, AZ 85546"
     },
     "Greenlee County": {
       "assessor": "https://www.greenlee.az.gov/elected-officials/assessor",
       "filing": "https://www.greenlee.az.gov/elected-officials/assessor",
-      "search": "https://www.greenlee.az.gov/elected-officials/assessor"
+      "phone": "(928) 865-2072",
+      "address": "253 5th St, Clifton, AZ 85533"
     },
     "La Paz County": {
       "assessor": "https://www.co.la-paz.az.us/150/Assessor",
       "filing": "https://www.co.la-paz.az.us/150/Assessor",
-      "search": "https://www.co.la-paz.az.us/150/Assessor"
+      "phone": "(928) 669-6165",
+      "address": "1112 Joshua Ave Suite 204, Parker, AZ 85344"
     },
     "Maricopa County": {
       "assessor": "https://mcassessor.maricopa.gov/",
       "filing": "https://mcassessor.maricopa.gov/faq/property_exemptions/",
-      "search": "https://mcassessor.maricopa.gov/"
+      "search": "https://mcassessor.maricopa.gov/",
+      "treasurer": "https://treasurer.maricopa.gov/",
+      "phone": "(602) 506-3406",
+      "address": "301 W Jefferson St, Phoenix, AZ 85003"
     },
     "Mohave County": {
       "assessor": "https://www.mohave.gov/departments/assessor/",
       "filing": "https://www.mohave.gov/departments/assessor/",
-      "search": "https://www.mohave.gov/departments/assessor/"
+      "search": "https://www.mohave.gov/departments/assessor/assessor-search/",
+      "phone": "(928) 753-0703",
+      "address": "700 W Beale St, Kingman, AZ 86401"
     },
     "Navajo County": {
       "assessor": "https://www.navajocountyaz.gov/Departments/Assessor",
       "filing": "https://www.navajocountyaz.gov/Departments/Assessor",
-      "search": "https://www.navajocountyaz.gov/Departments/Assessor"
+      "phone": "(928) 524-4095",
+      "address": "100 E Code Talkers Dr, Holbrook, AZ 86025"
     },
     "Pima County": {
       "assessor": "https://www.asr.pima.gov/",
       "filing": "https://www.asr.pima.gov/",
-      "search": "https://www.asr.pima.gov/Parcel/Info/"
+      "search": "https://www.asr.pima.gov/Parcel/Info/",
+      "phone": "(520) 724-8630",
+      "address": "240 N Stone Ave, Tucson, AZ 85701"
     },
     "Pinal County": {
       "assessor": "https://www.pinal.gov/630/Assessor",
       "filing": "https://www.pinal.gov/630/Assessor",
-      "search": "https://apps.pinal.gov/assessor/search/"
+      "search": "https://apps.pinal.gov/assessor/search/",
+      "phone": "(520) 866-6361",
+      "address": "31 N Pinal St, Florence, AZ 85132"
     },
     "Santa Cruz County": {
       "assessor": "https://www.santacruzcountyaz.gov/180/Assessor",
       "filing": "https://www.santacruzcountyaz.gov/180/Assessor",
-      "search": "https://www.santacruzcountyaz.gov/180/Assessor"
+      "search": "https://parcelsearch.santacruzcountyaz.gov/",
+      "phone": "(520) 375-7940",
+      "address": "2150 N Congress Dr, Nogales, AZ 85621"
     },
     "Yavapai County": {
       "assessor": "https://www.yavapaiaz.gov/Assessor",
       "filing": "https://www.yavapaiaz.gov/Assessor",
-      "search": "https://gis.yavapaiaz.gov/assessor/"
+      "search": "https://gis.yavapaiaz.gov/assessor/",
+      "phone": "(928) 771-3220",
+      "address": "1015 Fair St, Prescott, AZ 86305"
     },
     "Yuma County": {
       "assessor": "https://www.yumacountyaz.gov/government/assessor",
       "filing": "https://www.yumacountyaz.gov/government/assessor",
-      "search": "https://www.yumacountyaz.gov/government/assessor"
+      "search": "https://yumacountyaz-assessor.tylerhost.net/assessor/web/",
+      "phone": "(928) 373-6040",
+      "address": "410 S Maiden Ln, Yuma, AZ 85364"
     }
   }
 }
