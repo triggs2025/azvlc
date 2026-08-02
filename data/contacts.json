@@ -2706,5 +2706,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-02T23:51:31.321Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Warren Petersen (A)",
+    "date": "2026-08-02",
+    "type": "politician-rating",
+    "politician": "Warren Petersen",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-02T23:52:52.390Z"
   }
 ]
