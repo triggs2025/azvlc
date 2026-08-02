@@ -265,7 +265,8 @@
         <div class="stat-card" style="border:2px solid var(--gold);margin-bottom:30px">
           <h3>Property Tax Calculator Submissions</h3>
           <div class="number" id="analTaxCalc">—</div>
-          <p style="font-size:0.7em;color:var(--text-muted);margin-top:4px">Anonymous submissions only — no personal data stored</p>
+          <p id="analTaxCalcDate" style="font-size:0.7em;color:var(--text-muted);margin-top:4px"></p>
+          <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Anonymous submissions only — no personal data stored</p>
           <button onclick="loadTaxCalcCounter()" style="margin-top:10px;background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75em;cursor:pointer;color:var(--text-muted)">&#x21bb; Refresh</button>
         </div>
 
@@ -901,6 +902,11 @@
         if (!file.content) throw new Error('no content');
         var data = JSON.parse(atob(file.content.replace(/\n/g, '')));
         if (el) el.textContent = (data.calculatorSubmissions || 0).toLocaleString();
+        var dateEl = document.getElementById('analTaxCalcDate');
+        if (dateEl && data.updatedAt) {
+          var d = new Date(data.updatedAt);
+          dateEl.textContent = 'Last submission: ' + d.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) + ' at ' + d.toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit',timeZoneName:'short'});
+        }
       }).catch(function() { if (el) el.textContent = '—'; });
     }
 
