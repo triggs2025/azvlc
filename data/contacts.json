@@ -2661,5 +2661,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-02T23:47:58.089Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Kiana Sears (A)",
+    "date": "2026-08-02",
+    "type": "politician-rating",
+    "politician": "Kiana Sears",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted yes on Bill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-02T23:49:10.974Z"
   }
 ]
