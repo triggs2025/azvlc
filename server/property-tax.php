@@ -87,33 +87,118 @@ function lookupArizonaAddress($address) {
     $lon = $match['coordinates']['x'] ?? null;
     $lat = $match['coordinates']['y'] ?? null;
     $result = ['matchedAddress' => $match['matchedAddress'], 'county' => $county];
-    // For Maricopa County, look up the parcel number via ArcGIS REST API
-    if ($county === 'Maricopa County' && $lon && $lat) {
-        $apn = lookupMaricopaAPN($lon, $lat);
-        if ($apn) {
-            $result['apn'] = $apn;
-            $result['parcelUrl'] = 'https://treasurer.maricopa.gov/PropertyTaxInformation/?Parcel=' . urlencode($apn);
-            $result['assessorUrl'] = 'https://mcassessor.maricopa.gov/mcs.php?q=' . urlencode($apn);
+    if ($lon && $lat) {
+        $parcel = lookupCountyParcel($county, $lon, $lat);
+        if ($parcel) {
+            $result['apn']        = $parcel['apn'] ?? null;
+            $result['parcelUrl']  = $parcel['parcelUrl'] ?? null;
+            $result['assessorUrl']= $parcel['assessorUrl'] ?? null;
         }
     }
     return $result;
 }
 
-function lookupMaricopaAPN($lon, $lat) {
-    $url = 'https://gis.maricopa.gov/data/arcgis/rest/services/Parcel/MapServer/0/query?' . http_build_query([
-        'geometry'     => $lon . ',' . $lat,
-        'geometryType' => 'esriGeometryPoint',
-        'inSR'         => '4326',
-        'spatialRel'   => 'esriSpatialRelWithin',
-        'outFields'    => 'APN',
+// ── County parcel lookup registry ──
+function lookupCountyParcel($county, $lon, $lat) {
+    $counties = [
+        'Maricopa County' => [
+            'endpoint' => 'https://gis.maricopa.gov/data/arcgis/rest/services/Parcel/MapServer/0',
+            'field'    => 'APN',
+            'clean'    => 'digits',
+            'parcelUrl'=> 'https://treasurer.maricopa.gov/PropertyTaxInformation/?Parcel={APN}',
+            'assessorUrl' => 'https://mcassessor.maricopa.gov/mcs.php?q={APN}',
+        ],
+        'Pima County' => [
+            'endpoint' => 'https://gisdata.pima.gov/arcgis1/rest/services/GISOpenData/LandRecords/MapServer/17',
+            'field'    => 'PARCELID',
+            'clean'    => 'none',
+            'parcelUrl'=> null,
+            'assessorUrl' => 'https://www.asr.pima.gov/Parcel/Info/{APN}',
+        ],
+        'Pinal County' => [
+            'endpoint' => 'https://gis.pinal.gov/mapping/rest/services/Parcels/MapServer/0',
+            'field'    => 'APN',
+            'clean'    => 'none',
+            'parcelUrl'=> null,
+            'assessorUrl' => 'https://www.pinalcountyaz.gov/Assessor/Pages/ParcelSearch.aspx',
+        ],
+        'Yavapai County' => [
+            'endpoint' => 'https://gis.yavapaiaz.gov/arcgis/rest/services/Parcels/FeatureServer/0',
+            'field'    => 'APN',
+            'clean'    => 'none',
+            'parcelUrl'=> null,
+            'assessorUrl' => 'https://gis.yavapaiaz.gov/v4/search.aspx',
+        ],
+        'Mohave County' => [
+            'endpoint' => 'https://mcgis2.mohavecounty.us/arcgis/rest/services/PARCELS/MapServer/0',
+            'field'    => 'APN',
+            'clean'    => 'none',
+            'parcelUrl'=> null,
+            'assessorUrl' => 'https://www.mohave.gov/departments/assessor/assessor-search/',
+        ],
+        'Coconino County' => [
+            'endpoint' => 'https://webmaps.coconino.az.gov/arcgis/rest/services/ParcelOwnerInfo/FeatureServer/0',
+            'field'    => 'APN',
+            'clean'    => 'none',
+            'parcelUrl'=> null,
+            'assessorUrl' => 'https://maps.coconino.az.gov/Html5Viewer/index.html?viewer=CoconinoParcels',
+        ],
+        'Cochise County' => [
+            'endpoint' => 'https://services6.arcgis.com/Yxem0VOcqSy8T6TE/ArcGIS/rest/services/Cad_Parcel_TaxInfo/FeatureServer/0',
+            'field'    => 'APN',
+            'clean'    => 'none',
+            'parcelUrl'=> null,
+            'assessorUrl' => 'https://asr.cochise.gov/',
+        ],
+        'Yuma County' => [
+            'endpoint' => 'https://arcgis.yumacountyaz.gov/webgis/rest/services/YC_Parcels/MapServer/0',
+            'field'    => 'APN',
+            'clean'    => 'none',
+            'parcelUrl'=> null,
+            'assessorUrl' => 'https://yumacountyaz-assessor.tylerhost.net/assessor/web/',
+        ],
+        'Santa Cruz County' => [
+            'endpoint' => 'https://mapservices.santacruzcountyaz.gov/wagis01/rest/services/ParcelSearch/Parcels/MapServer/0',
+            'field'    => 'APN',
+            'clean'    => 'none',
+            'parcelUrl'=> 'https://parcelsearch.santacruzcountyaz.gov/santacruzwebpay/ParcelReport?taxid={APN}',
+            'assessorUrl' => null,
+        ],
+        'Gila County' => [
+            'endpoint' => 'https://gis.gilacountyaz.gov/arcgis/rest/services/ParcelService/ParcelViewerParcelLayer/MapServer/0',
+            'field'    => 'APN',
+            'clean'    => 'none',
+            'parcelUrl'=> null,
+            'assessorUrl' => 'https://assessor.gilacountyaz.gov/assessor/web/',
+        ],
+    ];
+
+    if (!isset($counties[$county])) return null;
+    $cfg = $counties[$county];
+    $apn = arcgisPointQuery($cfg['endpoint'], $lon, $lat, $cfg['field']);
+    if (!$apn) return null;
+    if ($cfg['clean'] === 'digits') $apn = preg_replace('/[^0-9]/', '', $apn);
+
+    $parcelUrl  = $cfg['parcelUrl']   ? str_replace('{APN}', urlencode($apn), $cfg['parcelUrl'])   : null;
+    $assessorUrl= $cfg['assessorUrl'] ? str_replace('{APN}', urlencode($apn), $cfg['assessorUrl']) : null;
+    return ['apn' => $apn, 'parcelUrl' => $parcelUrl, 'assessorUrl' => $assessorUrl];
+}
+
+function arcgisPointQuery($endpoint, $lon, $lat, $field) {
+    $url = rtrim($endpoint, '/') . '/query?' . http_build_query([
+        'geometry'       => $lon . ',' . $lat,
+        'geometryType'   => 'esriGeometryPoint',
+        'inSR'           => '4326',
+        'spatialRel'     => 'esriSpatialRelIntersects',
+        'outFields'      => $field,
         'returnGeometry' => 'false',
-        'f'            => 'json',
+        'f'              => 'json',
     ]);
     $ch = curl_init($url);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 10,
-        CURLOPT_USERAGENT => 'AZVLC property tax calculator (azvlc.org)',
+        CURLOPT_TIMEOUT        => 10,
+        CURLOPT_USERAGENT      => 'AZVLC property tax calculator (azvlc.org)',
     ]);
     $raw = curl_exec($ch);
     curl_close($ch);
@@ -121,8 +206,7 @@ function lookupMaricopaAPN($lon, $lat) {
     $data = json_decode($raw, true);
     $features = $data['features'] ?? [];
     if (!$features) return null;
-    $apn = $features[0]['attributes']['APN'] ?? null;
-    return $apn ? preg_replace('/[^0-9]/', '', $apn) : null;
+    return $features[0]['attributes'][$field] ?? null;
 }
 
 if ($action === 'count') {
