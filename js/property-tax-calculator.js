@@ -139,13 +139,20 @@
     if (annualTax <= 0) throw new Error('Enter the annual property tax from the most recent county tax statement.');
     if (nav <= 0) throw new Error('Enter the Net Assessed Value from the county property record.');
 
+    var ownershipSel = document.getElementById('ownershipPct').value;
+    var ownershipPct = ownershipSel === 'custom'
+      ? Math.min(100, Math.max(1, Number(document.getElementById('ownershipCustom').value) || 100))
+      : Number(ownershipSel);
+    var ownershipFrac = ownershipPct / 100;
+
     var fullExemption = isTdiu || (isServiceConnected && rating === 100) || (isSpouse && (isTdiu || (isServiceConnected && rating === 100)));
     var effectiveRate = annualTax / nav;
-    var assessedValueExemption = fullExemption ? nav : Math.min(nav, config.exemptionBase * (rating / 100));
-    var savings = fullExemption ? annualTax : Math.min(annualTax, assessedValueExemption * effectiveRate);
+    var baseExemption = fullExemption ? nav : Math.min(nav, config.exemptionBase * (rating / 100));
+    var assessedValueExemption = baseExemption * ownershipFrac;
+    var savings = Math.min(annualTax, assessedValueExemption * effectiveRate);
     var remaining = Math.max(0, annualTax - savings);
 
-    return { fullExemption: fullExemption, rating: rating, annualTax: annualTax, nav: nav, effectiveRate: effectiveRate, assessedValueExemption: assessedValueExemption, savings: savings, remaining: remaining, monthly: savings / 12, isSpouse: isSpouse };
+    return { fullExemption: fullExemption, rating: rating, annualTax: annualTax, nav: nav, effectiveRate: effectiveRate, assessedValueExemption: assessedValueExemption, baseExemption: baseExemption, ownershipPct: ownershipPct, savings: savings, remaining: remaining, monthly: savings / 12, isSpouse: isSpouse };
   }
 
   function renderResult(result) {
@@ -157,16 +164,19 @@
     document.getElementById('resultTitle').textContent = result.fullExemption ? 'Potential full property tax exemption' : 'Estimated partial property tax exemption';
 
     var explanation;
+    var ownershipNote = result.ownershipPct < 100 ? ‘ \xd7 ‘ + result.ownershipPct + ‘% ownership’ : ‘’;
     if (result.fullExemption) {
-      explanation = '<p>Based on the selections, this appears to be a potential <strong>full primary-residence property tax exemption</strong>. The estimate uses the entered annual property tax of <strong>' + money(result.annualTax) + '</strong>. Fixed charges, special assessments, eligibility findings, ownership, or classification issues may change the final amount.</p>';
+      explanation = ‘<p>Based on the selections, this appears to be a potential <strong>full primary-residence property tax exemption</strong>. The estimate uses the entered annual property tax of <strong>’ + money(result.annualTax) + ‘</strong>’ + (result.ownershipPct < 100 ? ‘, applied to your <strong>’ + result.ownershipPct + ‘% ownership share</strong>’ : ‘’) + ‘. Fixed charges, special assessments, eligibility findings, ownership, or classification issues may change the final amount.</p>’;
     } else {
-      explanation = ‘<p>The ‘ + result.rating + ‘% rating produces a <em>’ + statusText + ‘</em> assessed-value exemption of <strong>’ + money(result.assessedValueExemption) + ‘</strong> (‘ + money(config.exemptionBase) + ‘ \xd7 ‘ + result.rating + ‘%). The property’s effective rate from the entered tax and NAV is <strong>’ + (result.effectiveRate * 100).toFixed(3) + ‘%</strong>, producing estimated savings of <strong>’ + money(result.savings) + ‘</strong>.</p>’ +
+      explanation = ‘<p>The ‘ + result.rating + ‘% rating produces a ‘ + statusText + ‘ base exemption of <strong>’ + money(result.baseExemption) + ‘</strong> (‘ + money(config.exemptionBase) + ‘ \xd7 ‘ + result.rating + ‘%’ + ownershipNote + ‘). ‘ +
+        ‘Applied to your <strong>’ + result.ownershipPct + ‘% ownership share</strong>, the NAV exemption is <strong>’ + money(result.assessedValueExemption) + ‘</strong>. ‘ +
+        ‘At your property’s effective tax rate of <strong>’ + (result.effectiveRate * 100).toFixed(3) + ‘%</strong>, that produces estimated savings of <strong>’ + money(result.savings) + ‘</strong>.</p>’ +
         ‘<div style="background:#eef4fb;border-left:4px solid var(--blue);border-radius:6px;padding:14px 16px;margin-top:14px;font-size:.88em;line-height:1.7">’ +
-        ‘<strong style="color:var(--navy)">Why is this lower than ‘ + result.rating + ‘% of my tax bill?</strong><br>’ +
-        ‘Arizona’s law exempts a portion of your <em>Net Assessed Value</em>, not a percentage of your tax bill. ‘ +
-        ‘The ‘ + statusText + ‘ exemption base is <strong>’ + money(config.exemptionBase) + ‘</strong>. ‘ +
-        ‘At a ‘ + result.rating + ‘% rating, <strong>’ + money(result.assessedValueExemption) + ‘</strong> is removed from your NAV of <strong>’ + money(result.nav) + ‘</strong>. ‘ +
-        ‘That exempted portion is then multiplied by your property’s effective tax rate (‘ + (result.effectiveRate * 100).toFixed(3) + ‘%) to produce the savings estimate. ‘ +
+        ‘<strong style="color:var(--navy)">How the calculation works:</strong><br>’ +
+        ‘① Exemption base (‘ + statusText + ‘): <strong>’ + money(config.exemptionBase) + ‘</strong><br>’ +
+        ‘② \xd7 VA rating: <strong>’ + result.rating + ‘%</strong> = <strong>’ + money(config.exemptionBase * result.rating / 100) + ‘</strong><br>’ +
+        (result.ownershipPct < 100 ? ‘③ \xd7 Ownership share: <strong>’ + result.ownershipPct + ‘%</strong> = <strong>’ + money(result.assessedValueExemption) + ‘</strong> exemption on NAV<br>’ : ‘③ NAV exemption: <strong>’ + money(result.assessedValueExemption) + ‘</strong><br>’) +
+        ‘④ \xd7 Effective tax rate: <strong>’ + (result.effectiveRate * 100).toFixed(3) + ‘%</strong> = estimated savings of <strong>’ + money(result.savings) + ‘</strong><br><br>’ +
         ‘Veterans rated <strong>100% service-connected or receiving TDIU</strong> qualify for a full exemption on the entire tax bill.’ +
         ‘</div>’;
     }
@@ -188,6 +198,10 @@
     results.hidden = false;
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+
+  document.getElementById('ownershipPct').addEventListener('change', function () {
+    document.getElementById('ownershipCustomRow').hidden = this.value !== 'custom';
+  });
 
   document.getElementById('verifyAddressButton').addEventListener('click', function () { verifyAddress().catch(function () {}); });
   document.getElementById('propertyAddress').addEventListener('input', function () {

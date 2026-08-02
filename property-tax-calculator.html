@@ -75,9 +75,24 @@
               </select>
             </div>
           </div>
+          <div class="tax-grid two" style="margin-bottom:16px">
+            <div>
+              <label for="ownershipPct">Veteran's ownership share</label>
+              <select id="ownershipPct">
+                <option value="100">100% — sole owner</option>
+                <option value="50">50% — two names on deed</option>
+                <option value="33">33% — three names on deed</option>
+                <option value="custom">Other — enter %</option>
+              </select>
+            </div>
+            <div id="ownershipCustomRow" hidden>
+              <label for="ownershipCustom">Ownership % (numbers only)</label>
+              <input id="ownershipCustom" type="number" min="1" max="100" placeholder="e.g. 25">
+            </div>
+          </div>
           <div class="tax-checks">
             <label><input id="serviceConnected" type="checkbox" checked> The VA rating is service-connected</label>
-            <label><input id="tdiu" type="checkbox"> The Veteran receives Total Disability based on Individual Unemployability (TDIU)</label>
+            <label><input id="tdiu" type="checkbox"> The Veteran receives TDIU (Total Disability based on Individual Unemployability) <em style="font-weight:400;color:var(--text-muted)">— combined SC rating need not be 100%</em></label>
             <label><input id="primaryResidence" type="checkbox" checked> This property is or will be the applicant's primary residence</label>
             <label id="notRemarriedRow" hidden><input id="notRemarried" type="checkbox"> The surviving spouse has not remarried</label>
           </div>
@@ -102,6 +117,10 @@
           <p class="tax-note">Do not enter the home's market value. Enter the Net Assessed Value shown by the county. Fixed fees or special assessments may remain after an exemption.</p>
         </div>
       </section>
+
+      <div style="background:#fff8e8;border-left:4px solid var(--gold);border-radius:6px;padding:14px 18px;font-size:.88em;line-height:1.7;color:#5a4010">
+        <strong>Income limits:</strong> Arizona HB 4168 removes income limits for disabled Veterans beginning in tax year 2027. Under the current program (tax years before 2027), total household income must not exceed statutory limits. VA disability payments, Social Security, and military pensions are excluded from the income calculation. Contact your county assessor to confirm current eligibility requirements.
+      </div>
 
       <div id="formError" class="tax-error" hidden role="alert"></div>
       <button id="calculateButton" class="tax-submit" type="submit">Calculate My Estimated 2027 Savings</button>
