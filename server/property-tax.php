@@ -102,7 +102,7 @@ function lookupArizonaAddress($address) {
 function lookupCountyParcel($county, $lon, $lat) {
     $counties = [
         'Maricopa County' => [
-            'endpoint' => 'https://gis.maricopa.gov/data/arcgis/rest/services/Parcel/MapServer/0',
+            'endpoint' => 'https://gis.maricopa.gov/arcgis/rest/services/IndividualService/Parcel/MapServer/1',
             'field'    => 'APN',
             'clean'    => 'digits',
             'parcelUrl'=> 'https://treasurer.maricopa.gov/PropertyTaxInformation/?Parcel={APN}',
@@ -228,7 +228,11 @@ if ($action === 'lookup') {
         echo json_encode(['success' => false, 'error' => 'The address was not matched to an Arizona property.']);
         exit;
     }
-    echo json_encode(['success' => true, 'matchedAddress' => $result['matchedAddress'], 'county' => $result['county']]);
+    $out = ['success' => true, 'matchedAddress' => $result['matchedAddress'], 'county' => $result['county']];
+    if (!empty($result['apn']))        $out['apn']        = $result['apn'];
+    if (!empty($result['parcelUrl']))  $out['parcelUrl']  = $result['parcelUrl'];
+    if (!empty($result['assessorUrl'])) $out['assessorUrl'] = $result['assessorUrl'];
+    echo json_encode($out);
     exit;
 }
 
