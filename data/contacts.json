@@ -2646,5 +2646,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-02T23:20:40.388Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Kevin Payne (A)",
+    "date": "2026-08-02",
+    "type": "politician-rating",
+    "politician": "Kevin Payne",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted yes on Bill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-02T23:47:58.089Z"
   }
 ]
