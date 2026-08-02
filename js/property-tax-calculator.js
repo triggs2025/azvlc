@@ -76,7 +76,17 @@
     }).then(function (data) {
       verifiedCounty = data.county;
       document.getElementById('countyName').value = data.county;
-      result.innerHTML = '<strong>Address matched:</strong> ' + escapeHtml(data.matchedAddress) + '<br><strong>County:</strong> ' + escapeHtml(data.county);
+
+      var countyInfo = (config && config.counties) ? config.counties[data.county] : null;
+      var searchUrl = countyInfo ? countyInfo.search : null;
+      if (searchUrl && searchUrl.indexOf('{address}') !== -1) {
+        searchUrl = searchUrl.replace('{address}', encodeURIComponent(data.matchedAddress));
+      }
+      var lookupBtn = searchUrl
+        ? '<br><a href="' + escapeHtml(searchUrl) + '" target="_blank" rel="noopener" class="btn btn-blue" style="display:inline-flex;margin-top:12px;text-decoration:none">Look Up Your Property Record on ' + escapeHtml(data.county) + ' Assessor &rarr;</a>'
+        : '';
+
+      result.innerHTML = '<strong>Address matched:</strong> ' + escapeHtml(data.matchedAddress) + '<br><strong>County:</strong> ' + escapeHtml(data.county) + lookupBtn;
       result.hidden = false;
       status.textContent = 'Verified';
       return data;
