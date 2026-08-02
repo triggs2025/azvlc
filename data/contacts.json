@@ -2676,5 +2676,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-02T23:49:10.974Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Thomas Shope (B)",
+    "date": "2026-08-02",
+    "type": "politician-rating",
+    "politician": "Thomas Shope",
+    "position": "State Senator",
+    "grade": "B",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1803\nveterans' benefits; claims; prohibition\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-02T23:50:28.323Z"
   }
 ]
