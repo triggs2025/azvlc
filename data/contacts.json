@@ -2856,5 +2856,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T03:15:00.655Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Theresa Hatathlie (F)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Theresa Hatathlie",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted no on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T03:16:26.931Z"
   }
 ]
