@@ -2976,5 +2976,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T04:21:47.526Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Thomas Shope (A)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Thomas Shope",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted yes to Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T04:22:59.187Z"
   }
 ]
