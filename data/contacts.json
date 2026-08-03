@@ -2841,5 +2841,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T03:13:47.695Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: David Gowan (A)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "David Gowan",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T03:15:00.655Z"
   }
 ]
