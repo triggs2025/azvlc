@@ -2781,5 +2781,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T03:08:29.155Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Denise Epstein (F)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Denise Epstein",
+    "position": "State Senator",
+    "grade": "F",
+    "previousGrade": "",
+    "reason": "Voted No on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T03:10:18.791Z"
   }
 ]
