@@ -2721,5 +2721,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-02T23:52:52.390Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lela Alston (D)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Lela Alston",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted no on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T00:04:32.556Z"
   }
 ]
