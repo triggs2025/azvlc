@@ -2766,5 +2766,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T03:07:04.355Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lupe Diaz (A)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Lupe Diaz",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T03:08:29.155Z"
   }
 ]
