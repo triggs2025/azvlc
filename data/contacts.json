@@ -2946,5 +2946,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T03:23:13.571Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Wendy Rogers (C)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Wendy Rogers",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted No Voting on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T03:24:58.419Z"
   }
 ]
