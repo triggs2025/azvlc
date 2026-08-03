@@ -2991,5 +2991,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T04:22:59.187Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Carine Werner (A)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Carine Werner",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes to Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T04:24:17.886Z"
   }
 ]
