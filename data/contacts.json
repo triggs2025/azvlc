@@ -2961,5 +2961,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T03:24:58.419Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Kiana Sears (A)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Kiana Sears",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes to Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T04:21:47.526Z"
   }
 ]
