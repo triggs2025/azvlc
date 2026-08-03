@@ -2886,5 +2886,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T03:17:59.672Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Lauren Kuby (C)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Lauren Kuby",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T03:19:34.469Z"
   }
 ]
