@@ -2826,5 +2826,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T03:12:27.171Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Rosanna Gabaldón (C)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Rosanna Gabaldón",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T03:13:47.695Z"
   }
 ]
