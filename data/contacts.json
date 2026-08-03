@@ -2811,5 +2811,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T03:11:20.503Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Brian Fernandez (C)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Brian Fernandez",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T03:12:27.171Z"
   }
 ]
