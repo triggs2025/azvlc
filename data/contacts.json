@@ -2871,5 +2871,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T03:16:26.931Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Jake Hoffman (C)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Jake Hoffman",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T03:17:59.672Z"
   }
 ]
