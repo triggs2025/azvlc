@@ -2751,5 +2751,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-03T03:05:42.005Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Flavio Bravo (C)",
+    "date": "2026-08-03",
+    "type": "politician-rating",
+    "politician": "Flavio Bravo",
+    "position": "State Senator",
+    "grade": "C",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-03T03:07:04.355Z"
   }
 ]
