@@ -3030,5 +3030,20 @@
     "type": "donate-interest",
     "phone": "16023613477",
     "timestamp": "2026-08-03T04:28:51.808Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Timothy Dunn (A)",
+    "date": "2026-08-05",
+    "type": "politician-rating",
+    "politician": "Timothy Dunn",
+    "position": "State Senator",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Voted Yes on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-05T04:07:01.116Z"
   }
 ]
