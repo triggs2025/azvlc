@@ -3045,5 +3045,20 @@
     "zip": "85395",
     "anonymous": true,
     "timestamp": "2026-08-05T04:07:01.116Z"
+  },
+  {
+    "email": "ontargt1@msn.com",
+    "name": "Anonymous",
+    "source": "Rated: Catherine Miranda (D)",
+    "date": "2026-08-05",
+    "type": "politician-rating",
+    "politician": "Catherine Miranda",
+    "position": "State Senator",
+    "grade": "D",
+    "previousGrade": "",
+    "reason": "Voted not voting on Bill Number: SB1365\nproperty tax; exemption; veterans; disabilities\n",
+    "zip": "85395",
+    "anonymous": true,
+    "timestamp": "2026-08-05T04:08:19.192Z"
   }
 ]
