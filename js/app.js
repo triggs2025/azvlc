@@ -366,6 +366,7 @@
     if (!data.districtLookups) data.districtLookups = {};
     if (!data.vobClicks) data.vobClicks = {};
     if (!data.scorecardViews) data.scorecardViews = {};
+    if (!data.veteranRatings) data.veteranRatings = 0;
     if (!data.startDate) data.startDate = today;
     pending.forEach(function(h) {
       var type = h.type || 'hit';
@@ -397,6 +398,8 @@
         data.vobClicks[h.id] = (data.vobClicks[h.id] || 0) + 1;
       } else if (type === 'scorecard') {
         data.scorecardViews[h.id] = (data.scorecardViews[h.id] || 0) + 1;
+      } else if (type === 'veteranRating') {
+        data.veteranRatings = (data.veteranRatings || 0) + 1;
       }
     });
     return data;
@@ -2104,6 +2107,7 @@
     var ratingReason = form.ratingReason.value || '';
     var politicianPosition = form.politicianPosition.value || '';
     var isAnonymous = form.raterAnonymous.checked;
+    var isVeteran = form.raterVeteran ? form.raterVeteran.checked : false;
 
     var politician = politicians.find(function (p) { return p.name === politicianName; });
     if (!politician) {
@@ -2166,8 +2170,10 @@
           reason: ratingReason,
           zip: zip,
           anonymous: isAnonymous,
+          veteran: isVeteran,
           timestamp: new Date().toISOString()
         }); }, 2000);
+        if (isVeteran) { _hitQueue.push({ type: 'veteranRating' }); _flushHits(); }
 
         fetch('https://api.github.com/repos/' + CONFIG.repoOwner + '/' + CONFIG.repoName + '/issues', {
           method: 'POST',
@@ -2179,6 +2185,7 @@
               '**Grade:** ' + newGrade + (prevGrade ? ' (changed from ' + prevGrade + ')' : '') + '\n' +
               '**Reason:** ' + (ratingReason || 'Not provided') + '\n' +
               '**Zip:** ' + zip + '\n' +
+              '**Veteran:** ' + (isVeteran ? 'Yes' : 'No') + '\n' +
               '**Submitted by:** ' + (raterName || 'Anonymous') + ' (' + raterEmail + ')\n' +
               '**Date:** ' + new Date().toISOString(),
             labels: ['rating']

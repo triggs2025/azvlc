@@ -259,6 +259,11 @@
             <div class="number" id="analTopDistrict" style="font-size:1.4em">—</div>
             <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Most looked up</p>
           </div>
+          <div class="stat-card">
+            <h3>Veterans who Rated</h3>
+            <div class="number" id="analVeteranRatings">—</div>
+            <p style="font-size:0.7em;color:var(--text-muted);margin-top:2px">Self-identified Veterans</p>
+          </div>
         </div>
 
         <!-- Property Tax Calculator Counter (separate from all other analytics) -->
@@ -3108,6 +3113,9 @@
         document.getElementById('analMobilePct').textContent = Math.round(mob / devTotal * 100) + '% of visitors';
         document.getElementById('analDesktopPct').textContent = Math.round(desk / devTotal * 100) + '% of visitors';
       }
+
+      // Veterans who rated
+      setText2('analVeteranRatings', d.veteranRatings || 0);
 
       // Top district
       var dl = d.districtLookups || {};
