@@ -3101,5 +3101,21 @@
     "category": "Education",
     "phone": "",
     "timestamp": "2026-08-08T03:04:58.754Z"
+  },
+  {
+    "email": "mcvaz@gmail.com",
+    "name": "Anonymous",
+    "source": "Rated: Brian Garcia (A)",
+    "date": "2026-08-08",
+    "type": "politician-rating",
+    "politician": "Brian Garcia",
+    "position": "State Representative",
+    "grade": "A",
+    "previousGrade": "",
+    "reason": "Support for Veterans Court in Mohave County",
+    "zip": "86403",
+    "anonymous": true,
+    "veteran": false,
+    "timestamp": "2026-08-08T08:04:08.431Z"
   }
 ]
