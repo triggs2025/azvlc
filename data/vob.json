@@ -403,5 +403,21 @@
     "ownerEmail": "info@greenopalcontracting.com",
     "ownerPhone": "4809301688",
     "approvedAt": "2026-07-31T21:55:42.195Z"
+  },
+  {
+    "id": 25,
+    "businessName": "Riggsero, LLC.",
+    "category": "Education",
+    "description": "sdcvfsda f dsafd fsa",
+    "website": "https://www.sldfkjal.com",
+    "address": "PO Box 93621",
+    "zip": "85070",
+    "phone": "16029359658",
+    "hours": "",
+    "discount": "",
+    "ownerName": "Harold Riggs",
+    "ownerEmail": "alexis@riggsero.com",
+    "ownerPhone": "",
+    "approvedAt": "2026-08-08T03:05:28.857Z"
   }
 ]
